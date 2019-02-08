@@ -1,14 +1,29 @@
 function Sound() {
   var itworks=false;
-  var wavenames="bravo,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3".split(",");
+  var piecetypes="tgm,npm".split(",")
+  var gametypes="ppt,tgm,npm,yotipo".split(",")
+  var uitypes="ppt,tgm,npm,yotipo".split(",")
+  var wavenames="bravo,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go".split(",");
+  var soundtypes="game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui".split(",");
   var waves={};
-  this.init=function(){
+  this.init=function(type){
+    itworks=false;
     if(itworks===false){
       try{
         for(var i=0;i<wavenames.length;i++){
           var iname = wavenames[i];
           var wave = document.createElement("AUDIO");
-          wave.src="se/"+iname+".mp3";
+          console.log(soundtypes[i])
+          if (soundtypes[i] == "game") {
+            wave.src="se/game/"+gametypes[mySettings.Soundbank]+"/"+iname+".wav";
+          }
+          if (soundtypes[i] == "ui") {
+            wave.src="se/ui/"+gametypes[mySettings.Soundbank]+"/"+iname+".wav";
+          }
+          if (soundtypes[i] == "piece") {
+            wave.src="se/piece/"+piecetypes[mySettings.NextType]+"/"+iname+".wav";
+          }
+          
           wave.load();
           waves[iname] = wave;
         }

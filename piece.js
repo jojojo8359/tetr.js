@@ -1,3 +1,4 @@
+var usedHardDrop = false
 function Piece() {
   this.x;
   this.y;
@@ -37,10 +38,36 @@ Piece.prototype.new = function(index) {
   this.finesse = 0;
   this.dirty = true;
   this.dead = false;
-
+  if (settings.NextSound == 1) {
+    switch (preview.grabBag[0]) {
+    case 0:
+      sound.playse("piece0");
+      break;
+    case 1:
+      sound.playse("piece1");
+      break;
+    case 2:
+      sound.playse("piece2");
+      break;
+    case 3:
+      sound.playse("piece3");
+      break;
+    case 4:
+      sound.playse("piece4");
+      break;
+    case 5:
+      sound.playse("piece5");
+      break;
+    case 6:
+      sound.playse("piece6");
+      break;
+  }
+  }
+  
   // TODO Do this better. Make clone object func maybe.
   //for property in pieces, this.prop = piece.prop
   if (this.irsDir !== 0) {
+    sound.playse("initialrotate");
     var curPos = this.pos;
     var newPos = (this.pos+this.irsDir).mod(4);
     var offsetX =
@@ -139,7 +166,7 @@ Piece.prototype.tryKickList = function(kickList, rotated, newPos, offsetX, offse
   }
 }
 Piece.prototype.rotate = function(direction) {
-
+sound.playse("rotate");
   // Goes thorugh kick data until it finds a valid move.
   var curPos = this.pos.mod(4);
   var newPos = (this.pos + direction).mod(4);
@@ -268,10 +295,12 @@ Piece.prototype.checkShift = function() {
   }
 }
 Piece.prototype.shift = function(direction) {
+  
   this.arrDelay = 0;
   if (settings.ARR === 0 && this.shiftDelay === settings.DAS) {
     while (true) {
       if (this.moveValid(direction, 0, this.tetro)) {
+        
         this.x += direction;
         /* farter */ //instant das under 20G
         if(this.gravity >= 20) {
@@ -289,6 +318,7 @@ Piece.prototype.shift = function(direction) {
     }
   } else if (this.moveValid(direction, 0, this.tetro)) {
     this.x += direction;
+    sound.playse("move");
   }
 }
 Piece.prototype.multiShift = function(direction, count) {
@@ -315,6 +345,8 @@ Piece.prototype.shiftDown = function() {
   }
 }
 Piece.prototype.hardDrop = function() {
+  sound.playse("harddrop");
+  usedHardDrop = true
   var distance = this.getDrop(2147483647);
   this.y += distance;
   score = score.add(bigInt(distance + this.lockDelayLimit - this.lockDelay));
@@ -322,6 +354,7 @@ Piece.prototype.hardDrop = function() {
   this.lockDelay = this.lockDelayLimit;
 }
 Piece.prototype.getDrop = function(distance) {
+  
 	if (!this.moveValid(0, 0, this.tetro))
 		return 0;
   for (var i = 1; i <= distance; i++) {
@@ -385,7 +418,10 @@ Piece.prototype.checkLock = function() {
     if (this.lockDelay >= this.lockDelayLimit) {
       this.dead = true;
       stack.addPiece(this.tetro);
-      sound.playse("lock");
+      if (usedHardDrop === false) {
+        sound.playse("lock");
+      }
+      usedHardDrop = false
       this.dirty = true;
       if(gameState === 9){ // lockout! don't spawn next piece
         return;
@@ -411,6 +447,7 @@ Piece.prototype.checkLock = function() {
           }
           if (this.areLimit === 0) { // IRS IHS not possible
             this.new(preview.next()); // may die-in-one-frame
+            
           } else {
             gameState = 4;
             this.are = 0;

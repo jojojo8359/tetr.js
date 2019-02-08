@@ -523,8 +523,11 @@ var mySettings = {
   RotSys: 0,
   Next: 6,
   Size: 0,
-  Sound: 0,
-  Volume: 100,
+  Sound: 1,
+  Volume: 50,
+  Soundbank: 0,
+  NextSound: 1,
+  NextType: 0,
   Block: 2,
   Ghost: 1,
   Grid: 1,
@@ -536,22 +539,25 @@ var mySettings = {
 var settings = mySettings; // initialized by reference; replaced when game starts and replay
 
 var settingName = {
-  DAS: "DAS 加速延迟",
-  ARR: "ARR 重复延迟",
-  Gravity: "Gravity 下落速度",
-  'Soft Drop': "Soft Drop 软降速度",
-  'Lock Delay': "Lock Delay 锁定延迟",
-  RotSys: "Rotation 旋转系统",
-  Next: "Next 预览块数",
-  Size: "Size 大小",
-  Sound: "Sound 声音",
-  Volume: "Volume 音量",
-  Block: "Block 样式",
-  Ghost: "Ghost 影子",
-  Grid: "Grid 网格",
-  Outline: "Outline 方块边缘",
-  DASCut: "DAS Cut 加速打断",
-  NextSide: "Next Side 预览位置"
+  DAS: "DAS",
+  ARR: "ARR",
+  Gravity: "Gravity",
+  'Soft Drop': "Soft Drop",
+  'Lock Delay': "Lock Delay",
+  RotSys: "Rotation System",
+  Next: "Next Window Count",
+  Size: "Game Size",
+  Sound: "Sound",
+  Volume: "Volume",
+  Soundbank: "Soundbank",
+  NextSound: "Next Sound Indicator",
+  NextType: "Next Soundbank",
+  Block: "Block Skin",
+  Ghost: "Ghost Type",
+  Grid: "Grid",
+  Outline: "Outline",
+  DASCut: "DAS Cut",
+  NextSide: "Next Side"
 };
 var setting = {
   DAS: range(0,31),
@@ -580,7 +586,10 @@ var setting = {
   Size: ['Full', 'Small', 'Medium', 'Large', 'Larger'],
   Sound: ['Off', 'On'],
   Volume: range(0, 101),
-  Block: ['Shaded', 'Solid', 'Glossy', 'Arika', 'World'],
+  Soundbank: ['PPT', 'TGM3', 'NullPM', 'Yotipo'],
+  NextSound: ['Off', 'On'],
+  NextType: ['TGM3', 'NullPM'],
+  Block: ['Bevelled', 'Flat', 'Glossy', 'Arika', 'World'],
   Ghost: ['Normal', 'Colored', 'Off', 'Hidden'],
   Grid: ['Off', 'On'],
   Outline: ['Off', 'On', 'Hidden', 'Only'],
@@ -1014,6 +1023,7 @@ function init(gt, params) {
 
   //html5 mobile device sound
   if(settings.Sound === 1)
+    
     sound.init();
 
   //Reset
@@ -1655,6 +1665,7 @@ function gameLoop() {
           piece.shiftDir = 0;
         }
         if (flags.rotLeft & keysDown && !(lastKeys & flags.rotLeft)) {
+          
           piece.irsDir = -1;
           piece.finesse++;
           console.log("IRS");
@@ -1677,9 +1688,11 @@ function gameLoop() {
         if (gameState === 2) {
           // Count Down
           if (frame === 0) {
-            $setText(msg,'各就各位\nREADY');
+            $setText(msg,'READY');
+            sound.playse("ready")
           } else if (frame === ~~(fps*5/6)) {
-            $setText(msg,'走着~\nGO!');
+            $setText(msg,'GO!');
+            sound.playse("go")
           } else if (frame === ~~(fps*10/6)) {
             $setText(msg,'');
             scoreStartTime = Date.now();
@@ -1697,7 +1710,9 @@ function gameLoop() {
           gameState = 0;
           // console.time("123");
           if (piece.ihs) {
+            soundCancel = 1
             piece.index = preview.next();
+            sound.playse("initialhold");
             piece.hold();
           } else {
             piece.new(preview.next());

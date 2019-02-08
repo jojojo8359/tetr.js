@@ -1,7 +1,12 @@
+var soundCancel = 0
 function Hold() {
   this.piece=0;
 }
 Hold.prototype.draw = function() {
+  if (soundCancel == 0 && paused == false) {
+     sound.playse("hold");
+  }
+  soundCancel = 0
   clear(holdCtx);
   var p = this.piece;
   var initInfo = RotSys[settings.RotSys].initinfo[p];

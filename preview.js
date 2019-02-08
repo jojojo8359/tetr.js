@@ -53,7 +53,12 @@ Preview.prototype.gen = function() {
  */
 Preview.prototype.draw = function() {
   clear(previewCtx);
+  
   var drawCount = (settings["Next"]===void 0) ? 6 : settings["Next"];
+  if (gameState === 0 ) {
+
+  }
+
   for (var i = 0; i < drawCount; i++) {
     var p = this.grabBag[i];
     var initInfo = RotSys[settings.RotSys].initinfo[p];
