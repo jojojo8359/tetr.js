@@ -1,7 +1,29 @@
 #tetr.js
-
-[Have a try](http://farter.tk/tetr.js) in your browser.
-
+### Dr Ocelot's Changelog:
+2019-02-08 v0.1
+- Removed most Chinese
+- Replaced SE functionality
+    - Sound is now on be default
+    - Default volume reduced to 50
+    - Added option to choose game soundbank
+    - Added option to choose next piece soundbank
+    - Added new sound effects
+        - Hard Drop
+        - Move
+        - Hold
+        - Rotate
+        - Initial Hold
+        - Initial Rotate
+        - Next Piece Sound Indicators
+        - Ready/Go
+    - Added four game soundbanks
+        - Puyo Puyo Tetris
+        - Tetris: The Grand Master 3 - Terror‑Instinct
+        - NullpoMino
+        - Yotipo's Sound Effects
+    - Added two next piece indicator soundbanks
+        - Tetris: The Grand Master 3 - Terror‑Instinct
+        - NullpoMino
 ### Default Controls:
 
 - **Rotate Left:** Z
@@ -40,6 +62,8 @@
     - Mobile design
     - Replays
     - Leaderboards
+- Dr Ocelot's Enhancements:
+    - Sound effects with various banks
 
 ## Planned future mechanics and features
 
