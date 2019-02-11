@@ -1,6 +1,9 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
-### 2019-02-09 v0.3
+### 2019-02-09 v0.3.1
+- Modified Retro Mode's soft drop lock checking
+
+### 2019-02-09 v0.3.0
 - Added Retro Mode!
     - Classic scoring system
     - No hard drop, hold, grid, 180 rotation
@@ -21,7 +24,7 @@
     - Retro
 - Removed stock sound effects (Downfall clips)
 
-### 2019-02-09 v0.2
+### 2019-02-09 v0.2.0
 - Removed rankings (it was busted to begin with)
 - Added Tetris Online Japan soundbank
 - New Skins
