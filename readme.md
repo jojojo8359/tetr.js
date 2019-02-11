@@ -1,6 +1,6 @@
 #tetr.js
-### Dr Ocelot's Changelog:
-2019-02-09 v0.3
+## Dr Ocelot's Changelog:
+###2019-02-09 v0.3
 - Added Retro Mode!
     - Classic scoring system
     - No hard drop, hold, grid, 180 rotation
@@ -20,7 +20,8 @@
     - Master
     - Retro
 - Removed stock sound effects (Downfall clips)
-2019-02-09 v0.2
+
+###2019-02-09 v0.2
 - Removed rankings (it was busted to begin with)
 - Added Tetris Online Japan soundbank
 - New Skins
@@ -28,11 +29,11 @@
     - Arcade
     - N-Blox
 - Updated UI
-2019-02-08 v0.1.1
+###2019-02-08 v0.1.1
 - Updated UI
 - New Logo
 - Squished Menus
-2019-02-08 v0.1.0
+###2019-02-08 v0.1.0
 - Removed most Chinese
 - Replaced SE functionality
     - Sound is now on be default
