@@ -1,5 +1,8 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-02-09 v0.3.2
+- Forced Retro Mode's gravity setting
+
 ### 2019-02-09 v0.3.1
 - Modified Retro Mode's soft drop lock checking
 
