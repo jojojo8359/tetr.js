@@ -4,10 +4,12 @@
 - Removal of leftover testing stuff (oops!)
 ### 2019-02-12 v0.3.3
 - New mode, "Grades", is now accessible, but heavily unfinished.
-- 180 rotation enabled for Retro Mode
-- I Tetrimino counter added for Retro Mode
-  - Counts amount of I pieces spawned
-  - After 13 pieces without an I, starts counting the drought until it's over
+- Retro Mode Updates
+    - 180 rotation enabled
+    - I Tetrimino counter added for Retro Mode
+        - Counts amount of I pieces spawned
+        - After 13 pieces without an I, starts counting the drought until it's over
+    - Added flashing effect on Tetris line clear
 - Master mode now has a rainbow background
 - Menu changes! More categories and organistion!
 ### 2019-02-11 v0.3.2
