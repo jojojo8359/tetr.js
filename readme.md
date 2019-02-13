@@ -1,7 +1,9 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-02-12 v0.3.4
+- Removal of leftover testing stuff (oops!)
 ### 2019-02-12 v0.3.3
-- New mode, "Grades" is now accessible, but heavily unfinished.
+- New mode, "Grades", is now accessible, but heavily unfinished.
 - 180 rotation enabled for Retro Mode
 - I Tetrimino counter added for Retro Mode
   - Counts amount of I pieces spawned
