@@ -1,12 +1,20 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
-### 2019-02-09 v0.3.2
+### 2019-02-12 v0.3.3
+- New mode, "Grades" is now accessible, but heavily unfinished.
+- 180 rotation enabled for Retro Mode
+- I Tetrimino counter added for Retro Mode
+  - Counts amount of I pieces spawned
+  - After 13 pieces without an I, starts counting the drought until it's over
+- Master mode now has a rainbow background
+- Menu changes! More categories and organistion!
+### 2019-02-11 v0.3.2
 - Forced Retro Mode's gravity setting
 
-### 2019-02-09 v0.3.1
+### 2019-02-11 v0.3.1
 - Modified Retro Mode's soft drop lock checking
 
-### 2019-02-09 v0.3.0
+### 2019-02-11 v0.3.0
 - Added Retro Mode!
     - Classic scoring system
     - No hard drop, hold, grid, 180 rotation
