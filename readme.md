@@ -10,6 +10,7 @@
         - Counts amount of I pieces spawned
         - After 13 pieces without an I, starts counting the drought until it's over
     - Added flashing effect on Tetris line clear
+- Replaced Tetris line clear sound in the Retro soundbank
 - Master mode now has a rainbow background
 - Menu changes! More categories and organistion!
 ### 2019-02-11 v0.3.2
