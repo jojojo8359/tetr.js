@@ -1,7 +1,15 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-02-13 v0.3.5
+- Made level counter in modern modes visually start at 1
+- Retro Mode Updates
+  - New drought animation
+  - Generator changed to be a little more accurate
+  - Wall charge
+
 ### 2019-02-12 v0.3.4
 - Removal of leftover testing stuff (oops!)
+
 ### 2019-02-12 v0.3.3
 - New mode, "Grades", is now accessible, but heavily unfinished.
 - Retro Mode Updates
@@ -13,6 +21,8 @@
 - Replaced Tetris line clear sound in the Retro soundbank
 - Master mode now has a rainbow background
 - Menu changes! More categories and organistion!
+- Added step sound
+
 ### 2019-02-11 v0.3.2
 - Forced Retro Mode's gravity setting
 
