@@ -246,14 +246,22 @@ Stack.prototype.addPiece = function(tetro) {
   statsFinesse += piece.finesse - finesse[piece.index][piece.pos][column];
   piecesSet++;
   if (gametype === 9) {
-    leveltgm++
-    leveltgmvisible++
+    if ((leveltgmvisible % 100) !== 99) {
+      leveltgm++
+      leveltgmvisible++
+    }
+    
 //    if (leveltgmvisible > 70 && scoreTime <= 52000) {
 //      console.log("Cool!")
 //      leveltgm += 100 //work on later
 //    } if (leveltgmvisible <= 100 && scoreTime >= 75000) {
 //          console.log("REGRET")     
 //      }
+    
+    
+    //Section COOL
+//    if (leveltgmvisible)
+    
   }
   // NOTE Stats
   // TODO Might not need this (same for in init)
