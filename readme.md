@@ -1,6 +1,8 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
-### 2019-02-13 v0.3.6
+### 2019-04-26 v0.3.7
+- Fixed PB's saving
+### 2019-04-26 v0.3.6
 - Added PB tracker for Sprint 40
   - Sprint timer now flashes red when time is over PB
 - Made IRS and IHS more visual

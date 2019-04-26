@@ -2782,8 +2782,8 @@ function checkWin() {
 //      console.log(scoreTime)
       if ((scoreTime < parseInt(Cookies.get('sprint40pb')) || Cookies.get('sprint40pb') == undefined) && (gameparams.recordPB == true) && (watchingReplay == false)) {
         
-        Cookies.set('sprint40pb', scoreTime);
-        Cookies.set('sprint40pbvisual', displayTime);
+        Cookies.set('sprint40pb', scoreTime, { expires: 1460 });
+        Cookies.set('sprint40pbvisual', displayTime, { expires: 1460 });
       }
       updateSprint40PB()
     }
