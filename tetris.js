@@ -13,18 +13,20 @@ function ObjectClone(obj) {
   var copy = (obj instanceof Array) ? [] : {};
   for (var attr in obj) {
     if (!obj.hasOwnProperty(attr)) continue;
-    copy[attr] = (typeof obj[attr] == "object")?ObjectClone(obj[attr]):obj[attr];
+    copy[attr] = (typeof obj[attr] == "object") ? ObjectClone(obj[attr]) : obj[attr];
   }
   return copy;
 }
-function $$(id){
+
+function $$(id) {
   return document.getElementById(id);
 }
-function $setText(elm,s){
-  if(typeof elm.innerText==="string"){
-    elm.innerText=s;
-  }else{
-    elm.textContent=s;
+
+function $setText(elm, s) {
+  if (typeof elm.innerText === "string") {
+    elm.innerText = s;
+  } else {
+    elm.textContent = s;
   }
 }
 
@@ -98,7 +100,8 @@ touchRotRight.bindsMemberName = "rotRight";
 touchRotLeft.bindsMemberName = "rotLeft";
 touchRot180.bindsMemberName = "rot180";
 
-var nLayouts = 7, currLayout = -2 /* none */;
+var nLayouts = 7,
+  currLayout = -2 /* none */ ;
 
 /**
  * Piece data
@@ -106,213 +109,213 @@ var nLayouts = 7, currLayout = -2 /* none */;
 
 // [r][x][y]
 var TetroI = [
-  [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],
-  [[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],
-  [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]],
-  [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]]];
+  [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
+  [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]],
+  [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
+  [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]]];
 var TetroJ = [
-  [[2,2,0,0],[0,2,0,0],[0,2,0,0],[0,0,0,0]],
-  [[0,0,0,0],[2,2,2,0],[2,0,0,0],[0,0,0,0]],
-  [[0,2,0,0],[0,2,0,0],[0,2,2,0],[0,0,0,0]],
-  [[0,0,2,0],[2,2,2,0],[0,0,0,0],[0,0,0,0]]];
+  [[2, 2, 0, 0], [0, 2, 0, 0], [0, 2, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [2, 2, 2, 0], [2, 0, 0, 0], [0, 0, 0, 0]],
+  [[0, 2, 0, 0], [0, 2, 0, 0], [0, 2, 2, 0], [0, 0, 0, 0]],
+  [[0, 0, 2, 0], [2, 2, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0]]];
 var TetroL = [
-  [[0,3,0,0],[0,3,0,0],[3,3,0,0],[0,0,0,0]],
-  [[0,0,0,0],[3,3,3,0],[0,0,3,0],[0,0,0,0]],
-  [[0,3,3,0],[0,3,0,0],[0,3,0,0],[0,0,0,0]],
-  [[3,0,0,0],[3,3,3,0],[0,0,0,0],[0,0,0,0]]];
+  [[0, 3, 0, 0], [0, 3, 0, 0], [3, 3, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [3, 3, 3, 0], [0, 0, 3, 0], [0, 0, 0, 0]],
+  [[0, 3, 3, 0], [0, 3, 0, 0], [0, 3, 0, 0], [0, 0, 0, 0]],
+  [[3, 0, 0, 0], [3, 3, 3, 0], [0, 0, 0, 0], [0, 0, 0, 0]]];
 var TetroO = [
-  [[0,0,0,0],[4,4,0,0],[4,4,0,0],[0,0,0,0]],
-  [[0,0,0,0],[4,4,0,0],[4,4,0,0],[0,0,0,0]],
-  [[0,0,0,0],[4,4,0,0],[4,4,0,0],[0,0,0,0]],
-  [[0,0,0,0],[4,4,0,0],[4,4,0,0],[0,0,0,0]]];
+  [[0, 0, 0, 0], [4, 4, 0, 0], [4, 4, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [4, 4, 0, 0], [4, 4, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [4, 4, 0, 0], [4, 4, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [4, 4, 0, 0], [4, 4, 0, 0], [0, 0, 0, 0]]];
 var TetroS = [
-  [[0,5,0,0],[5,5,0,0],[5,0,0,0],[0,0,0,0]],
-  [[0,0,0,0],[5,5,0,0],[0,5,5,0],[0,0,0,0]],
-  [[0,0,5,0],[0,5,5,0],[0,5,0,0],[0,0,0,0]],
-  [[5,5,0,0],[0,5,5,0],[0,0,0,0],[0,0,0,0]]];
+  [[0, 5, 0, 0], [5, 5, 0, 0], [5, 0, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [5, 5, 0, 0], [0, 5, 5, 0], [0, 0, 0, 0]],
+  [[0, 0, 5, 0], [0, 5, 5, 0], [0, 5, 0, 0], [0, 0, 0, 0]],
+  [[5, 5, 0, 0], [0, 5, 5, 0], [0, 0, 0, 0], [0, 0, 0, 0]]];
 var TetroT = [
-  [[0,6,0,0],[6,6,0,0],[0,6,0,0],[0,0,0,0]],
-  [[0,0,0,0],[6,6,6,0],[0,6,0,0],[0,0,0,0]],
-  [[0,6,0,0],[0,6,6,0],[0,6,0,0],[0,0,0,0]],
-  [[0,6,0,0],[6,6,6,0],[0,0,0,0],[0,0,0,0]]];
+  [[0, 6, 0, 0], [6, 6, 0, 0], [0, 6, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [6, 6, 6, 0], [0, 6, 0, 0], [0, 0, 0, 0]],
+  [[0, 6, 0, 0], [0, 6, 6, 0], [0, 6, 0, 0], [0, 0, 0, 0]],
+  [[0, 6, 0, 0], [6, 6, 6, 0], [0, 0, 0, 0], [0, 0, 0, 0]]];
 var TetroZ = [
-  [[7,0,0,0],[7,7,0,0],[0,7,0,0],[0,0,0,0]],
-  [[0,0,0,0],[0,7,7,0],[7,7,0,0],[0,0,0,0]],
-  [[0,7,0,0],[0,7,7,0],[0,0,7,0],[0,0,0,0]],
-  [[0,7,7,0],[7,7,0,0],[0,0,0,0],[0,0,0,0]]];
+  [[7, 0, 0, 0], [7, 7, 0, 0], [0, 7, 0, 0], [0, 0, 0, 0]],
+  [[0, 0, 0, 0], [0, 7, 7, 0], [7, 7, 0, 0], [0, 0, 0, 0]],
+  [[0, 7, 0, 0], [0, 7, 7, 0], [0, 0, 7, 0], [0, 0, 0, 0]],
+  [[0, 7, 7, 0], [7, 7, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]];
 // [r][MINX MINY MAXX MAXY]
-var RectI = [[0,1,4,2],[2,0,3,4],[0,2,4,3],[1,0,2,4]]; // hacked for next display
-var RectJ = [[0,0,3,2],[1,0,3,3],[0,1,3,3],[0,0,2,3]];
-var RectL = [[0,0,3,2],[1,0,3,3],[0,1,3,3],[0,0,2,3]];
-var RectO = [[1,0,3,2],[1,0,3,2],[1,0,3,2],[1,0,3,2]];
-var RectS = [[0,0,3,2],[1,0,3,3],[0,1,3,3],[0,0,2,3]];
-var RectT = [[0,0,3,2],[1,0,3,3],[0,1,3,3],[0,0,2,3]];
-var RectZ = [[0,0,3,2],[1,0,3,3],[0,1,3,3],[0,0,2,3]];
+var RectI = [[0, 1, 4, 2], [2, 0, 3, 4], [0, 2, 4, 3], [1, 0, 2, 4]]; // hacked for next display
+var RectJ = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
+var RectL = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
+var RectO = [[1, 0, 3, 2], [1, 0, 3, 2], [1, 0, 3, 2], [1, 0, 3, 2]];
+var RectS = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
+var RectT = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
+var RectZ = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
 
 var WKTableSRSI_R = [
-  [[ 0, 0],[-2, 0],[+1, 0],[-2,+1],[+1,-2]],
-  [[ 0, 0],[-1, 0],[+2, 0],[-1,-2],[+2,+1]],
-  [[ 0, 0],[+2, 0],[-1, 0],[+2,-1],[-1,+2]],
-  [[ 0, 0],[+1, 0],[-2, 0],[+1,+2],[-2,-1]]];
+  [[0, 0], [-2, 0], [+1, 0], [-2, +1], [+1, -2]],
+  [[0, 0], [-1, 0], [+2, 0], [-1, -2], [+2, +1]],
+  [[0, 0], [+2, 0], [-1, 0], [+2, -1], [-1, +2]],
+  [[0, 0], [+1, 0], [-2, 0], [+1, +2], [-2, -1]]];
 var WKTableSRSI_L = [
-  [[ 0, 0],[-1, 0],[+2, 0],[-1,-2],[+2,+1]],
-  [[ 0, 0],[+2, 0],[-1, 0],[+2,-1],[-1,+2]],
-  [[ 0, 0],[+1, 0],[-2, 0],[+1,+2],[-2,-1]],
-  [[ 0, 0],[-2, 0],[+1, 0],[-2,+1],[+1,-2]]];
+  [[0, 0], [-1, 0], [+2, 0], [-1, -2], [+2, +1]],
+  [[0, 0], [+2, 0], [-1, 0], [+2, -1], [-1, +2]],
+  [[0, 0], [+1, 0], [-2, 0], [+1, +2], [-2, -1]],
+  [[0, 0], [-2, 0], [+1, 0], [-2, +1], [+1, -2]]];
 var WKTableSRSI_2 = [
-  [[ 0, 0],[-1, 0],[-2, 0],[+1, 0],[+2, 0],[ 0,+1]],
-  [[ 0, 0],[ 0,+1],[ 0,+2],[ 0,-1],[ 0,-2],[-1, 0]],
-  [[ 0, 0],[+1, 0],[+2, 0],[-1, 0],[-2, 0],[ 0,-1]],
-  [[ 0, 0],[ 0,+1],[ 0,+2],[ 0,-1],[ 0,-2],[+1, 0]]];
+  [[0, 0], [-1, 0], [-2, 0], [+1, 0], [+2, 0], [0, +1]],
+  [[0, 0], [0, +1], [0, +2], [0, -1], [0, -2], [-1, 0]],
+  [[0, 0], [+1, 0], [+2, 0], [-1, 0], [-2, 0], [0, -1]],
+  [[0, 0], [0, +1], [0, +2], [0, -1], [0, -2], [+1, 0]]];
 var WKTableSRSX_R = [
-  [[ 0, 0],[-1, 0],[-1,-1],[ 0,+2],[-1,+2]],
-  [[ 0, 0],[+1, 0],[+1,+1],[ 0,-2],[+1,-2]],
-  [[ 0, 0],[+1, 0],[+1,-1],[ 0,+2],[+1,+2]],
-  [[ 0, 0],[-1, 0],[-1,+1],[ 0,-2],[-1,-2]]];
+  [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
+  [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]],
+  [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
+  [[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]]];
 var WKTableSRSX_L = [
-  [[ 0, 0],[+1, 0],[+1,-1],[ 0,+2],[+1,+2]],
-  [[ 0, 0],[+1, 0],[+1,+1],[ 0,-2],[+1,-2]],
-  [[ 0, 0],[-1, 0],[-1,-1],[ 0,+2],[-1,+2]],
-  [[ 0, 0],[-1, 0],[-1,+1],[ 0,-2],[-1,-2]]];
+  [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
+  [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]],
+  [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
+  [[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]]];
 var WKTableSRSX_2 = [
-  [[ 0, 0],[+1, 0],[+2, 0],[+1,+1],[+2,+1],[-1, 0],[-2, 0],[-1,+1],[-2,+1],[ 0,-1],[+3, 0],[-3, 0]],
-  [[ 0, 0],[ 0,+1],[ 0,+2],[-1,+1],[-1,+2],[ 0,-1],[ 0,-2],[-1,-1],[-1,-2],[+1, 0],[ 0,+3],[ 0,-3]],
-  [[ 0, 0],[-1, 0],[-2, 0],[-1,-1],[-2,-1],[+1, 0],[+2, 0],[+1,-1],[+2,-1],[ 0,+1],[-3, 0],[+3, 0]],
-  [[ 0, 0],[ 0,+1],[ 0,+2],[+1,+1],[+1,+2],[ 0,-1],[ 0,-2],[+1,-1],[+1,-2],[-1, 0],[ 0,+3],[ 0,-3]]];
-var WKTableSRSI = [WKTableSRSI_R,WKTableSRSI_L,WKTableSRSI_2];
-var WKTableSRSX = [WKTableSRSX_R,WKTableSRSX_L,WKTableSRSX_2];
-var WKTableSRS = [WKTableSRSI,WKTableSRSX,WKTableSRSX,WKTableSRSX,WKTableSRSX,WKTableSRSX,WKTableSRSX];
+  [[0, 0], [+1, 0], [+2, 0], [+1, +1], [+2, +1], [-1, 0], [-2, 0], [-1, +1], [-2, +1], [0, -1], [+3, 0], [-3, 0]],
+  [[0, 0], [0, +1], [0, +2], [-1, +1], [-1, +2], [0, -1], [0, -2], [-1, -1], [-1, -2], [+1, 0], [0, +3], [0, -3]],
+  [[0, 0], [-1, 0], [-2, 0], [-1, -1], [-2, -1], [+1, 0], [+2, 0], [+1, -1], [+2, -1], [0, +1], [-3, 0], [+3, 0]],
+  [[0, 0], [0, +1], [0, +2], [+1, +1], [+1, +2], [0, -1], [0, -2], [+1, -1], [+1, -2], [-1, 0], [0, +3], [0, -3]]];
+var WKTableSRSI = [WKTableSRSI_R, WKTableSRSI_L, WKTableSRSI_2];
+var WKTableSRSX = [WKTableSRSX_R, WKTableSRSX_L, WKTableSRSX_2];
+var WKTableSRS = [WKTableSRSI, WKTableSRSX, WKTableSRSX, WKTableSRSX, WKTableSRSX, WKTableSRSX, WKTableSRSX];
 
-var WKTableCultris = [[ 0, 0],[-1, 0],[+1, 0],[ 0,+1],[-1,+1],[+1,+1],[-2, 0],[+2, 0],[ 0,-1]];
+var WKTableCultris = [[0, 0], [-1, 0], [+1, 0], [0, +1], [-1, +1], [+1, +1], [-2, 0], [+2, 0], [0, -1]];
 
-var WKTableDRS_R = [[ 0, 0],[+1, 0],[-1, 0],[ 0,+1],[+1,+1],[-1,+1],[ 0,-1]];
-var WKTableDRS_L = [[ 0, 0],[-1, 0],[+1, 0],[ 0,+1],[-1,+1],[+1,+1],[ 0,-1]];
-var WKTableDRS = [WKTableDRS_R,WKTableDRS_L,WKTableDRS_L];
+var WKTableDRS_R = [[0, 0], [+1, 0], [-1, 0], [0, +1], [+1, +1], [-1, +1], [0, -1]];
+var WKTableDRS_L = [[0, 0], [-1, 0], [+1, 0], [0, +1], [-1, +1], [+1, +1], [0, -1]];
+var WKTableDRS = [WKTableDRS_R, WKTableDRS_L, WKTableDRS_L];
 
 var WKTableDX_R = [[[0, 0], [-1, -1]], [[0, 0], [+1, -1]], [[0, 0], [+1, +1]], [[0, 0], [-1, +1]]];
 var WKTableDX_L = [[[0, 0], [+1, -1]], [[0, 0], [+1, +1]], [[0, 0], [-1, +1]], [[0, 0], [-1, -1]]];
-var WKTableDX_2 = [[[0, 0], [ 0, -2]], [[0, 0], [-2,  0]], [[0, 0], [ 0, +2]], [[0, 0], [+2,  0]]];
-var WKTableDX = [WKTableDX_R,WKTableDX_L,WKTableDX_2];
+var WKTableDX_2 = [[[0, 0], [0, -2]], [[0, 0], [-2, 0]], [[0, 0], [0, +2]], [[0, 0], [+2, 0]]];
+var WKTableDX = [WKTableDX_R, WKTableDX_L, WKTableDX_2];
 
 var OffsetSRS = [
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]]];
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]]];
 var OffsetARS = [
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[ 0,+1],[-1, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[+1, 0]]];
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[0, +1], [-1, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [+1, 0]]];
 var OffsetDRS = [
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[ 0, 0]]];
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [0, 0]]];
 var OffsetQRS = [
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]]];
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, -1], [+1, 0]]];
 var OffsetAtari = [
-  [[ 0,-1],[-1, 0],[ 0,-2],[ 0, 0]],
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]],
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]],
-  [[-2, 0],[-2, 0],[-2, 0],[-2, 0]],
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]],
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]],
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]]];
+  [[0, -1], [-1, 0], [0, -2], [0, 0]],
+  [[0, 0], [-1, 0], [0, -1], [0, 0]],
+  [[0, 0], [-1, 0], [0, -1], [0, 0]],
+  [[-2, 0], [-2, 0], [-2, 0], [-2, 0]],
+  [[0, 0], [-1, 0], [0, -1], [0, 0]],
+  [[0, 0], [-1, 0], [0, -1], [0, 0]],
+  [[0, 0], [-1, 0], [0, -1], [0, 0]]];
 var OffsetNBlox = [
-  [[ 0, 0],[-1, 0],[ 0,-1],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[+1, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0, 0],[ 0, 0],[+1, 0]]];
+  [[0, 0], [-1, 0], [0, -1], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[0, +1], [0, 0], [0, 0], [+1, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, 0], [0, 0], [+1, 0]]];
 var OffsetNintendo = [
-  [[ 0,+1],[ 0, 0],[ 0, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[+1,+1],[+1, 0],[+1, 0],[+2, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+2, 0]]];
+  [[0, +1], [0, 0], [0, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[+1, +1], [+1, 0], [+1, 0], [+2, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+2, 0]]];
 var OffsetMS = [
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[+1,+1],[ 0,+1],[+1, 0],[+1,+1]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[ 0,+1],[+1, 0],[+1,+1]]];
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[+1, +1], [0, +1], [+1, 0], [+1, +1]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [0, +1], [+1, 0], [+1, +1]]];
 var OffsetE60 = [
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[+1,+1],[+1, 0],[+1, 0],[+2, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+2, 0]]];
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[+1, +1], [+1, 0], [+1, 0], [+2, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+2, 0]]];
 var OffsetJJSRS = [
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1, 0],[+1, 0],[+1, 0],[+1, 0]]];
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, 0], [+1, 0], [+1, 0], [+1, 0]]];
 var Offset5000 = [
-  [[ 0,+1],[-1, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[ 0,+1],[-1, 0],[ 0,-1],[+1, 0]],
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]]];
+  [[0, +1], [-1, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[0, +1], [-1, 0], [0, -1], [+1, 0]],
+  [[0, 0], [0, 0], [0, -1], [+1, 0]]];
 var OffsetPlus = [
-  [[ 0, 0],[ 0, 0],[ 0,-1],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+1, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[+1,+1],[ 0, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+1, 0]],
-  [[+1,+1],[+1, 0],[+1, 0],[+2, 0]]];
+  [[0, 0], [0, 0], [0, -1], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+1, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[+1, +1], [0, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+1, 0]],
+  [[+1, +1], [+1, 0], [+1, 0], [+2, 0]]];
 var OffsetDX = [
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]],
-  [[ 0, 0],[ 0, 0],[ 0, 0],[ 0, 0]],
-  [[ 0,+1],[ 0,+1],[ 0,+1],[ 0,+1]]];
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]],
+  [[0, 0], [0, 0], [0, 0], [0, 0]],
+  [[0, +1], [0, +1], [0, +1], [0, +1]]];
 
 //x, y, r
-var InitInfoSRS = [[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 0]];
-var InitInfoARS = [[ 0, 0, 0],[ 0, 0, 2],[ 0, 0, 2],[ 0,+1, 0],[ 0,+1, 0],[ 0, 0, 2],[ 0,+1, 0]];
-var InitInfoDRS = [[ 0,+1, 0],[ 0, 0, 2],[ 0, 0, 2],[ 0,+1, 0],[ 0,+1, 0],[ 0, 0, 2],[ 0,+1, 0]];
-var InitInfoQRS = [[ 0, 0, 0],[ 0, 0, 1],[ 0, 0, 3],[ 0, 0, 0],[ 0, 0, 0],[ 0, 0, 2],[ 0, 0, 0]];
-var InitInfoAtari = [[+1, 0, 0],[+1, 0, 2],[+1, 0, 2],[ 0,+1, 0],[+1,+1, 0],[+1, 0, 2],[+1,+1, 0]];
-var InitInfoNBlox = [[ 0, 0, 0],[ 0, 0, 2],[ 0, 0, 2],[ 0,+1, 0],[ 0,+1, 0],[ 0, 0, 2],[ 0,+1, 0]];
-var InitInfoNintendo = [[ 0, 0, 0],[+1, 0, 2],[+1, 0, 2],[ 0,+1, 0],[+1,+1, 0],[+1, 0, 2],[+1,+1, 0]];
-var InitInfoMS = [[ 0, 0, 0],[+1, 0, 2],[+1, 0, 2],[ 0,+1, 0],[+1,+1, 0],[+1, 0, 2],[+1,+1, 0]];
-var InitInfoE60 = [[ 0, 0, 0],[+1, 0, 2],[+1, 0, 2],[ 0,+1, 0],[+1,+1, 0],[+1, 0, 2],[+1,+1, 0]];
-var InitInfoJJSRS = [[ 0, 0, 0],[+1, 0, 0],[+1, 0, 0],[ 0, 0, 0],[+1, 0, 0],[+1, 0, 0],[+1, 0, 0]];
-var InitInfo5000 = [[ 0, 0, 3],[ 0, 0, 1],[+1, 0, 3],[ 0, 0, 0],[ 0, 0, 0],[ 0, -1, 2],[ 0, 0, 0]];
-var InitInfoPlus = [[ 0, 0, 0],[+1, 0, 2],[+1, 0, 2],[ 0,+1, 0],[+1,+1, 0],[+1, 0, 2],[+1,+1, 0]];
-var InitInfoDX = [[ 0, 0, 0],[ 0, 0, 2],[ 0, 0, 2],[ 0,+1, 0],[ 0,+1, 0],[ 0, 0, 2],[ 0,+1, 0]];
+var InitInfoSRS = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+var InitInfoARS = [[0, 0, 0], [0, 0, 2], [0, 0, 2], [0, +1, 0], [0, +1, 0], [0, 0, 2], [0, +1, 0]];
+var InitInfoDRS = [[0, +1, 0], [0, 0, 2], [0, 0, 2], [0, +1, 0], [0, +1, 0], [0, 0, 2], [0, +1, 0]];
+var InitInfoQRS = [[0, 0, 0], [0, 0, 1], [0, 0, 3], [0, 0, 0], [0, 0, 0], [0, 0, 2], [0, 0, 0]];
+var InitInfoAtari = [[+1, 0, 0], [+1, 0, 2], [+1, 0, 2], [0, +1, 0], [+1, +1, 0], [+1, 0, 2], [+1, +1, 0]];
+var InitInfoNBlox = [[0, 0, 0], [0, 0, 2], [0, 0, 2], [0, +1, 0], [0, +1, 0], [0, 0, 2], [0, +1, 0]];
+var InitInfoNintendo = [[0, 0, 0], [+1, 0, 2], [+1, 0, 2], [0, +1, 0], [+1, +1, 0], [+1, 0, 2], [+1, +1, 0]];
+var InitInfoMS = [[0, 0, 0], [+1, 0, 2], [+1, 0, 2], [0, +1, 0], [+1, +1, 0], [+1, 0, 2], [+1, +1, 0]];
+var InitInfoE60 = [[0, 0, 0], [+1, 0, 2], [+1, 0, 2], [0, +1, 0], [+1, +1, 0], [+1, 0, 2], [+1, +1, 0]];
+var InitInfoJJSRS = [[0, 0, 0], [+1, 0, 0], [+1, 0, 0], [0, 0, 0], [+1, 0, 0], [+1, 0, 0], [+1, 0, 0]];
+var InitInfo5000 = [[0, 0, 3], [0, 0, 1], [+1, 0, 3], [0, 0, 0], [0, 0, 0], [0, -1, 2], [0, 0, 0]];
+var InitInfoPlus = [[0, 0, 0], [+1, 0, 2], [+1, 0, 2], [0, +1, 0], [+1, +1, 0], [+1, 0, 2], [+1, +1, 0]];
+var InitInfoDX = [[0, 0, 0], [0, 0, 2], [0, 0, 2], [0, +1, 0], [0, +1, 0], [0, 0, 2], [0, +1, 0]];
 
 var ColorSRS = [1, 2, 3, 4, 5, 6, 7];
 var ColorARS = [7, 2, 3, 4, 6, 1, 5];
@@ -504,14 +507,14 @@ var finesse = [
 /**
  * Gameplay specific vars.
  */
-var gravityUnit = 1.0/64;
+var gravityUnit = 1.0 / 64;
 var gravity;
-var gravityArr = (function() {
+var gravityArr = (function () {
   var array = [];
   array.push(0);
-  for (var i = 1; i < 64; i*=2)
+  for (var i = 1; i < 64; i *= 2)
     array.push(i / 64);
-  for (var i = 1; i <= 20; i+=19)
+  for (var i = 1; i <= 20; i += 19)
     array.push(i);
   return array;
 })();
@@ -566,23 +569,23 @@ var settingName = {
   NextSide: "Next Queue Side"
 };
 var setting = {
-  DAS: range(0,31),
-  ARR: range(0,11),
-  Gravity: (function() {
+  DAS: range(0, 31),
+  ARR: range(0, 11),
+  Gravity: (function () {
     var array = [];
     array.push('Auto');
     array.push('0G');
-    for (var i = 1; i < 64; i*=2)
-      array.push('1/'+(64/i)+'G');
-    for (var i = 1; i <= 20; i+=19)
+    for (var i = 1; i < 64; i *= 2)
+      array.push('1/' + (64 / i) + 'G');
+    for (var i = 1; i <= 20; i += 19)
       array.push(i + 'G');
     return array;
   })(),
-  'Soft Drop': (function() {
+  'Soft Drop': (function () {
     var array = [];
-    for (var i = 1; i < 64; i*=2)
-      array.push('1/'+(64/i)+'G');
-    for (var i = 1; i <= 20; i+=19)
+    for (var i = 1; i < 64; i *= 2)
+      array.push('1/' + (64 / i) + 'G');
+    for (var i = 1; i <= 20; i += 19)
       array.push(i + 'G');
     return array;
   })(),
@@ -604,180 +607,786 @@ var setting = {
   NextSide: ['Right', 'Left']
 };
 var arrRowGen = {
-  'simple':
-  function(arr,offset,range,width) {
-    var holex = ~~(rng.next()*range)+offset;
-    for(var x = 0; x < width; x++){
+  'simple': function (arr, offset, range, width) {
+    var holex = ~~(rng.next() * range) + offset;
+    for (var x = 0; x < width; x++) {
       arr[holex + x] = 0;
     }
   },
-  'simplemessy':
-  function(arr,ratio) {
+  'simplemessy': function (arr, ratio) {
     var hashole = false;
-    for(var x = 0; x < stack.width; x++){
-      if(rng.next()>=ratio) {
-        hashole=true;
+    for (var x = 0; x < stack.width; x++) {
+      if (rng.next() >= ratio) {
+        hashole = true;
         arr[x] = 0;
       }
     }
-    if(hashole===false){
-      arr[~~(rng.next()*10)] = 0;
+    if (hashole === false) {
+      arr[~~(rng.next() * 10)] = 0;
     }
   },
 };
 
 var arrStages = [
-  {begin:   0, delay: 60*5, gen:function(arr){arrRowGen.simple(arr,0,7,4)}},
-  {begin:   5, delay: 60*7, gen:function(arr){arrRowGen.simple(arr,0,7,4)}},
-  {begin:  20, delay: 60*5, gen:function(arr){arrRowGen.simple(arr,0,7,4)}},
-  {begin:  40, delay: 60*4, gen:function(arr){arrRowGen.simple(arr,2,3,4)}},
-  {begin:  50, delay: 60*2, gen:function(arr){arrRowGen.simple(arr,4,1,2)}},
-  {begin:  70, delay: 60*5, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:  80, delay: 60*4, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:  90, delay: 60*3, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
+  {
+    begin: 0,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 7, 4)
+    }
+  },
+  {
+    begin: 5,
+    delay: 60 * 7,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 7, 4)
+    }
+  },
+  {
+    begin: 20,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 7, 4)
+    }
+  },
+  {
+    begin: 40,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 2, 3, 4)
+    }
+  },
+  {
+    begin: 50,
+    delay: 60 * 2,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 4, 1, 2)
+    }
+  },
+  {
+    begin: 70,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 80,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 90,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
 
-  {begin: 100, delay: 60*4, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin: 120, delay: 60*3.5, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin: 150, delay: 60*4, gen:function(arr){arrRowGen.simple(arr,0,7,4)}},
-  {begin: 170, delay: 60*3.5, gen:function(arr){arrRowGen.simple(arr,0,7,4)}},
+  {
+    begin: 100,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 120,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 150,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 7, 4)
+    }
+  },
+  {
+    begin: 170,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 7, 4)
+    }
+  },
 
-  {begin: 200, delay: 60*3.5, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin: 220, delay: 60*3, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin: 250, delay: 60*2.5, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
+  {
+    begin: 200,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 220,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 250,
+    delay: 60 * 2.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
 
-  {begin: 300, delay: 60*3.5, gen:function(arr){arrRowGen.simplemessy(arr,0.9)}},
-  {begin: 320, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.9)}},
-  {begin: 350, delay: 60*3.5, gen:function(arr){arrRowGen.simplemessy(arr,0.8)}},
-  {begin: 390, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.8)}},
-  {begin: 400, delay: 60*4, gen:function(arr){arrRowGen.simplemessy(arr,0.6)}},
-  {begin: 430, delay: 60*5, gen:function(arr){arrRowGen.simplemessy(arr,0.4)}},
-  {begin: 450, delay: 60*7, gen:function(arr){arrRowGen.simplemessy(arr,0.1)}},
+  {
+    begin: 300,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.9)
+    }
+  },
+  {
+    begin: 320,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.9)
+    }
+  },
+  {
+    begin: 350,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.8)
+    }
+  },
+  {
+    begin: 390,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.8)
+    }
+  },
+  {
+    begin: 400,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.6)
+    }
+  },
+  {
+    begin: 430,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.4)
+    }
+  },
+  {
+    begin: 450,
+    delay: 60 * 7,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.1)
+    }
+  },
 
-  {begin: 470, delay: 60*7, gen:function(arr){arrRowGen.simplemessy(arr,0.4)}},
-  {begin: 500, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.8)}},
-  {begin: 550, delay: 60*2.5, gen:function(arr){arrRowGen.simplemessy(arr,0.8)}},
-  {begin: 600, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.6)}},
-  {begin: 650, delay: 60*2.5, gen:function(arr){arrRowGen.simplemessy(arr,0.6)}},
-  {begin: 700, delay: 60*3.5, gen:function(arr){arrRowGen.simplemessy(arr,0.4)}},
-  {begin: 750, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.4)}},
-  {begin: 780, delay: 60*2.5, gen:function(arr){arrRowGen.simplemessy(arr,0.4)}},
-  {begin: 800, delay: 60*2, gen:function(arr){arrRowGen.simplemessy(arr,0.9)}},
-  {begin: 900, delay: 60*1.75, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin: 950, delay: 60*1.5, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
+  {
+    begin: 470,
+    delay: 60 * 7,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.4)
+    }
+  },
+  {
+    begin: 500,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.8)
+    }
+  },
+  {
+    begin: 550,
+    delay: 60 * 2.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.8)
+    }
+  },
+  {
+    begin: 600,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.6)
+    }
+  },
+  {
+    begin: 650,
+    delay: 60 * 2.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.6)
+    }
+  },
+  {
+    begin: 700,
+    delay: 60 * 3.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.4)
+    }
+  },
+  {
+    begin: 750,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.4)
+    }
+  },
+  {
+    begin: 780,
+    delay: 60 * 2.5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.4)
+    }
+  },
+  {
+    begin: 800,
+    delay: 60 * 2,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.9)
+    }
+  },
+  {
+    begin: 900,
+    delay: 60 * 1.75,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 950,
+    delay: 60 * 1.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
 
-  {begin:1000, delay: 60*5, gen:function(arr){arrRowGen.simplemessy(arr,0.0)}},
-  {begin:1020, delay: 60*4, gen:function(arr){arrRowGen.simplemessy(arr,0.0)}},
-  {begin:1050, delay: 60*4, gen:function(arr){arrRowGen.simple(arr,1,1,8)}},
-  {begin:1100, delay: 60*3, gen:function(arr){arrRowGen.simple(arr,2,1,6)}},
-  {begin:1150, delay: 60*3, gen:function(arr){arrRowGen.simple(arr,3,1,4)}},
-  {begin:1200, delay: 60*2, gen:function(arr){arrRowGen.simple(arr,4,1,2)}},
-  {begin:1210, delay: 60*1.5, gen:function(arr){arrRowGen.simple(arr,4,1,2)}},
-  {begin:1210, delay: 60*1, gen:function(arr){arrRowGen.simple(arr,4,1,2)}},
-  {begin:1250, delay: 60*2, gen:function(arr){arrRowGen.simple(arr,9,1,1)}},
-  {begin:1260, delay: 60*0.5, gen:function(arr){arrRowGen.simple(arr,9,1,1)}},
-  {begin:1300, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.0)}},
-  {begin:1350, delay: 60*3, gen:function(arr){arrRowGen.simplemessy(arr,0.1)}},
-  {begin:1400, delay: 60*4, gen:function(arr){arrRowGen.simplemessy(arr,0.15)}},
-  {begin:1450, delay: 60*4, gen:function(arr){arrRowGen.simplemessy(arr,0.2)}},
-  {begin:1480, delay: 60*5, gen:function(arr){arrRowGen.simplemessy(arr,0.2)}},
+  {
+    begin: 1000,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.0)
+    }
+  },
+  {
+    begin: 1020,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.0)
+    }
+  },
+  {
+    begin: 1050,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 1, 1, 8)
+    }
+  },
+  {
+    begin: 1100,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 2, 1, 6)
+    }
+  },
+  {
+    begin: 1150,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 3, 1, 4)
+    }
+  },
+  {
+    begin: 1200,
+    delay: 60 * 2,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 4, 1, 2)
+    }
+  },
+  {
+    begin: 1210,
+    delay: 60 * 1.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 4, 1, 2)
+    }
+  },
+  {
+    begin: 1210,
+    delay: 60 * 1,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 4, 1, 2)
+    }
+  },
+  {
+    begin: 1250,
+    delay: 60 * 2,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 9, 1, 1)
+    }
+  },
+  {
+    begin: 1260,
+    delay: 60 * 0.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 9, 1, 1)
+    }
+  },
+  {
+    begin: 1300,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.0)
+    }
+  },
+  {
+    begin: 1350,
+    delay: 60 * 3,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.1)
+    }
+  },
+  {
+    begin: 1400,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.15)
+    }
+  },
+  {
+    begin: 1450,
+    delay: 60 * 4,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.2)
+    }
+  },
+  {
+    begin: 1480,
+    delay: 60 * 5,
+    gen: function (arr) {
+      arrRowGen.simplemessy(arr, 0.2)
+    }
+  },
 
-  {begin:1500, delay: 60*1.5, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:1550, delay: 60*1.4, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:1600, delay: 60*1.3, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:1650, delay: 60*1.2, gen:function(arr){arrRowGen.simple(arr,0,9,2)}},
-  {begin:1700, delay: 60*1.3, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:1800, delay: 60*1.2, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:1850, delay: 60*1.15, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:1900, delay: 60*1.1, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:1950, delay: 60*1.05, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
+  {
+    begin: 1500,
+    delay: 60 * 1.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 1550,
+    delay: 60 * 1.4,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 1600,
+    delay: 60 * 1.3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 1650,
+    delay: 60 * 1.2,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 9, 2)
+    }
+  },
+  {
+    begin: 1700,
+    delay: 60 * 1.3,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 1800,
+    delay: 60 * 1.2,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 1850,
+    delay: 60 * 1.15,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 1900,
+    delay: 60 * 1.1,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 1950,
+    delay: 60 * 1.05,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
 
-  {begin:2000, delay: 60*1.0, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2050, delay: 60*0.95, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2100, delay: 60*0.9, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2150, delay: 60*0.85, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2180, delay: 60*0.8, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2190, delay: 60*1.0, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2200, delay: 60*0.8, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2300, delay: 60*0.75, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2400, delay: 60*0.7, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2450, delay: 60*0.6, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
-  {begin:2500, delay: 60*0.5, gen:function(arr){arrRowGen.simple(arr,0,10,1)}},
+  {
+    begin: 2000,
+    delay: 60 * 1.0,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2050,
+    delay: 60 * 0.95,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2100,
+    delay: 60 * 0.9,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2150,
+    delay: 60 * 0.85,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2180,
+    delay: 60 * 0.8,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2190,
+    delay: 60 * 1.0,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2200,
+    delay: 60 * 0.8,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2300,
+    delay: 60 * 0.75,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2400,
+    delay: 60 * 0.7,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2450,
+    delay: 60 * 0.6,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
+  {
+    begin: 2500,
+    delay: 60 * 0.5,
+    gen: function (arr) {
+      arrRowGen.simple(arr, 0, 10, 1)
+    }
+  },
 
 ];
 
-var sprintRanks= [
-  {t:600, u:"修仙去吧", b:"Zen"},
-  {t:540, u:"求进9分钟", b:"9 min...?"},
-  {t:480, u:"求进8分钟", b:"8 min...?"},
-  {t:420, u:"求进7分钟", b:"7 min...?"},
-  {t:360, u:"求进6分钟", b:"6 min...?"},
-  {t:300, u:"求进5分钟", b:"5 min...?"},
-  {t:240, u:"终于……", b:"Finally..."},
-  {t:210, u:"<small>你一定是在逗我</small>", b:"Too slow."},
-  {t:180, u:"渣渣", b:"Well..."},
-  {t:160, u:"<small>速度速度加快</small>", b:"Go faster."},
-  {t:140, u:"<small>还能再给力点么</small>", b:"Any more?"},
-  {t:120, u:"2分钟？", b:"Beat 2 min."},
-  {t:110, u:"不难嘛", b:"So easy."},
-  {t:100, u:"新世界", b:"New world."},
-  {t: 90, u:"超越秒针", b:"1 drop/sec!"},
-  {t: 80, u:"恭喜入门", b:"Not bad."},
-  {t: 73, u:"渐入佳境", b:"Going deeper."},
-  {t: 69, u:"就差10秒", b:"10 sec faster."},
-  {t: 63, u:"还有几秒", b:"Approaching."},
-  {t: 60, u:"最后一点", b:"Almost there!"},
-  {t: 56, u:"1分钟就够了", b:"1-min Sprinter!"},
-  {t: 53, u:"并不是沙包", b:"<small>No longer rookie.</small>"},
-  {t: 50, u:"50不是梦", b:"Beat 50."},
-  {t: 48, u:"每秒2块", b:"2 drops/sec!"},
-  {t: 45, u:"很能打嘛", b:"u can tetris."},
-  {t: 42, u:"有点厉害", b:"Interesting."},
-  {t: 40, u:"于是呢？", b:"So?"},
-  {t: 38, u:"高手", b:"Good."},
-  {t: 35, u:"停不下来", b:"Unstoppable."},
-  {t: 33, u:"触手", b:"Octopus"},
-  {t: 31, u:"每秒3块", b:"3 drops/sec!"},
-  {t: 30, u:"别这样", b:"Noooo"},
-  {t: 29, u:"你赢了", b:"You win."},
-  {t: 27, u:"这不魔法", b:"Magic."},
-  {t: 25, u:"闪电", b:"Lightning!"},
-  {t: 24, u:"每秒4块", b:"4 drops/sec!"},
-  {t: 23, u:"神兽", b:"Alien."},
-  {t: 22, u:"神兽他妈", b:"Beats Alien."},
-  {t: 21, u:"拯救地球", b:"<small>Save the world?</small>"},
-  {t: 20, u:"你确定？", b:"r u sure?"},
-  {t: 19, u:"5块每秒", b:"5pps"},
-  {t: 18, u:"……", b:"..."},
-  {t: 16.66, u:"…………", b:"......"},
-  {t: 14.28, u:"6块每秒", b:"6pps"},
-  {t: 12.50, u:"7块每秒", b:"7pps"},
-  {t: 11.11, u:"8块每秒", b:"8pps"},
-  {t: 10.00, u:"9块每秒", b:"9pps"},
-  {t:  9.00, u:"10块每秒", b:"10pps"},
-  {t:  0.00, u:"←_←", b:"→_→"},
-  {t:  -1/0, u:"↑_↑", b:"↓_↓"}
+var sprintRanks = [
+  {
+    t: 600,
+    u: "修仙去吧",
+    b: "Zen"
+  },
+  {
+    t: 540,
+    u: "求进9分钟",
+    b: "9 min...?"
+  },
+  {
+    t: 480,
+    u: "求进8分钟",
+    b: "8 min...?"
+  },
+  {
+    t: 420,
+    u: "求进7分钟",
+    b: "7 min...?"
+  },
+  {
+    t: 360,
+    u: "求进6分钟",
+    b: "6 min...?"
+  },
+  {
+    t: 300,
+    u: "求进5分钟",
+    b: "5 min...?"
+  },
+  {
+    t: 240,
+    u: "终于……",
+    b: "Finally..."
+  },
+  {
+    t: 210,
+    u: "<small>你一定是在逗我</small>",
+    b: "Too slow."
+  },
+  {
+    t: 180,
+    u: "渣渣",
+    b: "Well..."
+  },
+  {
+    t: 160,
+    u: "<small>速度速度加快</small>",
+    b: "Go faster."
+  },
+  {
+    t: 140,
+    u: "<small>还能再给力点么</small>",
+    b: "Any more?"
+  },
+  {
+    t: 120,
+    u: "2分钟？",
+    b: "Beat 2 min."
+  },
+  {
+    t: 110,
+    u: "不难嘛",
+    b: "So easy."
+  },
+  {
+    t: 100,
+    u: "新世界",
+    b: "New world."
+  },
+  {
+    t: 90,
+    u: "超越秒针",
+    b: "1 drop/sec!"
+  },
+  {
+    t: 80,
+    u: "恭喜入门",
+    b: "Not bad."
+  },
+  {
+    t: 73,
+    u: "渐入佳境",
+    b: "Going deeper."
+  },
+  {
+    t: 69,
+    u: "就差10秒",
+    b: "10 sec faster."
+  },
+  {
+    t: 63,
+    u: "还有几秒",
+    b: "Approaching."
+  },
+  {
+    t: 60,
+    u: "最后一点",
+    b: "Almost there!"
+  },
+  {
+    t: 56,
+    u: "1分钟就够了",
+    b: "1-min Sprinter!"
+  },
+  {
+    t: 53,
+    u: "并不是沙包",
+    b: "<small>No longer rookie.</small>"
+  },
+  {
+    t: 50,
+    u: "50不是梦",
+    b: "Beat 50."
+  },
+  {
+    t: 48,
+    u: "每秒2块",
+    b: "2 drops/sec!"
+  },
+  {
+    t: 45,
+    u: "很能打嘛",
+    b: "u can tetris."
+  },
+  {
+    t: 42,
+    u: "有点厉害",
+    b: "Interesting."
+  },
+  {
+    t: 40,
+    u: "于是呢？",
+    b: "So?"
+  },
+  {
+    t: 38,
+    u: "高手",
+    b: "Good."
+  },
+  {
+    t: 35,
+    u: "停不下来",
+    b: "Unstoppable."
+  },
+  {
+    t: 33,
+    u: "触手",
+    b: "Octopus"
+  },
+  {
+    t: 31,
+    u: "每秒3块",
+    b: "3 drops/sec!"
+  },
+  {
+    t: 30,
+    u: "别这样",
+    b: "Noooo"
+  },
+  {
+    t: 29,
+    u: "你赢了",
+    b: "You win."
+  },
+  {
+    t: 27,
+    u: "这不魔法",
+    b: "Magic."
+  },
+  {
+    t: 25,
+    u: "闪电",
+    b: "Lightning!"
+  },
+  {
+    t: 24,
+    u: "每秒4块",
+    b: "4 drops/sec!"
+  },
+  {
+    t: 23,
+    u: "神兽",
+    b: "Alien."
+  },
+  {
+    t: 22,
+    u: "神兽他妈",
+    b: "Beats Alien."
+  },
+  {
+    t: 21,
+    u: "拯救地球",
+    b: "<small>Save the world?</small>"
+  },
+  {
+    t: 20,
+    u: "你确定？",
+    b: "r u sure?"
+  },
+  {
+    t: 19,
+    u: "5块每秒",
+    b: "5pps"
+  },
+  {
+    t: 18,
+    u: "……",
+    b: "..."
+  },
+  {
+    t: 16.66,
+    u: "…………",
+    b: "......"
+  },
+  {
+    t: 14.28,
+    u: "6块每秒",
+    b: "6pps"
+  },
+  {
+    t: 12.50,
+    u: "7块每秒",
+    b: "7pps"
+  },
+  {
+    t: 11.11,
+    u: "8块每秒",
+    b: "8pps"
+  },
+  {
+    t: 10.00,
+    u: "9块每秒",
+    b: "9pps"
+  },
+  {
+    t: 9.00,
+    u: "10块每秒",
+    b: "10pps"
+  },
+  {
+    t: 0.00,
+    u: "←_←",
+    b: "→_→"
+  },
+  {
+    t: -1 / 0,
+    u: "↑_↑",
+    b: "↓_↓"
+  }
 ];
 
 var frame;
 var frameSkipped;
 
 /**
-* for dig challenge mode
-*/
+ * for dig challenge mode
+ */
 
 var frameLastRise;
 var frameLastHarddropDown;
 
 /**
-* for dig zen mode
-*/
+ * for dig zen mode
+ */
 
 var digZenBuffer;
 var lastPiecesSet;
 
 /**
-* Pausing variables
-*/
+ * Pausing variables
+ */
 
 var startPauseTime;
 var pauseTime;
@@ -859,7 +1468,7 @@ function resize() {
   var c = $$('c');
   var d = $$('d');
   var content = $$('content');
-  
+
   if (settings.NextSide === 1) {
     content.innerHTML = "";
     content.appendChild(c);
@@ -871,7 +1480,7 @@ function resize() {
     content.appendChild(b);
     content.appendChild(c);
   }
-  
+
   // TODO Finalize this.
   // Aspect ratio: 1.024
   var padH = 12;
@@ -887,7 +1496,7 @@ function resize() {
   else if (settings.Size === 4 && cellSize >= 48) cellSize = 48;
 
   var pad = (window.innerHeight - (cellSize * 20 + 2));
-  var padFinal = Math.min(pad/2, padH);
+  var padFinal = Math.min(pad / 2, padH);
   //console.log(pad);
   content.style.padding =
     //"0 0";
@@ -898,7 +1507,7 @@ function resize() {
     //(pad) + 'px';
     //(pad / 2) + 'px';
     (pad - padFinal) + 'px';
-    //(pad - padH) + 'px';
+  //(pad - padH) + 'px';
 
   // Size elements
   a.style.padding = '0 0.5rem ' + ~~(cellSize / 2) + 'px';
@@ -934,7 +1543,8 @@ function resize() {
 
   timeCanvas.width = d.clientWidth;
   timeCanvas.height = timeCanvas.clientHeight || timeCanvas.offsetHeight || timeCanvas.getBoundingClientRect().height;
-  timeCtx.fillStyle = "#fff";
+  
+  
   timeCtx.font = '1em Roboto Mono, "Trebuchet MS"';
   timeCtx.textAlign = "center";
   timeCtx.textBaseline = "middle";
@@ -957,8 +1567,7 @@ function resize() {
     }
     statistics();
     statisticsStack();
-  } catch(e) {
-  }
+  } catch (e) {}
   //}
 }
 addEventListener('resize', resize, false);
@@ -984,7 +1593,7 @@ function scoreNesRefresh() {
 function init(gt, params) {
   document.getElementById("ivalue").style.color = "#ffffff";
   document.getElementById("linevector").classList.remove("drought-flash");
-  document.getElementById("linevector").src="linevector.svg";
+  document.getElementById("linevector").src = "linevector.svg";
   leveltgm = 0;
   leveltgmvisible = 0;
   scoreNes = 0;
@@ -992,33 +1601,33 @@ function init(gt, params) {
   lineDrought = 0;
   lineAmount = 0;
   makeSprite();
-  if(settings.Sound === 1) {
-    
+  if (settings.Sound === 1) {
+
     sound.init();
-    }
-  
+  }
+
   if (gt === 'replay') {
     watchingReplay = true;
-    if(params !== void 0) {
+    if (params !== void 0) {
       try {
-        if(typeof params !== "string")
+        if (typeof params !== "string")
           throw "wtf";
-        if(params === "" || params.slice(0,1) !=="{")
+        if (params === "" || params.slice(0, 1) !== "{")
           throw "please paste replay data, correctly..."
         replay = JSON.parse(params);
-        if(typeof replay !== "object")
+        if (typeof replay !== "object")
           throw "json parse fail";
-        if((replay.gametype === void 0)
-          || (replay.keys === void 0)
-          || (replay.settings === void 0)
-          || (replay.seed === void 0)
+        if ((replay.gametype === void 0) ||
+          (replay.keys === void 0) ||
+          (replay.settings === void 0) ||
+          (replay.seed === void 0)
         ) {
           throw "something's missing...";
         }
         replay.keys = keysDecode(replay.keys);
-        if(replay.keys === null)
+        if (replay.keys === null)
           throw "keys decode fail"
-      } catch(e) {
+      } catch (e) {
         alert("invalid replay data... 回放数据有误...\n" + e.toString());
         return;
       }
@@ -1045,19 +1654,19 @@ function init(gt, params) {
     replay.settings = settings;
   }
 
-  if(gametype === void 0) //sometimes happens.....
+  if (gametype === void 0) //sometimes happens.....
     gametype = 0;
 
-  if(gametype === 0) // sprint
+  if (gametype === 0) // sprint
     lineLimit = 40;
-  else if(gametype === 5) // score attack
+  else if (gametype === 5) // score attack
     lineLimit = 200;
   else
     lineLimit = 0;
 
   //html5 mobile device sound
-  
-  
+
+
 
   //Reset
   column = 0;
@@ -1085,7 +1694,7 @@ function init(gt, params) {
   } else {
     level = 0;
   }
-  
+
   allclear = 0;
   statsFinesse = 0;
   lines = 0;
@@ -1108,28 +1717,28 @@ function init(gt, params) {
     if (gameparams["digraceType"] === void 0 || gameparams["digraceType"] === "checker") {
       // harder digrace: checkerboard
       digLines = range(stack.height - 10, stack.height);
-      $setText(statsLines,10);
+      $setText(statsLines, 10);
       for (var y = stack.height - 1; y > stack.height - 10 - 1; y--) {
         for (var x = 0; x < stack.width; x++) {
-          if ((x+y)&1)
+          if ((x + y) & 1)
             stack.grid[x][y] = 8;
         }
       }
-    } else if(gameparams["digraceType"] === "easy") {
-      var begin = ~~(rng.next()*stack.width);
-      var dire = (~~(rng.next()*2))*2-1;
+    } else if (gameparams["digraceType"] === "easy") {
+      var begin = ~~(rng.next() * stack.width);
+      var dire = (~~(rng.next() * 2)) * 2 - 1;
       digLines = range(stack.height - 10, stack.height);
-      $setText(statsLines,10);
+      $setText(statsLines, 10);
       for (var y = stack.height - 1; y > stack.height - 10 - 1; y--) {
         for (var x = 0; x < stack.width; x++) {
-          if ((begin+dire*y+x+stack.width*2)%10 !== 0)
+          if ((begin + dire * y + x + stack.width * 2) % 10 !== 0)
             stack.grid[x][y] = 8;
         }
       }
     }
     //stack.draw(); //resize
   }
-  if (gametype === 7){
+  if (gametype === 7) {
     lastPiecesSet = 0;
     digZenBuffer = 0;
   }
@@ -1156,16 +1765,16 @@ function init(gt, params) {
       settings.RotSys = 0;
       settings.Block = 2;
     }
-    
+
   }
   menu();
 
   // Only start a loop if one is not running already.
   // don't keep looping when not played
-//  console.log(paused,gameState);
+  //  console.log(paused,gameState);
   if (paused || gameState === 3) {
-//    console.log("start inloop",inloop);
-    inloop=true;
+    //    console.log("start inloop",inloop);
+    inloop = true;
     requestAnimFrame(gameLoop);
   }
   startTime = Date.now();
@@ -1193,7 +1802,7 @@ function range(start, end, inc) {
  * Add divisor method so we can do clock arithmetics. This is later used to
  *  determine tetromino orientation.
  */
-Number.prototype.mod = function(n) {
+Number.prototype.mod = function (n) {
   return ((this % n) + n) % n;
 };
 
@@ -1201,19 +1810,19 @@ Number.prototype.mod = function(n) {
  * Shim.
  */
 window.requestAnimFrame = (function () {
-  return window.requestAnimationFrame       ||
-         window.mozRequestAnimationFrame    ||
-         window.webkitRequestAnimationFrame ||
-         function (callback) {
-           window.setTimeout(callback, 1000 / 60);
-         };
+  return window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    function (callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
 })();
 
 function pause() {
   if (gameState === 0 || gameState === 4) {
     paused = true;
     startPauseTime = Date.now();
-    $setText(msg,"Paused");
+    $setText(msg, "Paused");
     menu(4);
   }
 }
@@ -1221,9 +1830,9 @@ function pause() {
 function unpause() {
   paused = false;
   pauseTime += (Date.now() - startPauseTime);
-  $setText(msg,'');
+  $setText(msg, '');
   menu();
-//  console.log("start inloop", inloop);
+  //  console.log("start inloop", inloop);
   inloop = true;
   requestAnimFrame(gameLoop);
 }
@@ -1232,52 +1841,54 @@ function unpause() {
  * Park Miller "Minimal Standard" PRNG.
  */
 //TODO put random seed method in here.
-var rng = new (function() {
+var rng = new(function () {
   this.seed = 1;
-  this.next = function() {
+  this.next = function () {
     // Returns a float between 0.0, and 1.0
     return (this.gen() / 2147483647);
   }
-  this.gen = function() {
+  this.gen = function () {
     return this.seed = (this.seed * 16807) % 2147483647;
   }
 })();
 
-function scorestring(s, n){
+function scorestring(s, n) {
   var strsplit = s.split("");
   var spacetoggle = 0;
   for (var i = strsplit.length - 1 - 3; i >= 0; i -= 3) {
-    strsplit[i] += (spacetoggle === n-1 ?" ":"\xA0");
+    strsplit[i] += (spacetoggle === n - 1 ? " " : "\xA0");
     spacetoggle = (spacetoggle + 1) % n;
   }
   return strsplit.join("");
 }
 
-function updateScoreTime(){
+function updateScoreTime() {
   scoreTime = Date.now() - scoreStartTime - pauseTime;
 }
 
 /**
  * Draws the stats next to the tetrion.
  */
+var displayTime
 function statistics() {
 
   var time = scoreTime || 0;
   var seconds = ((time % 60000) / 1000).toFixed(2);
   var minutes = ~~(time / 60000);
-  var displayTime =
+  displayTime =
     (minutes < 10 ? '0' : '') + minutes +
     (seconds < 10 ? ':0' : ':') + seconds;
   var fsbl = 30; /* frameskip bar length */
-  var skipL = frameSkipped % (fsbl*2), skipR = frameSkipped % (fsbl*2);
-  skipL = (skipL-fsbl<0)?0:(skipL-fsbl);
-  skipR = (skipR>fsbl)?fsbl:skipR;
-  skipL = skipL/fsbl*timeCanvas.width;
-  skipR = skipR/fsbl*timeCanvas.width;
+  var skipL = frameSkipped % (fsbl * 2),
+    skipR = frameSkipped % (fsbl * 2);
+  skipL = (skipL - fsbl < 0) ? 0 : (skipL - fsbl);
+  skipR = (skipR > fsbl) ? fsbl : skipR;
+  skipL = skipL / fsbl * timeCanvas.width;
+  skipR = skipR / fsbl * timeCanvas.width;
 
   timeCtx.clearRect(0, 0, timeCanvas.width, timeCanvas.height);
-  timeCtx.fillText(displayTime, timeCanvas.width/2, timeCanvas.height/2);
-  timeCtx.fillRect(skipL,timeCanvas.height-0.2,skipR,timeCanvas.height);
+  timeCtx.fillText(displayTime, timeCanvas.width / 2, timeCanvas.height / 2);
+  timeCtx.fillRect(skipL, timeCanvas.height - 0.2, skipR, timeCanvas.height);
 }
 
 /**
@@ -1285,51 +1896,52 @@ function statistics() {
  */
 // /* farter */
 var lineAmount = 0;
+
 function statisticsStack() {
   $setText(statsPiece, piecesSet);
-  
-  if(gametype === 8) {
+
+  if (gametype === 8) {
     document.getElementById("score").style.display = "none";
     document.getElementById("nesscore").style.display = "block";
   } else {
     document.getElementById("score").style.display = "block";
     document.getElementById("nesscore").style.display = "none";
   }
-  
-  if(gametype === 0 || gametype === 5) {
+
+  if (gametype === 0 || gametype === 5) {
     $setText(statsLines, lineLimit - lines);
     $setText(statsLevel, "");
-  }else if(gametype === 1 || gametype === 7){
+  } else if (gametype === 1 || gametype === 7) {
     $setText(statsLines, lines);
     $setText(statsLevel, "Lv. " + (level + 1));
-  }else if(gametype === 8){
+  } else if (gametype === 8) {
     $setText(statsLines, lines);
     $setText(statsLevel, "Lv. " + level);
     if (lineDrought < 13) {
       $setText(statsIpieces, lineAmount)
     }
-    
-    
-  }else if (gametype === 6){
+
+
+  } else if (gametype === 6) {
     $setText(statsLines, lines);
     $setText(statsLevel, "Lv. M" + (level + 1));
-    
-  }else if (gametype === 3){
-    if (gameparams["digOffset"] || gameparams["digOffset"] !== 0){
+
+  } else if (gametype === 3) {
+    if (gameparams["digOffset"] || gameparams["digOffset"] !== 0) {
       $setText(statsLevel, gameparams["digOffset"] + "+");
-    }else{
+    } else {
       $setText(statsLevel, "");
     }
     $setText(statsLines, lines);
-    
-  } else if (gametype === 9){
+
+  } else if (gametype === 9) {
     $setText(statsLines, lines);
     $setText(statsLevel, leveltgmvisible);
   }
   //else if (gametype === 4){
   //  $setText(statsLines, digLines.length);
   //}
-  else{
+  else {
     $setText(statsLines, lines);
     $setText(statsLevel, "");
   }
@@ -1338,24 +1950,24 @@ function statisticsStack() {
   } else {
     $setText(holdtext, "");
   }
-   if (gameparams.proMode == true) {
-      $setText(promode, "PRO");
-    } else {
-      $setText(promode, "");
-    }
+  if (gameparams.proMode == true) {
+    $setText(promode, "PRO");
+  } else {
+    $setText(promode, "");
+  }
   if (gametype === 8) {
     document.getElementById("lineshower").style.display = "block";
-    
+
   } else {
     document.getElementById("lineshower").style.display = "none";
   }
-  
+
   if (gametype === 6) {
     document.getElementById("rainbow").style.display = "block";
   } else {
     document.getElementById("rainbow").style.display = "none";
   }
-  
+
   if (gametype === 8) {
     makeSprite();
     switch (parseInt((level + '').charAt(level.toString().length - 1))) {
@@ -1424,11 +2036,11 @@ function statisticsStack() {
     ['#0058f8', '#ffffff'],
   ];
   }
-  var light=['#ffffff','#EFB08C','#EDDD82','#8489C7','#FFDB94','#EFAFC5','#98DF6E','#6FC5C5','#9A7FD1','#78D4A3'];
+  var light = ['#ffffff', '#EFB08C', '#EDDD82', '#8489C7', '#FFDB94', '#EFAFC5', '#98DF6E', '#6FC5C5', '#9A7FD1', '#78D4A3'];
 
-  statsScore.style.color=(b2b===0?'':light[b2b%10]);
-  statsScore.style.textShadow=(combo===0?'':('0 0 0.5em '+light[(combo-1)%10]));
-  $setText(statsScore,scorestring(score.toString(), 2));
+  statsScore.style.color = (b2b === 0 ? '' : light[b2b % 10]);
+  statsScore.style.textShadow = (combo === 0 ? '' : ('0 0 0.5em ' + light[(combo - 1) % 10]));
+  $setText(statsScore, scorestring(score.toString(), 2));
 }
 // ========================== View ============================================
 
@@ -1476,6 +2088,7 @@ var nes = [
     ['#898989', '#ffffff00'],
     ['#0058f8', '#ffffff'],
   ];
+
 function makeSprite() {
   var shaded = [
     // 0         +10        -10        -20
@@ -1515,7 +2128,7 @@ function makeSprite() {
     ['#7b7b7b', '#303030', '#6b6b6b', '#363636'],
     ['#ababab', '#5a5a5a', '#9b9b9b', '#626262'],
   ];
-  
+
 
   spriteCanvas.width = cellSize * 10;
   spriteCanvas.height = cellSize;
@@ -1583,7 +2196,7 @@ function makeSprite() {
       grad.addColorStop(0, tgm[i][2]);
       grad.addColorStop(1, tgm[i][3]);
       spriteCtx.fillStyle = grad;
-      spriteCtx.fillRect(x + k, k, cellSize - k*2, cellSize - k*2);
+      spriteCtx.fillRect(x + k, k, cellSize - k * 2, cellSize - k * 2);
 
       var grad = spriteCtx.createLinearGradient(x, k, x, cellSize);
       grad.addColorStop(0, tgm[i][0]);
@@ -1637,16 +2250,16 @@ function makeSprite() {
       grad.addColorStop(0.87, tgm[i][1]);
       spriteCtx.fillStyle = grad;
       spriteCtx.fillRect(x + k, k, cellSize - k * 2, cellSize - k * 2);
-      
+
       spriteCtx.fillStyle = tgm[i][1];
-      spriteCtx.fillRect(x+1.5*k, 1.5*k, cellSize/8, cellSize/8);
+      spriteCtx.fillRect(x + 1.5 * k, 1.5 * k, cellSize / 8, cellSize / 8);
     } else if (settings.Block === 6) {
       // N-Blox
       var k = Math.max(~~(cellSize * 0.1), 1);
 
       spriteCtx.fillStyle = glossy[i][4];
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
-      
+
       var grad = spriteCtx.createLinearGradient(x + cellSize - k, k, x + k, cellSize - k);
       grad.addColorStop(0, glossy[i][0]);
       grad.addColorStop(0.5, glossy[i][0]);
@@ -1654,9 +2267,9 @@ function makeSprite() {
       grad.addColorStop(1, shaded[i][0]);
       spriteCtx.fillStyle = grad;
       spriteCtx.fillRect(x + k, k, cellSize - k * 2, cellSize - k * 2);
-      
+
       spriteCtx.fillStyle = shaded[i][1];
-      spriteCtx.fillRect(x + cellSize/5.5, 0 + cellSize/5.5, cellSize/1.64, cellSize/1.64);
+      spriteCtx.fillRect(x + cellSize / 5.5, 0 + cellSize / 5.5, cellSize / 1.64, cellSize / 1.64);
 
     } else if (settings.Block === 7) {
       // Bone
@@ -1664,35 +2277,35 @@ function makeSprite() {
 
       spriteCtx.fillStyle = "#000";
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
-      
+
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize/7.5, 0 + cellSize/7.5, cellSize/1.4, cellSize/1.4)
-      
+      spriteCtx.fillRect(x + cellSize / 7.5, 0 + cellSize / 7.5, cellSize / 1.4, cellSize / 1.4)
+
       spriteCtx.fillStyle = "#000";
-      spriteCtx.fillRect(x + cellSize/3.5, 0 + cellSize/3.5, cellSize/2.44, cellSize/2.44);
-      
+      spriteCtx.fillRect(x + cellSize / 3.5, 0 + cellSize / 3.5, cellSize / 2.44, cellSize / 2.44);
+
       spriteCtx.fillStyle = "#000";
-      spriteCtx.fillRect(x + cellSize/2.7, 0 + cellSize/8, cellSize/4.14, cellSize/1.2);
+      spriteCtx.fillRect(x + cellSize / 2.7, 0 + cellSize / 8, cellSize / 4.14, cellSize / 1.2);
 
     } else if (settings.Block === 8) {
       // Retro
       spriteCtx.fillStyle = "#000";
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
-      
+
       spriteCtx.fillStyle = nes[i][0];
-      spriteCtx.fillRect(x + cellSize/8, 0 + cellSize/8, cellSize/1.125, cellSize);
-      
+      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 1.125, cellSize);
+
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize/8, 0 + cellSize/8, cellSize/8, cellSize/8);
-      
+      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 8, cellSize / 8);
+
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize/4, 0 + cellSize/4, cellSize/8, cellSize/4);
-      
+      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 8, cellSize / 4);
+
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize/4, 0 + cellSize/4, cellSize/4, cellSize/8);
-      
+      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 4, cellSize / 8);
+
       spriteCtx.fillStyle = nes[i][1];
-      spriteCtx.fillRect(x + cellSize/4, 0 + cellSize/4, cellSize/1.6, cellSize/1.6);
+      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 1.6, cellSize / 1.6);
     }
   }
 }
@@ -1721,7 +2334,7 @@ function draw(tetro, cx, cy, ctx, color, darkness) {
 
 function keyUpDown(e) {
   // TODO send to menu or game depending on context.
-  if ([32,37,38,39,40].indexOf(e.keyCode) !== -1)
+  if ([32, 37, 38, 39, 40].indexOf(e.keyCode) !== -1)
     e.preventDefault();
   //TODO if active, prevent default for binded keys
   //if (bindsArr.indexOf(e.keyCode) !== -1)
@@ -1734,7 +2347,7 @@ function keyUpDown(e) {
     }
   }
   if (e.type === "keydown" && e.keyCode === binds.retry) {
-    init(gametype,gameparams);
+    init(gametype, gameparams);
   }
   if (!watchingReplay) {
     if (e.type === "keydown") {
@@ -1759,9 +2372,7 @@ function keyUpDown(e) {
       } else if (e.keyCode === binds.holdPiece) {
         keysDown |= flags.holdPiece;
       }
-    }
-    else if (e.type === "keyup")
-    {
+    } else if (e.type === "keyup") {
       if (e.keyCode === binds.moveLeft && keysDown & flags.moveLeft) {
         keysDown ^= flags.moveLeft;
       } else if (e.keyCode === binds.moveRight && keysDown & flags.moveRight) {
@@ -1826,7 +2437,7 @@ function update() {
         piece.rotate(2);
         piece.finesse++;
       }
-      
+
     }
 
     piece.checkShift();
@@ -1845,65 +2456,66 @@ function update() {
       break;
     }
 
-    if(gametype === 3) { //Dig
-      var fromLastRise = frame-frameLastRise;
-      var fromLastHD = (flags.hardDrop & keysDown)?(frame-frameLastHarddropDown):0;
+    if (gametype === 3) { //Dig
+      var fromLastRise = frame - frameLastRise;
+      var fromLastHD = (flags.hardDrop & keysDown) ? (frame - frameLastHarddropDown) : 0;
 
-      var arrRow = [8,8,8,8,8,8,8,8,8,8];
-      var curStage = 0, objCurStage;
+      var arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+      var curStage = 0,
+        objCurStage;
 
-      while(curStage<arrStages.length && arrStages[curStage].begin <= lines + (gameparams["digOffset"] || 0)) {
+      while (curStage < arrStages.length && arrStages[curStage].begin <= lines + (gameparams["digOffset"] || 0)) {
         curStage++;
       }
       curStage--;
       objCurStage = arrStages[curStage];
-      if(fromLastRise >= objCurStage.delay || (fromLastHD >= 20 && fromLastRise >= 15)) {
+      if (fromLastRise >= objCurStage.delay || (fromLastHD >= 20 && fromLastRise >= 15)) {
         //IJLOSTZ
-        var arrRainbow=[
-          2,-1,1,5,4,3,7,6,-1,8,
-          8,8,8,6,6,2,1,5,8,-1,
-          7,7,-1,8,8];
-        var idxRainbow,flagAll,colorUsed;
-        idxRainbow = ~~(objCurStage.begin/100);
-        flagAll = (~~(objCurStage.begin/50))%2;
-        if(idxRainbow >= arrRainbow.length) {
+        var arrRainbow = [
+          2, -1, 1, 5, 4, 3, 7, 6, -1, 8,
+          8, 8, 8, 6, 6, 2, 1, 5, 8, -1,
+          7, 7, -1, 8, 8];
+        var idxRainbow, flagAll, colorUsed;
+        idxRainbow = ~~(objCurStage.begin / 100);
+        flagAll = (~~(objCurStage.begin / 50)) % 2;
+        if (idxRainbow >= arrRainbow.length) {
           idxRainbow = arrRainbow.length - 1;
         }
         colorUsed = arrRainbow[idxRainbow];
-        for(var x=0; x<stack.width; x+=(flagAll===1?1:(stack.width-1))) {
-          if(colorUsed===-1) {
-            arrRow[x]=~~(rng.next()*8+1);
+        for (var x = 0; x < stack.width; x += (flagAll === 1 ? 1 : (stack.width - 1))) {
+          if (colorUsed === -1) {
+            arrRow[x] = ~~(rng.next() * 8 + 1);
           } else {
-            arrRow[x]=colorUsed;
+            arrRow[x] = colorUsed;
           }
         }
 
         objCurStage.gen(arrRow);
         stack.rowRise(arrRow, piece);
-        frameLastRise=frame;
+        frameLastRise = frame;
         sound.playse("garbage");
       }
-    }else if(gametype===7) { //dig zen
-      for(;lastPiecesSet<piecesSet;lastPiecesSet++){
+    } else if (gametype === 7) { //dig zen
+      for (; lastPiecesSet < piecesSet; lastPiecesSet++) {
         digZenBuffer++;
-        var piecePerRise=[
-          8,6.5,4,3.5,10/3,
-          3,2.8,2.6,2.4,2.2,
-          2][level>10?10:level];
-        if(digZenBuffer-piecePerRise > -0.000000001){
-          digZenBuffer-=piecePerRise;
-          if(Math.abs(digZenBuffer) < -0.000000001){
+        var piecePerRise = [
+          8, 6.5, 4, 3.5, 10 / 3,
+          3, 2.8, 2.6, 2.4, 2.2,
+          2][level > 10 ? 10 : level];
+        if (digZenBuffer - piecePerRise > -0.000000001) {
+          digZenBuffer -= piecePerRise;
+          if (Math.abs(digZenBuffer) < -0.000000001) {
             digZenBuffer = 0;
           }
-          var arrRow=[8,8,8,8,8,8,8,8,8,8];
-          arrRow[~~(rng.next()*10)]=0;
+          var arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
+          arrRow[~~(rng.next() * 10)] = 0;
 
           stack.rowRise(arrRow, piece);
           sound.playse("garbage");
         }
       }
     }
-  } while(false) // break when game over
+  } while (false) // break when game over
 
   updateScoreTime();
 
@@ -1916,26 +2528,39 @@ var inloop = false; //debug
 function gameLoop() {
 
   //if (frame % 60 == 0) console.log("running");
-  var fps=60;
-
+  var fps = 60;
+  if (gametype === 0) {
+    if (scoreTime >= parseInt(Cookies.get('sprint40pb')) + 100) {
+      timeCtx.fillStyle = "#f00";
+      document.getElementById("time").classList.add("drought-flash");
+    } else {
+      timeCtx.fillStyle = "#fff";
+      document.getElementById("time").classList.remove("drought-flash");
+    }
+  } else {
+    timeCtx.fillStyle = "#fff";
+    document.getElementById("time").classList.remove("drought-flash");
+  }
+  
+  
   if (!paused && gameState !== 3) {
     requestAnimFrame(gameLoop);
 
-    var repeat = ~~((Date.now() - startTime - pauseTime)/1000*fps) - frame;
-    if (repeat>1) {
-      frameSkipped += repeat-1;
-    } else if (repeat<=0) {
-      frameSkipped += repeat-1;
+    var repeat = ~~((Date.now() - startTime - pauseTime) / 1000 * fps) - frame;
+    if (repeat > 1) {
+      frameSkipped += repeat - 1;
+    } else if (repeat <= 0) {
+      frameSkipped += repeat - 1;
     }
 
-    for (var repf=0;repf<repeat;repf++) {
+    for (var repf = 0; repf < repeat; repf++) {
       //TODO check to see how pause works in replays.
 
 
       if (gameState === 0) {
         // Playing
 
-          update();
+        update();
 
       } else if (gameState === 2 || gameState === 4) {
 
@@ -1946,16 +2571,16 @@ function gameLoop() {
         }
         // DAS Preload
         if (keysDown & flags.moveLeft) {
-//          if (gametype !== 8) {
-            piece.shiftDelay = settings.DAS;
-//          }
-          
+          //          if (gametype !== 8) {
+          piece.shiftDelay = settings.DAS;
+          //          }
+
           piece.shiftReleased = false;
           piece.shiftDir = -1;
         } else if (keysDown & flags.moveRight) {
-//          if (gametype !== 8) {
-            piece.shiftDelay = settings.DAS;
-//          }
+          //          if (gametype !== 8) {
+          piece.shiftDelay = settings.DAS;
+          //          }
           piece.shiftReleased = false;
           piece.shiftDir = 1;
         } else {
@@ -1964,52 +2589,68 @@ function gameLoop() {
           piece.shiftDir = 0;
         }
         if (flags.rotLeft & keysDown && !(lastKeys & flags.rotLeft)) {
-          
+
           piece.irsDir = -1;
           piece.finesse++;
-//          console.log("IRS");
+          //          console.log("IRS");
+          sound.playse("rotate")
+          preview.draw()
         } else if (flags.rotRight & keysDown && !(lastKeys & flags.rotRight)) {
           piece.irsDir = 1;
           piece.finesse++;
-//          console.log("IRS");
+          //          console.log("IRS");
+          sound.playse("rotate")
+          preview.draw()
         } else if (flags.rot180 & keysDown && !(lastKeys & flags.rot180)) {
           piece.irsDir = 2;
           piece.finesse++;
-//          console.log("IRS");
+          //          console.log("IRS");
+          sound.playse("rotate")
+          preview.draw()
         }
         if (!(lastKeys & flags.holdPiece) && flags.holdPiece & keysDown) {
-          piece.ihs = true;
-//          console.log("IHS");
+          if (gametype !== 8) {
+            piece.ihs = true;
+            hold.draw();
+            preview.draw();
+          }
+
+          //          console.log("IHS");
         }
         if (lastKeys !== keysDown) {
           lastKeys = keysDown;
         }
         if (gameState === 2) {
-          
+
           // Count Down
+          if (piece.irsDir !== 0) {
+            document.getElementById("irs-indicator").style.display = "block";
+          }
+          if (piece.ihs === true) {
+            document.getElementById("ihs-indicator").style.display = "block";
+          }
           if (frame === 0) {
             statisticsStack();
             makeSprite();
-            
+
             playedLevelingbgm = [false, false, false, false, false]
             killAllbgm = true
-            $setText(msg,'READY');
+            $setText(msg, 'READY');
             sound.playse("ready")
-          } else if (frame === ~~(fps*5/6)) {
+          } else if (frame === ~~(fps * 5 / 6)) {
             killAllbgm = false
-            $setText(msg,'GO!');
+            $setText(msg, 'GO!');
             sound.playse("go")
             preview.draw;
-          } else if (frame === ~~(fps*10/6)) {
-            $setText(msg,'');
+          } else if (frame === ~~(fps * 10 / 6)) {
+            $setText(msg, '');
             scoreStartTime = Date.now();
-            
+
             if (gametype === 6) {
-              
+
               sound.playbgm("mastermode", 0)
-            }
-            else if (gametype === 1) {
-              
+            } else if (gametype === 1) {
+
               sound.playbgm("normal1", 0)
             } else if (gametype === 8) {
               if (gameparams.proMode == false) {
@@ -2032,13 +2673,17 @@ function gameLoop() {
             }
 
           }
-          
-          
+          if (piece.irsDir !== 0) {
+            document.getElementById("irs-indicator").style.display = "block";
+          }
+          if (piece.ihs === true) {
+            document.getElementById("ihs-indicator").style.display = "block";
+          }
           piece.are++;
           updateScoreTime();
         }
         if (
-          (gameState === 2 && frame >= fps*10/6) ||
+          (gameState === 2 && frame >= fps * 10 / 6) ||
           (gameState === 4 && piece.are >= piece.areLimit)
         ) {
           document.body.style.backgroundColor = "black";
@@ -2065,10 +2710,10 @@ function gameLoop() {
            */
           if (frame % 2) {
             for (var x = 0; x < stack.width; x++) {
-               /* farter */ //WTF gamestate-1
+              /* farter */ //WTF gamestate-1
               if (stack.grid[x][toGreyRow])
                 stack.grid[x][toGreyRow] =
-                  (gameState === 9 ? 8 : 0);
+                (gameState === 9 ? 8 : 0);
             }
             stack.draw();
             toGreyRow--;
@@ -2076,23 +2721,23 @@ function gameLoop() {
         } else {
           //clear(activeCtx);
           //piece.dead = true;
-//          trysubmitscore(); disabled score submissions because they don't work
+          //          trysubmitscore(); disabled score submissions because they don't work
           gameState = 3;
         }
       }
       frame++;
     }
-    
+
     statistics();
-    
+
     // TODO improve this with 'dirty' flags.
     /* farter */ // as you draw for lock delay brightness gradient... give this up..
 
     if (piece.x !== lastX ||
-    Math.floor(piece.y) !== lastY ||
-    piece.pos !== lastPos ||
-    piece.lockDelay !== lastLockDelay ||
-    piece.dirty) {
+      Math.floor(piece.y) !== lastY ||
+      piece.pos !== lastPos ||
+      piece.lockDelay !== lastLockDelay ||
+      piece.dirty) {
       piece.draw();
     }
     lastX = piece.x;
@@ -2100,25 +2745,25 @@ function gameLoop() {
     lastPos = piece.pos;
     lastLockDelay = piece.lockDelay;
     piece.dirty = false;
-    
+
     if (stack.dirty) {
       stack.draw();
     }
     if (preview.dirty) {
       preview.draw();
     }
-    
+
   } else {
-//    console.log("stop inloop",inloop)
+    //    console.log("stop inloop",inloop)
     inloop = false;
   }
 }
 // called after piece lock, may be called multple times when die-in-one-frame
-function checkWin(){
+function checkWin() {
   if (gametype === 0) { // 40L
     if (lines >= lineLimit) {
       gameState = 1;
-      if (gameparams && gameparams.backFire){
+      if (gameparams && gameparams.backFire) {
         msg.innerHTML = "GREAT!";
       } else {
         var rank = null;
@@ -2129,38 +2774,45 @@ function checkWin(){
             break;
           }
         }
-        msg.innerHTML = "<small>" + rank.b +"</small>";
+        msg.innerHTML = "<small>" + rank.b + "</small>";
       }
       piece.dead = true;
       menu(3);
       sound.playse("endingstart");
+//      console.log(scoreTime)
+      if ((scoreTime < parseInt(Cookies.get('sprint40pb')) || Cookies.get('sprint40pb') == undefined) && (gameparams.recordPB == true) && (watchingReplay == false)) {
+        
+        Cookies.set('sprint40pb', scoreTime);
+        Cookies.set('sprint40pbvisual', displayTime);
+      }
+      updateSprint40PB()
     }
   } else {
-    var isend=false;
+    var isend = false;
     if (gametype === 1) { // Marathon
-      if (settings.Gravity !== 0 && lines>=200) { // not Auto, limit to 200 Lines
-        isend=true;
+      if (settings.Gravity !== 0 && lines >= 200) { // not Auto, limit to 200 Lines
+        isend = true;
       }
     } else if (gametype === 5) { // Score Attack
-      if (lines>=lineLimit) { // not Auto, limit to 200 Lines
-        isend=true;
+      if (lines >= lineLimit) { // not Auto, limit to 200 Lines
+        isend = true;
       }
     } else if (gametype === 4) { // Dig race
       if (digLines.length === 0) {
-        isend=true;
+        isend = true;
       }
     } else if (gametype === 6) { // 20G
-      if (lines>=300) { // 200 + 100
-        isend=true;
+      if (lines >= 300) { // 200 + 100
+        isend = true;
       }
     } else if (gametype === 7) { // dig zen
-      if (lines>=400) { // 300 + 100
-        isend=true;
+      if (lines >= 400) { // 300 + 100
+        isend = true;
       }
     }
-    if(isend){
+    if (isend) {
       gameState = 1;
-      $setText(msg,'GREAT!');
+      $setText(msg, 'GREAT!');
       piece.dead = true;
       menu(3);
       sound.playse("endingstart");
@@ -2168,73 +2820,75 @@ function checkWin(){
   }
 }
 
-var playername=void 0;
+var playername = void 0;
 
-function requireplayername(){
-  if(playername===void 0)
-    playername=prompt("Enter your name for leaderboard\n('cancel' = anonymous):\n请输入上榜大名：","");
-  if(playername===null)
-    playername="anonymous";
-  if(playername==="")
-    playername="unnamed";
+function requireplayername() {
+  if (playername === void 0)
+    playername = prompt("Enter your name for leaderboard\n('cancel' = anonymous):\n请输入上榜大名：", "");
+  if (playername === null)
+    playername = "anonymous";
+  if (playername === "")
+    playername = "unnamed";
 }
 
 function trysubmitscore() {
-  if(watchingReplay)
+  if (watchingReplay)
     return;
-  var obj={req:"ranking"};
+  var obj = {
+    req: "ranking"
+  };
   var time = scoreTime;
 
-  if(gametype===0) // 40L
-    obj.mode="sprint" + 
-      (gameparams&&gameparams.pieceSet?["","noi","alli"][gameparams.pieceSet]:"") +
-      (gameparams&&gameparams.backFire?["","bf1","bf2","bf3"][gameparams.backFire]:"");
-  else if(gametype===3) // dig
-    obj.mode="dig" + (gameparams&&gameparams.digOffset?gameparams.digOffset:"");
-  else if(gametype===4) // dig race
-    obj.mode="digrace" + (gameparams&&gameparams.digraceType?gameparams.digraceType:"checker");
-  else if(gametype===1) // marathon
-    obj.mode="marathon";
-  else if(gametype===5) // score attack
-    obj.mode="score";
-  else if(gametype===6) // 20g
-    obj.mode="marathon20g";
-  else if(gametype===7) // dig zen
-    obj.mode="digzen";
+  if (gametype === 0) // 40L
+    obj.mode = "sprint" +
+    (gameparams && gameparams.pieceSet ? ["", "noi", "alli"][gameparams.pieceSet] : "") +
+    (gameparams && gameparams.backFire ? ["", "bf1", "bf2", "bf3"][gameparams.backFire] : "");
+  else if (gametype === 3) // dig
+    obj.mode = "dig" + (gameparams && gameparams.digOffset ? gameparams.digOffset : "");
+  else if (gametype === 4) // dig race
+    obj.mode = "digrace" + (gameparams && gameparams.digraceType ? gameparams.digraceType : "checker");
+  else if (gametype === 1) // marathon
+    obj.mode = "marathon";
+  else if (gametype === 5) // score attack
+    obj.mode = "score";
+  else if (gametype === 6) // 20g
+    obj.mode = "marathon20g";
+  else if (gametype === 7) // dig zen
+    obj.mode = "digzen";
   else
     return;
 
-  if(
-    (gametype===0 && gameState===1)||
-    (gametype===3 && gameState===9)||
-    (gametype===4 && gameState===1)||
-    (gametype===1 && settings.Gravity === 0)||
-    (gametype===5)||
-    (gametype===6)||
-    (gametype===7)||
+  if (
+    (gametype === 0 && gameState === 1) ||
+    (gametype === 3 && gameState === 9) ||
+    (gametype === 4 && gameState === 1) ||
+    (gametype === 1 && settings.Gravity === 0) ||
+    (gametype === 5) ||
+    (gametype === 6) ||
+    (gametype === 7) ||
     false
-  ){
+  ) {
     requireplayername();
-    obj.lines=lines;
-    obj.time=time;
-    obj.score=score.toString();
-    obj.name=playername;
-    obj.replay=curreplaydata();
+    obj.lines = lines;
+    obj.time = time;
+    obj.score = score.toString();
+    obj.name = playername;
+    obj.replay = curreplaydata();
 
     submitscore(obj);
-  }else{
+  } else {
     submitscore(obj);
   }
 }
 
 function tryreplaydata() {
-/*
-  var strreplay = prompt("Paste replay data here: 在此贴入录像数据：");
-  if (strreplay === null)
-    return;
-*/
+  /*
+    var strreplay = prompt("Paste replay data here: 在此贴入录像数据：");
+    if (strreplay === null)
+      return;
+  */
   var strreplay = replaydata.value;
-  init('replay',strreplay);
+  init('replay', strreplay);
 }
 
 function showreplaydata(strreplay) {
@@ -2245,7 +2899,7 @@ function showreplaydata(strreplay) {
   */
   replaydata.value = strreplay;
   replaydata.select();
-  menu(6,1);
+  menu(6, 1);
 }
 
 function curreplaydata() {

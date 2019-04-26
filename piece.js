@@ -33,6 +33,8 @@ var lineDrought = 0;
 Piece.prototype.new = function(index) {
   // TODO if no arguments, get next grabbag piece
   //console.log("new irs"+this.irsDir+", ihs"+this.ihs);
+  document.getElementById("irs-indicator").style.display = "none";
+  document.getElementById("ihs-indicator").style.display = "none";
   
   this.pos = RotSys[settings.RotSys].initinfo[index][2];
   this.x = ~~((stack.width - 4) / 2) + RotSys[settings.RotSys].initinfo[index][0];
@@ -563,6 +565,7 @@ Piece.prototype.hold = function () {
       }
       this.held = true;
       hold.draw();
+      
     }
   }
 
@@ -704,6 +707,7 @@ Piece.prototype.checkLock = function() {
           } else {
             gameState = 4;
             this.are = 0;
+//            document.getElementById("irs-indicator").style.display = "none";
           }
         }
       }

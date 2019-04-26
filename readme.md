@@ -1,5 +1,14 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-02-13 v0.3.6
+- Added PB tracker for Sprint 40
+  - Sprint timer now flashes red when time is over PB
+- Made IRS and IHS more visual
+  - Initial rotation now visually displays in the next queue
+  - Initial holding now visually displays in the next and hold queues
+  - When IRS or IHS is engaged, "INITIAL" will flash over the respective queue
+  - Rotation and hold sounds now play the moment their initials are engaged, followed by initial sounds when the piece spawns
+- Hold queue now has a flash animation upon use
 ### 2019-02-13 v0.3.5
 - Made level counter in modern modes visually start at 1
 - Retro Mode Updates
