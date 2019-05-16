@@ -11,12 +11,12 @@ the game so you know why some things are done a certain way.
 // boom.
 var focused = true;
 
-window.onfocus = function() {
-    focused = true;
+window.onfocus = function () {
+  focused = true;
   sound.unmutebgm()
 };
-window.onblur = function() {
-    focused = false;
+window.onblur = function () {
+  focused = false;
   sound.mutebgm()
 };
 
@@ -1554,8 +1554,8 @@ function resize() {
 
   timeCanvas.width = d.clientWidth;
   timeCanvas.height = timeCanvas.clientHeight || timeCanvas.offsetHeight || timeCanvas.getBoundingClientRect().height;
-  
-  
+
+
   timeCtx.font = '1em Roboto Mono, "Trebuchet MS"';
   timeCtx.textAlign = "center";
   timeCtx.textBaseline = "middle";
@@ -1595,14 +1595,15 @@ function scoreNesRefresh() {
   }
   document.getElementById("nesscore").innerHTML = scoreNes.toString()
 }
+
 function tetRateNesRefresh() {
-   if ((tetRateNes <= 0.25 && ((tetNes > 0) || (nontetNes > 3))) && gameparams.proMode == true) {
-          document.getElementById("nesrate").style.color = "#ff0000";
-          document.getElementById("nesrate").classList.add("drought-flash");
-        } else {
-          document.getElementById("nesrate").style.color = "#ffffff";
-          document.getElementById("nesrate").classList.remove("drought-flash");
-        }
+  if ((tetRateNes <= 0.25 && ((tetNes > 0) || (nontetNes > 3))) && gameparams.proMode == true) {
+    document.getElementById("nesrate").style.color = "#ff0000";
+    document.getElementById("nesrate").classList.add("drought-flash");
+  } else {
+    document.getElementById("nesrate").style.color = "#ffffff";
+    document.getElementById("nesrate").classList.remove("drought-flash");
+  }
   document.getElementById("nesrate").innerHTML = Math.floor(tetRateNes * 100).toString() + "%"
 }
 /**
@@ -1629,7 +1630,7 @@ function init(gt, params) {
   lineAmount = 0;
   makeSprite();
 
-    
+
 
   if (gt === 'replay') {
     watchingReplay = true;
@@ -1679,6 +1680,27 @@ function init(gt, params) {
     replay.settings = settings;
   }
   sound.init();
+  if (gametype === 6) {
+    sound.loadbgm("master")
+  } else if (gametype === 1) {
+    sound.loadbgm("marathon")
+    sound.loadbgm("marathon2")
+    sound.loadbgm("marathon3")
+  } else if (gametype === 0 || gametype === 4 || gametype === 5) {
+    sound.loadbgm("sprint")
+  } else if (gametype === 3 || gametype === 7) {
+    sound.cutsidebgm()
+    sound.loadbgm("survival")
+    sound.loadsidebgm("survivaldire")
+  } else if (gametype === 8) {
+    if (gameparams.proMode == false) {
+      sound.loadbgm("retro")
+    } else {
+      sound.cutsidebgm()
+      sound.loadbgm("retropro")
+      sound.loadsidebgm("retroprodrought")
+    }
+  }
   if (gametype === void 0) //sometimes happens.....
     gametype = 0;
 
@@ -1722,7 +1744,7 @@ function init(gt, params) {
     } else {
       level = 18;
     }
-    
+
   } else {
     level = 0;
   }
@@ -1902,6 +1924,7 @@ function updateScoreTime() {
  * Draws the stats next to the tetrion.
  */
 var displayTime
+
 function statistics() {
 
   var time = scoreTime || 0;
@@ -2359,28 +2382,28 @@ function makeSprite() {
       // Friends
       spriteCtx.fillStyle = friends[i][5];
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
-      
+
       spriteCtx.fillStyle = friends[i][1];
       spriteCtx.fillRect(x + cellSize / 18, 0 + cellSize / 18, cellSize / 1.125, cellSize / 1.125);
-      
+
       spriteCtx.fillStyle = "#fff";
       spriteCtx.fillRect(x + cellSize / 18, 0 + cellSize / 18, cellSize / 9, cellSize / 9);
-      
+
       spriteCtx.fillStyle = friends[i][0];
       spriteCtx.fillRect(x + cellSize / 6, 0 + cellSize / 18, cellSize / 1.5, cellSize / 18);
 
       spriteCtx.fillStyle = friends[i][0];
       spriteCtx.fillRect(x + cellSize / 18, 0 + cellSize / 6, cellSize / 18, cellSize / 1.5);
-      
+
       spriteCtx.fillStyle = friends[i][4];
       spriteCtx.fillRect(x + cellSize / 1.125, 0 + cellSize / 6, cellSize / 18, cellSize / 1.5);
-      
+
       spriteCtx.fillStyle = friends[i][4];
       spriteCtx.fillRect(x + cellSize / 6, 0 + cellSize / 1.125, cellSize / 1.5, cellSize / 18);
-      
+
       spriteCtx.fillStyle = friends[i][2];
       spriteCtx.fillRect(x + cellSize / 4.5, 0 + cellSize / 4.5, cellSize / 1.8, cellSize / 1.8);
-      
+
       spriteCtx.fillStyle = friends[i][3];
       spriteCtx.fillRect(x + cellSize / 3.6, 0 + cellSize / 3.6, cellSize / 2.25, cellSize / 2.25);
     }
@@ -2546,8 +2569,8 @@ function update() {
       }
       curStage--;
       objCurStage = arrStages[curStage];
-//      console.log(objCurStage.delay - fromLastRise)
-//      rise display
+      //      console.log(objCurStage.delay - fromLastRise)
+      //      rise display
       if (fromLastRise >= objCurStage.delay || (fromLastHD >= 20 && fromLastRise >= 15)) {
         //IJLOSTZ
         var arrRainbow = [
@@ -2626,8 +2649,8 @@ function gameLoop() {
     timeCtx.fillStyle = "#fff";
     document.getElementById("time").classList.remove("drought-flash");
   }
-  
-  
+
+
   if (!paused && gameState !== 3) {
     requestAnimFrame(gameLoop);
 
@@ -2723,7 +2746,7 @@ function gameLoop() {
             killAllbgm = true
             $setText(msg, 'READY');
             sound.playse("ready")
-            
+
             sound.killbgm();
           } else if (frame === ~~(fps * 5 / 6)) {
             killAllbgm = false
@@ -2735,10 +2758,8 @@ function gameLoop() {
             $setText(msg, '');
             scoreStartTime = Date.now();
             if (gametype === 6) {
-
               sound.playbgm("master")
             } else if (gametype === 1) {
-
               sound.playbgm("marathon")
             } else if (gametype === 0 || gametype === 4 || gametype === 5) {
               sound.playbgm("sprint")
@@ -2874,16 +2895,20 @@ function checkWin() {
         if (gametype !== 8) {
           msg.innerHTML = "<small>" + rank.b + "</small>";
         }
-        
+
       }
       piece.dead = true;
       menu(3);
       sound.playse("endingstart");
-//      console.log(scoreTime)
+      //      console.log(scoreTime)
       if ((scoreTime < parseInt(Cookies.get('sprint40pb')) || Cookies.get('sprint40pb') == undefined) && (gameparams.recordPB == true) && (watchingReplay == false)) {
-        
-        Cookies.set('sprint40pb', scoreTime, { expires: 1460 });
-        Cookies.set('sprint40pbvisual', displayTime, { expires: 1460 });
+
+        Cookies.set('sprint40pb', scoreTime, {
+          expires: 1460
+        });
+        Cookies.set('sprint40pbvisual', displayTime, {
+          expires: 1460
+        });
       }
       updateSprint40PB()
     }

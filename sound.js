@@ -11,8 +11,8 @@ function Sound2() {
   var piecetypes = "tgm,npm".split(",")
   var gametypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
   var uitypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
-  var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go,retro,retropro,retroprodrought,marathon,marathon2,marathon3,sprint,survival,survivaldire,master".split(",");
-  var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui,bgm,bgm,bgmside,bgm,bgm,bgm,bgm,bgm,bgmside,bgm".split(",");
+  var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go".split(",");
+  var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui".split(",");
   var sounds = {}
   var music = {}
   var currentMusicName
@@ -98,6 +98,45 @@ function Sound2() {
           name += arg
         }
         sounds[name].stop()
+      }
+    }
+    this.loadbgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        music[name + "start"] = new Howl({
+          src: ["bgm/" + name + "start.ogg"],
+          volume: mySettings.MusicVol / 100,
+          onend: function () {
+            currentMusic = music[currentMusicName + "loop"].play();
+          }
+        });
+        music[name + "loop"] = new Howl({
+          src: ["bgm/" + name + "loop.ogg"],
+          volume: mySettings.MusicVol / 100,
+          loop: true,
+        });
+
+      }
+    }
+    this.loadsidebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        music[name + "start"] = new Howl({
+          src: ["bgm/" + name + "start.ogg"],
+          volume: 0,
+          onend: function () {
+            sideMusic = music[sideMusicName + "loop"].play();
+          }
+        });
+        music[name + "loop"] = new Howl({
+          src: ["bgm/" + name + "loop.ogg"],
+          volume: 0,
+          loop: true,
+        });
       }
     }
     this.playbgm = function (name, arg) {

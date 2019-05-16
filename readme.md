@@ -1,5 +1,8 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-05-16 v0.4.2
+- Made it so that only relevant music is loaded, thus cutting down on the superlag and ram usage
+
 ### 2019-05-16 v0.4.1
 - Fixed a bug with b-type where the I piece stats and the level don't display correctly
 
