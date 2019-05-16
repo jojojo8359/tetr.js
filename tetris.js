@@ -1942,7 +1942,7 @@ function statisticsStack() {
     document.getElementById("nesratetr").style.display = "none";
   }
 
-  if (gametype === 0 || gametype === 5 || (gametype === 8 && gameparams.bType == true)) {
+  if (gametype === 0 || gametype === 5) {
     $setText(statsLines, lineLimit - lines);
     $setText(statsLevel, "");
   } else if (gametype === 1 || gametype === 7) {
@@ -1953,6 +1953,9 @@ function statisticsStack() {
     $setText(statsLevel, "Lv. " + level);
     if (lineDrought < 13) {
       $setText(statsIpieces, lineAmount)
+    }
+    if (gameparams.bType == true) {
+      $setText(statsLines, lineLimit - lines);
     }
 
 

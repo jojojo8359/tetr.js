@@ -1,5 +1,7 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-05-16 v0.4.1
+- Fixed a bug with b-type where the I piece stats and the level don't display correctly
 
 ### 2019-05-16 v0.4
 - New Sound Engine!

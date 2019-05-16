@@ -60,6 +60,7 @@ Piece.prototype.new = function(index) {
     sound.playse("piece"+preview.grabBag[0])
   }
   if (index == 0 && gametype === 8) {
+    
     lineDrought = 0
     lineAmount++
     document.getElementById("ivalue").style.color = "#ffffff";
