@@ -1,4 +1,5 @@
-
+var alarm = false
+var alarmtest = false
 function Stack() {
   //this.grid;
 }
@@ -107,24 +108,67 @@ Stack.prototype.addPiece = function(tetro) {
 
   var scoreAdd = bigInt(level + 1);
   var garbage = 0;
+  if (level >= 20 && gametype === 1) {
+    if (playedLevelingbgmMarathon[1] === false) {
+      sound.killbgm()
+      sound.playbgm("marathon3")
+      playedLevelingbgmMarathon[1] = true
+    }
+  } else if (level >= 10 && gametype === 1) {
+    if (playedLevelingbgmMarathon[0] === false) {
+      sound.killbgm()
+      sound.playbgm("marathon2")
+      playedLevelingbgmMarathon[0] = true
+    }
+  }
+  alarmtest = false
+  for (var test in stack.grid) {
+    if (((stack.grid[test][8] != undefined) && alarm == false) || ((stack.grid[test][11] != undefined) && alarm == true)) {
+      alarmtest = true;
+    }
+  }
+  
+  if (alarmtest == true && alarm == false) {
+    alarm = true
+    alarmtest = false
+    sound.playse("alarm")
+    document.getElementById("bgStack").classList.add("alarm");
+    if (gametype === 3 || gametype === 7) {
+      sound.raisesidebgm()
+    }
+  } else if (alarmtest == false && alarm == true) {
+    alarm = false
+    sound.stopse("alarm")
+    document.getElementById("bgStack").classList.remove("alarm");
+    if (gametype === 3 || gametype === 7) {
+      sound.lowersidebgm()
+    }
+  }
   if (gametype === 8) {
     if (lineClear !== 0) {
       switch (lineClear) {
         case 1:
           scoreNes += (40 * (level + 1));
+          nontetNes++
           break;
         case 2:
           scoreNes += (100 * (level + 1));
+          nontetNes++
           break;
         case 3:
           scoreNes += (300 * (level + 1));
+          nontetNes++
           break;
         case 4:
           scoreNes += (1200 * (level + 1));
+          tetNes++
           break;
       
       }
         scoreNesRefresh();
+        tetRateNes = tetNes / (tetNes + nontetNes)
+        tetRateNesRefresh();
+       
         sound.playse("erase", lineClear);
     }
   }else {
@@ -197,7 +241,12 @@ Stack.prototype.addPiece = function(tetro) {
       makeSprite();
       stack.draw();
     } else if (gameparams["proMode"] == true) {
-      level = ~~(Math.max(18,(lines / 10) + 6));
+      if (gameparams["bType"] == true) {
+        level = ~~(Math.max(19,(lines / 10) + 6));
+      } else {
+        level = ~~(Math.max(18,(lines / 10) + 6));
+      }
+      
     }
   }
   if (levelCheck !== level) {

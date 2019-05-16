@@ -22,7 +22,20 @@
   from {filter: brightness(200%)}
   to {filter: brightness(100%)}
 }
-
+@keyframes alarm {
+  from {background-image:
+    radial-gradient(#0000,
+    #ff000044); filter: grayscale(100%);}
+  to {background-image:
+    radial-gradient(#0000,
+    #ff000044);}
+}
+.alarm {
+   animation-name: alarm;
+  animation-duration: 0.58975s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
 body {
 /*
   animation-name: glow;
@@ -223,7 +236,15 @@ a.btn {
   transition: background-color .5s ease;
   box-sizing: border-box;
 }
+@keyframes buttonflash {
+  from {background-color: #111}
+  to {background-color: #222}
+}
 a.btn:hover {
+  animation-name: buttonflash;
+  animation-duration: .1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
   background-color: #222;
   box-shadow: 0 0 0 .1rem #fff;
   transition: background-color .1s ease;

@@ -1,349 +1,184 @@
 var playedLevelingbgm = [false, false, false, false, false]
+var playedLevelingbgmMarathon = [false, false]
 var lastbgmTime = 0
 var killAllbgm = false
-function Sound() {
-  
-  var itworks = false;
+var sidebgmraised = false
+
+var currentMusic
+var sideMusic
+
+function Sound2() {
   var piecetypes = "tgm,npm".split(",")
-  var gametypes = "ppt,tgm,npm,yotipo,toj,nes".split(",")
-  var uitypes = "ppt,tgm,npm,yotipo,tojnes".split(",")
-  var wavenames = "drought,droughtintense,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go,mastermode,marathon,normal1,normal2,normal3,normal4,normal5,normal6,retro,retropro".split(",");
-  var soundtypes = "fixed,fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui,bgm,bgm,bgm,bgm,bgm,bgm,bgm,bgm,bgm,bgm".split(",");
-  var waves = {};
+  var gametypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
+  var uitypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
+  var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go,retro,retropro,retroprodrought,marathon,marathon2,marathon3,sprint,survival,survivaldire,master".split(",");
+  var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui,bgm,bgm,bgmside,bgm,bgm,bgm,bgm,bgm,bgmside,bgm".split(",");
+  var sounds = {}
+  var music = {}
+  var currentMusicName
+  var sideMusicName
   this.init = function (type) {
-    itworks = false;
-    if (itworks === false) {
-      try {
-        for (var i = 0; i < wavenames.length; i++) {
-          var iname = wavenames[i];
-          var wave = document.createElement("AUDIO");
-          switch (soundtypes[i]) {
-            case "game":
-              wave.src = "se/game/" + gametypes[mySettings.Soundbank] + "/" + iname + ".wav";
-              break;
-            case "ui":
-              wave.src = "se/ui/" + gametypes[mySettings.Soundbank] + "/" + iname + ".wav";
-              break;
-            case "piece":
-              wave.src = "se/piece/" + piecetypes[mySettings.NextType] + "/" + iname + ".wav";
-              break;
-            case "bgm":
-              wave.src = "bgm/" + iname + ".ogg";
-              break;
-            case "fixed":
-              wave.src = "se/fixed/" + iname + ".wav";
-          }
-          wave.load();
-          waves[iname] = wave;
-        }
-        itworks = true;
-      } catch (e) {
-        alert("sound doesn't work.")
-      };
-      //Loops and shit
-      waves["mastermode"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 139.120
-          this.play()
-          
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
+    Howler.unload()
 
-      }, false);
-      
-      waves["retro"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 54.8
-          this.play()
-          
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
+    if (mySettings["Sound"] == 1) {
+      for (var i = 0; i < wavenames.length; i++) {
+        var iname = wavenames[i];
+        //          var wave = document.createElement("AUDIO");
+        switch (soundtypes[i]) {
+          case "game":
 
-      }, false);
-      
-      waves["retropro"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 54.8
-          this.play()
-          
+            sounds[iname] = new Howl({
+              src: ["se/game/" + gametypes[settings.Soundbank] + "/" + iname + ".wav"],
+              volume: mySettings.Volume / 100
+            });
+            break;
+          case "ui":
+            sounds[iname] = new Howl({
+              src: ["se/ui/" + gametypes[settings.Soundbank] + "/" + iname + ".wav"],
+              volume: mySettings.Volume / 100
+            });
+            break;
+          case "piece":
+            sounds[iname] = new Howl({
+              src: ["se/piece/" + piecetypes[settings.NextType] + "/" + iname + ".wav"],
+              volume: mySettings.Volume / 100
+            });
+            break;
+          case "bgm":
+            music[iname + "start"] = new Howl({
+              src: ["bgm/" + iname + "start.ogg"],
+              volume: mySettings.MusicVol / 100,
+              onend: function () {
+                currentMusic = music[currentMusicName + "loop"].play();
+              }
+            });
+            music[iname + "loop"] = new Howl({
+              src: ["bgm/" + iname + "loop.ogg"],
+              volume: mySettings.MusicVol / 100,
+              loop: true,
+            });
+            break;
+          case "bgmside":
+            music[iname + "start"] = new Howl({
+              src: ["bgm/" + iname + "start.ogg"],
+              volume: 0,
+              onend: function () {
+                sideMusic = music[sideMusicName + "loop"].play();
+              }
+            });
+            music[iname + "loop"] = new Howl({
+              src: ["bgm/" + iname + "loop.ogg"],
+              volume: 0,
+              loop: true,
+            });
+            break;
+          case "fixed":
+            sounds[iname] = new Howl({
+              src: ["se/fixed/" + iname + ".wav"],
+              volume: mySettings.Volume / 100,
+              loop: true
+            });
+            break;
         }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["marathon"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 107.369
-          this.play()
-          
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["normal6"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 67.200
-          this.play()
-          
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-       waves["normal5"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 60.631
-          this.play()
-          
-        }
-        if (level >= 25 && gametype === 1) {
-          if (playedLevelingbgm[4] === false) {
-            this.pause()
-            sound.playbgm("normal6", 0)
-            playedLevelingbgm[4] = true
-          }
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["normal4"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 53.933
-          this.play()
-          
-        }
-        if (level >= 20 && gametype === 1) {
-          if (playedLevelingbgm[3] === false) {
-            this.pause()
-            sound.playbgm("normal5", 0)
-            playedLevelingbgm[3] = true
-          }
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["normal3"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 69.818
-          this.play()
-          
-        }
-        if (level >= 15 && gametype === 1) {
-          if (playedLevelingbgm[2] === false) {
-            this.pause()
-            sound.playbgm("normal4", 0)
-            playedLevelingbgm[2] = true
-          }
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["normal2"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 66.461
-          this.play()
-          
-        }
-        if (level >= 10 && gametype === 1) {
-          if (playedLevelingbgm[1] === false) {
-            this.pause()
-            sound.playbgm("normal3", 0)
-            playedLevelingbgm[1] = true
-          }
-        }
-        
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      waves["normal1"].addEventListener('timeupdate', function () {
-        var buffer = .3
-        if (this.currentTime > this.duration - buffer) {
-          this.currentTime -= 88
-          this.play()
-          
-        }
-        if (level >= 5 && gametype === 1) {
-          if (playedLevelingbgm[0] === false) {
-            this.pause()
-            sound.playbgm("normal2", 0)
-            playedLevelingbgm[0] = true
-          }
-          
-        }
-        if (gameState !== 0 && gameState !== 4 && gameState !== 2) {
-          this.pause();
-        }
-          else if (killAllbgm == true) {
-          this.pause();
-        }
-         else if (paused == true) {
-          this.volume = settings.MusicVol / 100 / 2;
-        } else {
-          this.volume = settings.MusicVol / 100;
-          
-        }
-
-      }, false);
-      
-      
-  
-    }
-  };
-  this.playse = function (name, arg) {
-    if (itworks) {
-      try {
-        if (typeof arg !== "undefined") {
-          name += arg;
-        }
-        if (typeof waves[name] !== "undefined") {
-          if (settings.Sound) {
-            waves[name].volume = settings.Volume / 100;
-            waves[name].currentTime = 0;
-            waves[name].play();
-          }
-        }
-      } catch (e) {
-        console.error("sound error" + e.toString());
       }
     }
-  }
-  this.playbgm = function (name, time, arg) {
-    
-    if (itworks) {
-      try {
-        if (typeof arg !== "undefined") {
-          name += arg;
+    this.playse = function (name, arg) {
+
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
         }
-        if (typeof waves[name] !== "undefined") {
-          if (settings.Sound) {
-            //            waves[name].loop = true
-            waves[name].volume = settings.MusicVol / 100;
-            waves[name].currentTime = time;
-            if (waves[name].paused !== false) {
-               waves[name].play();
-            }
-           
-          }
+        sounds[name].stop()
+        sounds[name].play()
+      }
+    }
+    this.stopse = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
         }
-      } catch (e) {
-        console.error("sound error" + e.toString());
+        sounds[name].stop()
+      }
+    }
+    this.playbgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        currentMusicName = name
+        currentMusic = music[name + "start"].play()
+      }
+    }
+    this.playsidebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        sideMusicName = name
+        sideMusic = music[name + "start"].play()
+      }
+    }
+    this.killbgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        for (var currentname in music) {
+          music[currentname].stop()
+        }
+      }
+    }
+    this.raisesidebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (sidebgmraised == false) {
+          music[sideMusicName + "start"].fade(0, settings.MusicVol / 100, 500);
+          music[sideMusicName + "loop"].fade(0, settings.MusicVol / 100, 500);
+          sidebgmraised = true
+        }
+      }
+    }
+    this.lowersidebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (sidebgmraised == true) {
+          music[sideMusicName + "start"].fade(settings.MusicVol / 100, 0, 500);
+          music[sideMusicName + "loop"].fade(settings.MusicVol / 100, 0, 500);
+          sidebgmraised = false
+        }
+      }
+    }
+    this.cutsidebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (sidebgmraised == true) {
+          music[sideMusicName + "start"].fade(settings.MusicVol / 100, 0, 1);
+          music[sideMusicName + "loop"].fade(settings.MusicVol / 100, 0, 1);
+          sidebgmraised = false
+        }
       }
     }
 
+    this.mutebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        for (var currentname in music) {
+          music[currentname].mute(true)
+        }
+      }
+    }
+    this.unmutebgm = function (name, arg) {
+      if (mySettings["Sound"] == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        for (var currentname in music) {
+          music[currentname].mute(false)
+        }
+      }
+    }
+
+
   }
+
 }
-
-var sound = new Sound();
+var sound = new Sound2()

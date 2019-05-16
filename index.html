@@ -49,6 +49,10 @@
     </div>
   <h3 id="ihs-indicator" class="flashing" style="display: none; margin-top: -2.9em">INITIAL</h3>
     <table id="stats">
+      <tr id="nesratetr" style="display: none;">
+        <th style="font-family: 'Roboto Mono'; font-weight: 700;" id="nesrate">0</th>
+        <th style="font-size: .5em">Tetris Rate</th>
+      </tr>
       <tr>
         <th style="font-family: 'Roboto Mono'; font-weight: 700" id="score">0</th>
         <th style="font-family: 'Roboto Mono'; font-weight: 700;display: none;" id="nesscore">0</th>
@@ -68,8 +72,13 @@
     </table>
   </div>
 
-  <div id="b" >
-    <canvas id="bgStack"></canvas>
+  <div id="b"  >
+   
+    <canvas id="bgStack" class="" style="
+      
+   
+      
+    "></canvas>
     <canvas id="stack">You need an up-to-date web browser to play this game.</canvas>
     <canvas id="active"></canvas>
 
@@ -80,7 +89,7 @@
     <nav class="menu on">
       <img style="margin: 10px" width="72%" src=tetrjslogoenhanced.svg>
 <!--      <h1 style="font-weight: 4;font-size: 2rem;margin: 0px">Tetr.js Enhanced</h1>-->
-      <p style=margin:0px>v0.3.7 <a class="link" href="changelog.html">(view changelog)</a></p>
+      <p style=margin:0px>v0.4 <a class="link" href="changelog.html">(view changelog)</a></p>
       <p style=margin:3px>designed by simonlc<br>
         overhauled by farter<br>
         enhanced by Dr Ocelot</p>
@@ -210,7 +219,7 @@
 
     <nav class="menu">
       <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tetr.js Enhanced</h1>
-      <p style="margin: 0px">Special Modes</p>
+      <p style="margin: 0px">Dig Modes</p>
       <div style="margin: 0px" class="btn-container">
         <a class="btn" onclick="init(4,{digraceType:'easy'})"><i class="material-icons">&#xE91D;</i> Dig Race</a>
         <a class="btn" onclick="init(4,{digraceType:'checker'})"><i class="material-icons">&#xE540;</i> Dig Race Pro</a>
@@ -231,6 +240,8 @@
       <div style="margin: 0px" class="btn-container">
         <a class="btn" onclick="init(8,{proMode:false})"><i class="material-icons"></i> A-Type</a>
         <a class="btn" onclick="init(8,{proMode:true})"><i class="material-icons"></i> A-Type Pro</a>
+        <a class="btn" onclick="init(8,{proMode:false,bType:true})"><i class="material-icons"></i> B-Type</a>
+        <a class="btn" onclick="init(8,{proMode:true,bType:true})"><i class="material-icons"></i> B-Type Pro</a>
         
         <a class="btn" onclick="menu(void 0,-1)">Back</a>
       </div>
@@ -290,6 +301,7 @@
 
 
 <canvas id="sprite"></canvas>
+<script type="text/javascript" src="howler.core.js"></script>
 <script type="text/javascript" src="bigmin.js"></script>
 <script type="text/javascript" src="tetris.js"></script>
 <script type="text/javascript" src="piece.js"></script>

@@ -1,5 +1,33 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+
+### 2019-05-16 v0.4
+- New Sound Engine!
+  - Should be less garbage
+  - Music loops are easier to do
+  - Disabling sound in settings prevents loading them, so RAM is saved
+  - Music now mutes when the tab is out of focus
+- New Music  
+- Sprint
+- Marathon
+- Retro Mode (Pro)  
+  - Ramps up during drought
+- Survival
+  - Ramps up when high
+- New Soundbanks
+  - Tetris Friends
+  - Tetris 99
+- New Skins
+- Tetris Friends
+- Retro Mode
+  - Added B-Type
+    - Clear 25 lines to win
+    - Pro mode starts at level 19
+  - Added Tetris Rate indicator
+- Added alarm when stack is high
+- Added button hover animation
+- Made it so that replays can't override volume
+  
 ### 2019-04-26 v0.3.7
 - Fixed PB's saving
 ### 2019-04-26 v0.3.6

@@ -69,6 +69,10 @@ Piece.prototype.new = function(index) {
   } else {
     lineDrought++;
     if (lineDrought >= 13) {
+      if (gameparams.proMode == true) {
+        sound.raisesidebgm()
+      }
+      
       document.getElementById("ivalue").style.color = "#ff0000";
       document.getElementById("linevector").classList.add("drought-flash");
       document.getElementById("linevector").src="linevectorred.svg";
@@ -78,6 +82,11 @@ Piece.prototype.new = function(index) {
 //        sound.playse("droughtintense")
       }
       $setText(statsIpieces, lineDrought);
+    } else {
+      if (gameparams.proMode == true) {
+        sound.lowersidebgm()
+      }
+      
     }
   }
   // TODO Do this better. Make clone object func maybe.
