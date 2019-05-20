@@ -1,5 +1,9 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+
+### 2019-05-16 v0.4.3
+- Added feedback button
+
 ### 2019-05-16 v0.4.2
 - Made it so that only relevant music is loaded, thus cutting down on the superlag and ram usage
 
