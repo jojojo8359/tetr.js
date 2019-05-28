@@ -38,7 +38,7 @@ Piece.prototype.new = function(index) {
   
   this.pos = RotSys[settings.RotSys].initinfo[index][2];
   this.x = ~~((stack.width - 4) / 2) + RotSys[settings.RotSys].initinfo[index][0];
-  if (gametype === 8 || gametype === 9) {
+  if (gametype === 8 || gametype === 9 || gameparams.noGravity == true) {
     this.y = stack.hiddenHeight - 1 + RotSys[settings.RotSys].initinfo[index][1];
   } else {
     

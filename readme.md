@@ -1,5 +1,13 @@
 # tetr.js
 ## Dr Ocelot's Changelog:
+### 2019-05-28 v0.5
+- Added new marathon modes
+  - Marathon Endless is a rename of the original Marathon mode
+  - Marathon 150/200 have the stated line limits
+  - 0G Marathon, highly requested, is an endless Marathon where the blocks don't fall
+- Menu font has been ensquishened
+- Colour-changing background for master mode has been temporarily removed due to performance issues
+- Added a feedback status button
 
 ### 2019-05-16 v0.4.3
 - Added feedback button

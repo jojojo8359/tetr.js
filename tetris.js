@@ -1796,6 +1796,9 @@ function init(gt, params) {
     lastPiecesSet = 0;
     digZenBuffer = 0;
   }
+  if (gameparams.noGravity == true) {
+    settings.Gravity = 1;
+  }
   if (gametype === 8) {
     settings.Next = 1;
     settings.RotSys = 8;
@@ -1970,7 +1973,9 @@ function statisticsStack() {
     $setText(statsLevel, "");
   } else if (gametype === 1 || gametype === 7) {
     $setText(statsLines, lines);
-    $setText(statsLevel, "Lv. " + (level + 1));
+    if (gameparams.noGravity != true) {
+      $setText(statsLevel, "Lv. " + (level + 1));
+    }
   } else if (gametype === 8) {
     $setText(statsLines, lines);
     $setText(statsLevel, "Lv. " + level);
@@ -2915,7 +2920,9 @@ function checkWin() {
   } else {
     var isend = false;
     if (gametype === 1) { // Marathon
-      if (settings.Gravity !== 0 && lines >= 200) { // not Auto, limit to 200 Lines
+      if (settings.Gravity !== 0 && lines >= 200 && gameparams.noGravity != true) { // not Auto, limit to 200 Lines
+        isend = true;
+      } else if ((gameparams.marathonLimit != undefined) && lines >= gameparams.marathonLimit) {
         isend = true;
       }
     } else if (gametype === 5) { // Score Attack
