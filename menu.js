@@ -1,71 +1,317 @@
-var version       = '0.1.8';
+var version = '0.6';
 var setLoop;
 var arrowReleased = true;
-var arrowDelay    = 0;
+var arrowDelay = 0;
+var gameSettings = {}
+defaultGameSettings = {
+  marathon: {
+    limit: {
+      val: 0,
+      max: 2,
+    },
+    delay: {
+      val: 1,
+      max: 2,
+    },
+    nograv: {
+      val: 0,
+      max: 1,
+    },
+    invisible: {
+      val: 0,
+      max: 1,
+    },
+    cap: {
+      val: 0,
+      max: 1,
+    }
+  },
+  sprint: {
+    limit: {
+      val: 0,
+      max: 2,
+    },
+    piece: {
+      val: 0,
+      max: 2,
+    },
+    backfire: {
+      val: 0,
+      max: 3,
+    }
+  },
+  dig: {
+    checker: {
+      val: 0,
+      max: 1,
+    }
+  },
+  survival: {
+    zen: {
+      val: 0,
+      max: 1,
+    },
+    slevel: {
+      val: 0,
+      max: 4,
+    }
+  },
+  master: {
+    lock: {
+      val: 1,
+      max: 2,
+    }
+  },
+  retro: {
+    type: {
+      val: 0,
+      max: 1,
+    },
+    pro: {
+      val: 0,
+      max: 1,
+    },
+    skin: {
+      val: 1,
+      max: 1,
+    },
+    drop: {
+      val: 0,
+      max: 1,
+    }
+  },
+  grades: {
+    rule: {
+      val: 1,
+      max: 1,
+    }
+  }
 
+}
+
+function saveSpecificSetting(name, val) {
+  mySettings[name] = val;
+  saveSetting();
+  displaySettings();
+}
+
+function displaySettings() {
+  document.getElementById("dasRange").value = mySettings.DAS;
+  document.getElementById("dasRange").oninput();
+  document.getElementById("arrRange").value = mySettings.ARR;
+  document.getElementById("arrRange").oninput();
+  document.getElementById("gravRange").value = mySettings.Gravity;
+  document.getElementById("gravRange").oninput();
+  document.getElementById("sdRange").value = mySettings['Soft Drop'];
+  document.getElementById("sdRange").oninput();
+  document.getElementById("volRange").value = mySettings.Volume;
+  document.getElementById("volRange").oninput();
+  document.getElementById("musRange").value = mySettings.MusicVol;
+  document.getElementById("musRange").oninput();
+  document.getElementById("ldRange").value = mySettings['Lock Delay'];
+  document.getElementById("ldRange").oninput();
+  document.getElementById("nextRange").value = mySettings.Next;
+  document.getElementById("nextRange").oninput();
+  for (let i = 0; i < 16; i++) {
+    if (mySettings.RotSys == i) {
+      document.getElementById("RotSys-" + i).classList.add("active")
+    } else {
+      document.getElementById("RotSys-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.Sound == i) {
+      document.getElementById("Sound-" + i).classList.add("active")
+    } else {
+      document.getElementById("Sound-" + i).classList.remove("active")
+    }
+  }
+
+  for (let i = 0; i < 8; i++) {
+    if (mySettings.Soundbank == i) {
+      document.getElementById("Soundbank-" + i).classList.add("active")
+    } else {
+      document.getElementById("Soundbank-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.NextSound == i) {
+      document.getElementById("NextSound-" + i).classList.add("active")
+    } else {
+      document.getElementById("NextSound-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.NextType == i) {
+      document.getElementById("NextType-" + i).classList.add("active")
+    } else {
+      document.getElementById("NextType-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.Voice == i) {
+      document.getElementById("Voice-" + i).classList.add("active")
+    } else {
+      document.getElementById("Voice-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    if (mySettings.Voicebank == i) {
+      document.getElementById("Voicebank-" + i).classList.add("active")
+    } else {
+      document.getElementById("Voicebank-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.NextSide == i) {
+      document.getElementById("NextSide-" + i).classList.add("active")
+    } else {
+      document.getElementById("NextSide-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 11; i++) {
+    if (mySettings.Block == i) {
+      document.getElementById("Block-" + i).classList.add("active")
+    } else {
+      document.getElementById("Block-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 4; i++) {
+    if (mySettings.Outline == i) {
+      document.getElementById("Outline-" + i).classList.add("active")
+    } else {
+      document.getElementById("Outline-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.Grid == i) {
+      document.getElementById("Grid-" + i).classList.add("active")
+    } else {
+      document.getElementById("Grid-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 4; i++) {
+    if (mySettings.Ghost == i) {
+      document.getElementById("Ghost-" + i).classList.add("active")
+    } else {
+      document.getElementById("Ghost-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 5; i++) {
+    if (mySettings.Size == i) {
+      document.getElementById("Size-" + i).classList.add("active")
+    } else {
+      document.getElementById("Size-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.Messages == i) {
+      document.getElementById("Messages-" + i).classList.add("active")
+    } else {
+      document.getElementById("Messages-" + i).classList.remove("active")
+    }
+  }
+}
+
+function resetGameSettings() {
+  gameSettings = defaultGameSettings
+  localStorage.setItem("gameSettings", JSON.stringify(gameSettings))
+}
+
+if (localStorage['gameSettings'] && (localStorage['version'] == version)) {
+  console.log("not reset")
+  gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
+} else {
+  console.log("reset")
+  resetGameSettings();
+}
+
+function refreshMenuSettings() {
+  for (gamekey in gameSettings) {
+    for (setkey in gameSettings[gamekey]) {
+      for (i = 0; i <= gameSettings[gamekey][setkey].max; i++) {
+        var className = (gamekey + "-" + setkey + "-" + i)
+        if (gameSettings[gamekey][setkey].val == i) {
+          document.getElementById(className).classList.add("active")
+        } else {
+          document.getElementById(className).classList.remove("active")
+        }
+      }
+    }
+  }
+
+}
+refreshMenuSettings()
+
+function changeSetting(game, key, val) {
+  gameSettings[game][key].val = val
+  localStorage.setItem("gameSettings", JSON.stringify(gameSettings))
+  refreshMenuSettings();
+  localStorage['version'] = version;
+}
 var key = {
-  8:   'Backspace',
-  9:   'Tab',
-  13:  'Enter',
-  16:  'Shift',
-  17:  'Ctrl',
-  18:  'Alt',
-  19:  'Pause',
-  20:  'Caps Lock',
-  27:  'Esc',
-  32:  'Space',
-  33:  'PgUp',
-  34:  'PgDn',
-  35:  'End',
-  36:  'Home',
-  37:  '←',
-  38:  '↑',
-  39:  '→',
-  40:  '↓',
-  45:  'Insert',
-  46:  'Delete',
-  48:  '0',
-  49:  '1',
-  50:  '2',
-  51:  '3',
-  52:  '4',
-  53:  '5',
-  54:  '6',
-  55:  '7',
-  56:  '8',
-  57:  '9',
-  59:  ';',
-  61:  '=',
-  65:  'A',
-  66:  'B',
-  67:  'C',
-  68:  'D',
-  69:  'E',
-  70:  'F',
-  71:  'G',
-  72:  'H',
-  73:  'I',
-  74:  'J',
-  75:  'K',
-  76:  'L',
-  77:  'M',
-  78:  'N',
-  79:  'O',
-  80:  'P',
-  81:  'Q',
-  82:  'R',
-  83:  'S',
-  84:  'T',
-  85:  'U',
-  86:  'V',
-  87:  'W',
-  88:  'X',
-  89:  'Y',
-  90:  'Z',
-  96:  '0kpad',
-  97:  '1kpad',
-  98:  '2kpad',
-  99:  '3kpad',
+  8: 'Backspace',
+  9: 'Tab',
+  13: 'Enter',
+  16: 'Shift',
+  17: 'Ctrl',
+  18: 'Alt',
+  19: 'Pause',
+  20: 'Caps Lock',
+  27: 'Esc',
+  32: 'Space',
+  33: 'PgUp',
+  34: 'PgDn',
+  35: 'End',
+  36: 'Home',
+  37: '←',
+  38: '↑',
+  39: '→',
+  40: '↓',
+  45: 'Insert',
+  46: 'Delete',
+  48: '0',
+  49: '1',
+  50: '2',
+  51: '3',
+  52: '4',
+  53: '5',
+  54: '6',
+  55: '7',
+  56: '8',
+  57: '9',
+  59: ';',
+  61: '=',
+  65: 'A',
+  66: 'B',
+  67: 'C',
+  68: 'D',
+  69: 'E',
+  70: 'F',
+  71: 'G',
+  72: 'H',
+  73: 'I',
+  74: 'J',
+  75: 'K',
+  76: 'L',
+  77: 'M',
+  78: 'N',
+  79: 'O',
+  80: 'P',
+  81: 'Q',
+  82: 'R',
+  83: 'S',
+  84: 'T',
+  85: 'U',
+  86: 'V',
+  87: 'W',
+  88: 'X',
+  89: 'Y',
+  90: 'Z',
+  96: '0kpad',
+  97: '1kpad',
+  98: '2kpad',
+  99: '3kpad',
   100: '4kpad',
   101: '5kpad',
   102: '6kpad',
@@ -108,8 +354,9 @@ var key = {
 /**
  * Show and hide menus.
  */
-var menus     = document.getElementsByClassName('menu');
+var menus = document.getElementsByClassName('menu');
 var menuStack = [];
+
 function menu(menuIndex, stackOper) {
   var current = void 0;
   for (var i = 0, len = menus.length; i < len; i++) {
@@ -140,7 +387,8 @@ function menu(menuIndex, stackOper) {
 /**
  * Controls Menu
  */
-var newKey, currCell, tempKey, controls = document.getElementById('controls'), controlCells = controls.getElementsByTagName('td');
+var newKey, currCell, tempKey, controls = document.getElementById('controls'),
+  controlCells = controls.getElementsByTagName('td');
 // Give controls an event listener.
 for (var i = 0, len = controlCells.length; i < len; i++) {
   controlCells[i].onclick = function () {
@@ -151,9 +399,9 @@ for (var i = 0, len = controlCells.length; i < len; i++) {
       binds[currCell.id] = tempKey;
       $setText(currCell, key[tempKey] || tempKey);
     }
-    tempKey        = binds[this.id];
+    tempKey = binds[this.id];
     $setText(this, 'Press key');
-    currCell       = this;
+    currCell = this;
   }
 }
 // Listen for key input if a control has been clicked on.
@@ -161,12 +409,12 @@ addEventListener('keyup', function (e) {
   // if click outside of cell or press esc clear currCell
   // reset binds button.
   if (currCell) {
-    var newKey=e.keyCode;
-    if(newKey===8){
-      newKey=void 0;
+    var newKey = e.keyCode;
+    if (newKey === 8) {
+      newKey = void 0;
     }
     // Checks if key already in use, and unbinds it.
-    if(newKey){
+    if (newKey) {
       for (var i in binds) {
         if (newKey === binds[i]) {
           binds[i] = void 0;
@@ -178,7 +426,7 @@ addEventListener('keyup', function (e) {
     binds[currCell.id] = newKey;
     $setText(currCell, key[newKey] || newKey);
     localStorage.setItem('binds', JSON.stringify(binds));
-    currCell           = 0;
+    currCell = 0;
   }
 }, false);
 
@@ -205,34 +453,36 @@ var settingsArrow;
 function arrowRelease(e) {
   resize();
   arrowReleased = true;
-  arrowDelay    = 0;
+  arrowDelay = 0;
   clearTimeout(setLoop);
-  this.onmouseup     = void 0;
-  this.onmouseout    = void 0;
-  this.ontouchend    = void 0;
+  this.onmouseup = void 0;
+  this.onmouseout = void 0;
+  this.ontouchend = void 0;
   this.ontouchcancel = void 0;
   if (e && e.preventDefault) {
     e.preventDefault();
   } //avoid selection by touch
 }
+
 function left(e) {
-  settingsArrow      = 1;
-  s                  = this.parentNode.id;
-  this.onmouseup     = arrowRelease;
-  this.onmouseout    = arrowRelease;
-  this.ontouchend    = arrowRelease;
+  settingsArrow = 1;
+  s = this.parentNode.id;
+  this.onmouseup = arrowRelease;
+  this.onmouseout = arrowRelease;
+  this.ontouchend = arrowRelease;
   this.ontouchcancel = arrowRelease;
   if (e && e.preventDefault) {
     e.preventDefault();
   } //avoid selection by touch
   settingsLoop();
 }
+
 function right(e) {
-  settingsArrow      = 0;
-  s                  = this.parentNode.id;
-  this.onmouseup     = arrowRelease;
-  this.onmouseout    = arrowRelease;
-  this.ontouchend    = arrowRelease;
+  settingsArrow = 0;
+  s = this.parentNode.id;
+  this.onmouseup = arrowRelease;
+  this.onmouseout = arrowRelease;
+  this.ontouchend = arrowRelease;
   this.ontouchcancel = arrowRelease;
   if (e && e.preventDefault) {
     e.preventDefault();
@@ -249,10 +499,11 @@ function saveSetting(s) {
   }
   localStorage['version'] = version;
 
-  $setText($$(s).getElementsByTagName('span')[0], setting[s][mySettings[s]]);
+  //  $setText($$(s).getElementsByTagName('span')[0], setting[s][mySettings[s]]);
 
   localStorage['settings'] = JSON.stringify(mySettings);
 }
+
 function loadLocalData() {
   if (localStorage === void 0) {
     localStorage = {};
@@ -260,16 +511,17 @@ function loadLocalData() {
   if (localStorage['binds']) {
     binds = JSON.parse(localStorage.getItem('binds'));
     for (var i = 0, len = controlCells.length; i < len; i++) {
-      var keycode=binds[controlCells[i].id];
+      var keycode = binds[controlCells[i].id];
       $setText(controlCells[i], key[keycode] || keycode);
     }
-  }else{
+  } else {
     $$("btnbinds").classList.add("highlight");
   }
   // TODO When new version just update with new stuff, rest stays unchanged.
   if (localStorage['version'] !== version) {
     localStorage.removeItem('settings');
     localStorage.removeItem('binds');
+    resetGameSettings();
   }
   if (localStorage['settings']) {
     var storedSettings = JSON.parse(localStorage.getItem('settings'));
@@ -285,22 +537,22 @@ function loadLocalData() {
 loadLocalData();
 for (var s in mySettings) {
   if (mySettings.hasOwnProperty(s)) {
-    var div    = document.createElement('div');
-    var sname  = document.createElement('b');
-    var iLeft  = document.createElement('i');
-    var span   = document.createElement('span');
+    var div = document.createElement('div');
+    var sname = document.createElement('b');
+    var iLeft = document.createElement('i');
+    var span = document.createElement('span');
     var iRight = document.createElement('i');
 
-    div.id              = s;
+    div.id = s;
     $setText(sname, settingName[s]);
     $setText(span, setting[s][mySettings[s]]);
-    iLeft.className     = 'material-icons left';
-    iRight.className    = 'material-icons right';
+    iLeft.className = 'material-icons left';
+    iRight.className = 'material-icons right';
     $setText(iLeft, "\uE314");
     $setText(iRight, "\uE315");
-    iLeft.onmousedown   = left;
-    iLeft.ontouchstart  = left;
-    iRight.onmousedown  = right;
+    iLeft.onmousedown = left;
+    iLeft.ontouchstart = left;
+    iRight.onmousedown = right;
     iRight.ontouchstart = right;
 
     set.appendChild(div);

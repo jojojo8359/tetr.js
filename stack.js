@@ -1,12 +1,15 @@
 var alarm = false
 var alarmtest = false
+var clearRows = []
+var levelCheck
+
 function Stack() {
   //this.grid;
 }
 /**
  * Creates a matrix for the playfield.
  */
-Stack.prototype.new = function(x, y, hy) {
+Stack.prototype.new = function (x, y, hy) {
   var cells = new Array(x);
   for (var i = 0; i < x; i++) {
     cells[i] = new Array(hy + y);
@@ -15,7 +18,7 @@ Stack.prototype.new = function(x, y, hy) {
   this.height = hy + y;
   this.hiddenHeight = hy;
   this.grid = cells;
-  
+
   this.dirty = true;
 }
 
@@ -26,11 +29,11 @@ var lineClear = 0;
  * Adds tetro to the stack, and clears lines if they fill up.
  */
 
-Stack.prototype.addPiece = function(tetro) {
+Stack.prototype.addPiece = function (tetro) {
   lineClear = 0;
   var isSpin = false;
   var once = false;
-  
+
   var bottomRow = []; // for backfire
   for (var x = 0; x < this.width; x++) {
     bottomRow.push(this.grid[x][this.height - 1]);
@@ -39,19 +42,19 @@ Stack.prototype.addPiece = function(tetro) {
   // spin check
   if (
     !piece.moveValid(-1, 0, piece.tetro) &&
-    !piece.moveValid( 1, 0, piece.tetro) &&
-    !piece.moveValid( 0,-1, piece.tetro)
+    !piece.moveValid(1, 0, piece.tetro) &&
+    !piece.moveValid(0, -1, piece.tetro)
   ) {
     isSpin = true;
   }
-  
+
   // Add the piece to the stack.
   var range = [];
   var valid = false;
   for (var x = 0; x < tetro.length; x++) {
     for (var y = 0; y < tetro[x].length; y++) {
       if (tetro[x][y] && y + piece.y >= 0) {
-        this.grid[x + piece.x][y + piece.y] =  RotSys[settings.RotSys].color[piece.index];
+        this.grid[x + piece.x][y + piece.y] = RotSys[settings.RotSys].color[piece.index];
         // Get column for finesse
         if (!once || x + piece.x < column) {
           column = x + piece.x;
@@ -71,14 +74,17 @@ Stack.prototype.addPiece = function(tetro) {
   // Lock out
   if (!valid) {
     gameState = 9;
-    $setText(msg,'LOCK OUT!');
+    $setText(msg, 'LOCK OUT!');
     menu(3);
     sound.playse("gameover");
+    sound.playvox("lose");
     return;
   }
 
   // Check modified lines for full lines.
-  range = range.sort(function(a,b){return a-b});
+  range = range.sort(function (a, b) {
+    return a - b
+  });
   for (var row = range[0], len = row + range.length; row < len; row++) {
     var count = 0;
     for (var x = 0; x < this.width; x++) {
@@ -95,39 +101,40 @@ Stack.prototype.addPiece = function(tetro) {
         }
         digLines.splice(rowInDig, 1);
       }
-      for (var y = row; y >= 1; y--) {
+      clearRows.push(row)
+      for (var y = row; y >= row; y--) {
         for (var x = 0; x < this.width; x++) {
-          this.grid[x][y] = this.grid[x][y - 1];
+          this.grid[x][y] = 0
         }
       }
+      //      for (var y = row; y >= 1; y--) {
+      //        for (var x = 0; x < this.width; x++) {
+      //          this.grid[x][y] = this.grid[x][y - 1];
+      //        }
+      //      }
+
       for (var x = 0; x < this.width; x++) {
         this.grid[x][0] = void 0;
       }
+
     }
   }
-
+  if (piece.areLimit == 0 && (gameparams.entryDelay == (!(1 || 2)) || gameparams.entryDelay == undefined)) {
+    stack.clearLines()
+  }
+  if (gametype === 9) {
+    levelCheck = leveltgm
+  }
   var scoreAdd = bigInt(level + 1);
   var garbage = 0;
-  if (level >= 20 && gametype === 1) {
-    if (playedLevelingbgmMarathon[1] === false) {
-      sound.killbgm()
-      sound.playbgm("marathon3")
-      playedLevelingbgmMarathon[1] = true
-    }
-  } else if (level >= 10 && gametype === 1) {
-    if (playedLevelingbgmMarathon[0] === false) {
-      sound.killbgm()
-      sound.playbgm("marathon2")
-      playedLevelingbgmMarathon[0] = true
-    }
-  }
+
   alarmtest = false
   for (var test in stack.grid) {
     if (((stack.grid[test][8] != undefined) && alarm == false) || ((stack.grid[test][11] != undefined) && alarm == true)) {
       alarmtest = true;
     }
   }
-  
+
   if (alarmtest == true && alarm == false) {
     alarm = true
     alarmtest = false
@@ -150,28 +157,33 @@ Stack.prototype.addPiece = function(tetro) {
         case 1:
           scoreNes += (40 * (level + 1));
           nontetNes++
+          showTetrisMessage("SINGLE");
           break;
         case 2:
           scoreNes += (100 * (level + 1));
           nontetNes++
+          showTetrisMessage("DOUBLE");
           break;
         case 3:
           scoreNes += (300 * (level + 1));
           nontetNes++
+          showTetrisMessage("TRIPLE");
           break;
         case 4:
           scoreNes += (1200 * (level + 1));
           tetNes++
+          showTetrisMessage("TETRIS");
           break;
-      
+
       }
-        scoreNesRefresh();
-        tetRateNes = tetNes / (tetNes + nontetNes)
-        tetRateNesRefresh();
-       
-        sound.playse("erase", lineClear);
+      scoreNesRefresh();
+      tetRateNes = tetNes / (tetNes + nontetNes)
+      tetRateNesRefresh();
+
+      sound.playse("erase", lineClear);
+      sound.playvox("erase", lineClear);
     }
-  }else {
+  } else {
     if (lineClear !== 0) {
       //console.log("C"+combo+" B"+b2b)
       if (isSpin) {
@@ -180,16 +192,38 @@ Stack.prototype.addPiece = function(tetro) {
           .mul(bigInt(2).pow(b2b + combo))
         );
         garbage = [[2, 4, 6, 8], [3, 6, 9, 12]][b2b != 0 ? 1 : 0][lineClear - 1];
+        if (piece.index == 5) {
+          if (b2b > 0) {
+            sound.playvox("b2b_tspin", lineClear);
+          } else {
+            sound.playvox("tspin", lineClear);
+          }
+        } else {
+          sound.playvox("erase", lineClear);
+        }
+        if (b2b > 0) {
+            sound.playse("b2b_tspin", lineClear);
+          } else {
+            sound.playse("tspin", lineClear);
+          }
         b2b += 1;
-        sound.playse("tspin", lineClear);
       } else if (lineClear === 4) {
         scoreAdd = scoreAdd.mul(
           bigInt(800)
           .mul(bigInt(2).pow(b2b + combo))
         );
         garbage = [4, 5][b2b != 0 ? 1 : 0];
+        if (b2b > 0) {
+          sound.playvox("b2b_erase", lineClear);
+          sound.playse("b2b_erase", lineClear);
+        } else {
+          sound.playvox("erase", lineClear);
+          sound.playse("erase", lineClear);
+        }
         b2b += 1;
-        sound.playse("erase", lineClear);
+        
+        
+        
       } else {
         scoreAdd = scoreAdd.mul(
           bigInt([100, 300, 500, 800][lineClear - 1])
@@ -198,9 +232,31 @@ Stack.prototype.addPiece = function(tetro) {
         b2b = 0;
         garbage = [0, 1, 2, 4][lineClear - 1];
         sound.playse("erase", lineClear);
+        sound.playvox("erase", lineClear);
       }
       garbage += ~~(combo / 2); //[0,0,1,1,2,2,3,3,4,4,5,5,6,6,...]
+      if (combo < 1) {
+        
+      } else if (combo < 5) {
+        sound.playvox("ren1");
+      } else if (combo < 10) {
+        sound.playvox("ren2");
+      } else {
+        sound.playvox("ren3");
+      }
+      if (combo > 0) {
+        if (combo > 7 && settings.Soundbank == 6) {
+          sound.playse("ren/ren", 7);
+        } else if (combo > 20) {
+          sound.playse("ren/ren", 20);
+        } else {
+          sound.playse("ren/ren", combo);
+        }
+      }
+        
       combo += 1;
+      
+
       if (gametype === 9) {
         if (lineClear == 1) {
           leveltgm += 1
@@ -216,6 +272,50 @@ Stack.prototype.addPiece = function(tetro) {
           leveltgmvisible += 6
         }
       }
+      switch (lineClear) {
+        case 1:
+          if (isSpin && piece.index == 5) {
+            if (b2b > 1) {
+            showTetrisMessage("<b>BACK-TO</b>-BACK<br>T-<b>SPIN</b> SINGLE<br><small>" + b2b + "<b> STREAK!</b></small>");
+          } else {
+            showTetrisMessage("T-<b>SPIN</b> SINGLE");
+          }
+          } else {
+            showTetrisMessage("SINGLE");
+          }
+          break;
+        case 2:
+          if (isSpin && piece.index == 5) {
+            if (b2b > 1) {
+            showTetrisMessage("<b>BACK-TO</b>-BACK<br>T-<b>SPIN</b> DOUBLE<br><small>" + b2b + "<b> STREAK!</b></small>");
+          } else {
+            showTetrisMessage("T-<b>SPIN</b> DOUBLE");
+          }
+          } else {
+            showTetrisMessage("DOUBLE");
+          }
+          break;
+        case 3:
+          if (isSpin && piece.index == 5) {
+            if (b2b > 1) {
+            showTetrisMessage("<b>BACK-TO</b>-BACK<br>T-<b>SPIN</b> TRIPLE<br><small>" + b2b + "<b> STREAK!</b></small>");
+          } else {
+            showTetrisMessage("T-<b>SPIN</b> TRIPLE");
+          }
+          } else {
+            showTetrisMessage("TRIPLE");
+          }
+          
+          break;
+        case 4:
+          if (b2b > 1) {
+            showTetrisMessage("<b>BACK-TO</b>-BACK<br>TETRIS<br><small>" + b2b + "<b> STREAK!</b></small>");
+          } else {
+            showTetrisMessage("TETRIS");
+          }
+          
+          break;
+      }
     } else {
       if (isSpin) {
         scoreAdd = scoreAdd.mul(
@@ -223,16 +323,41 @@ Stack.prototype.addPiece = function(tetro) {
           .mul(bigInt(400))
         );
         sound.playse("tspin", lineClear);
+        if (piece.index == 5) {
+          showTetrisMessage("T-<b>SPIN</b>");
+          sound.playvox("tspin", lineClear)
+        }
+        
       } else {
         scoreAdd = bigInt(0);
       }
+      if (combo > 1) {
+        if (settings.Voice == 1 && settings.Voicebank == 2) {
+          showTetrisMessage("<b>" + combo + "</b>" + " REN!");
+        } else {
+          showTetrisMessage("<b>" + combo + "</b>"  + " COMBO!");
+        }
+        
+      }
+      if (combo > 9) {
+        sound.playse("bravo")
+      }
+      
       combo = 0;
+      document.getElementById("renmsg").innerHTML = "";
     }
   }
   lines += lineClear;
-  var levelCheck = level
+  if (gametype !== 9) {
+    levelCheck = level
+  }
+
   if (gametype === 1 || gametype === 6) {
-    level = ~~(lines / 10);
+    if (gameparams.levelCap == 1) {
+      level = Math.min(~~(lines / 10), 14);
+    } else {
+      level = ~~(lines / 10);
+    }
   } else if (gametype === 7) {
     level = ~~(lines / 30);
   } else if (gametype === 8) {
@@ -242,19 +367,63 @@ Stack.prototype.addPiece = function(tetro) {
       stack.draw();
     } else if (gameparams["proMode"] == true) {
       if (gameparams["bType"] == true) {
-        level = ~~(Math.max(19,(lines / 10) + 6));
+        level = ~~(Math.max(19, (lines / 10) + 6));
       } else {
-        level = ~~(Math.max(18,(lines / 10) + 6));
+        level = ~~(Math.max(18, (lines / 10) + 6));
       }
-      
+
     }
   }
-  if (levelCheck !== level) {
-    sound.playse("levelup")
+  if (gametype !== 9) {
+    if (levelCheck !== level) {
+      sound.playse("levelup")
+    }
   }
+  if (gametype === 1) {
+    if (gameparams.invisibleMarathon == true && level > 19) {
+      if (watchingReplay) {
+        document.getElementById("stack").classList.add("invisible-replay")
+      } else {
+        document.getElementById("stack").classList.add("invisible")
+      }
+
+    } else {
+      document.getElementById("stack").classList.remove("invisible-replay")
+      document.getElementById("stack").classList.remove("invisible")
+    }
+  }
+
+  if (level >= 20 && gametype === 1) {
+    if (playedLevelingbgmMarathon[1] === false) {
+      sound.killbgm()
+      sound.playbgm("marathon3")
+      playedLevelingbgmMarathon[1] = true
+    }
+  } else if (level >= 10 && gametype === 1) {
+    if (playedLevelingbgmMarathon[0] === false) {
+      sound.killbgm()
+      sound.playbgm("marathon2")
+      playedLevelingbgmMarathon[0] = true
+    }
+  }
+
+  if (leveltgm >= 700 && gametype === 9) {
+    if (playedLevelingbgmGrades[1] === false) {
+      sound.killbgm()
+      sound.playbgm("grade3")
+      playedLevelingbgmGrades[1] = true
+    }
+  } else if (leveltgm >= 500 && gametype === 9) {
+    if (playedLevelingbgmGrades[0] === false) {
+      sound.killbgm()
+      sound.playbgm("grade2")
+      playedLevelingbgmGrades[0] = true
+    }
+  }
+
   score = score.add(scoreAdd.mul(bigInt(16).pow(allclear)));
   makeSprite();
-      stack.draw();
+  stack.draw();
   var pc = true;
   for (var x = 0; x < this.width; x++)
     for (var y = 0; y < this.height; y++)
@@ -262,35 +431,35 @@ Stack.prototype.addPiece = function(tetro) {
         pc = false;
   if (pc) {
     score = score.add(bigInt(1000000).mul(bigInt(16).pow(allclear)));
-    allclear ++;
+    allclear++;
     sound.playse("bravo");
     garbage += 10;
   }
-  
-  if(gameparams&&gameparams.backFire){
-    if(gameparams.backFire === 1){
-      garbage = [0, 0,1,2,4][lineClear];
-    }else if(gameparams.backFire === 3){
-      garbage *= ~~(lines/2);
+
+  if (gameparams && gameparams.backFire) {
+    if (gameparams.backFire === 1) {
+      garbage = [0, 0, 1, 2, 4][lineClear];
+    } else if (gameparams.backFire === 3) {
+      garbage *= ~~(lines / 2);
     }
-    if(garbage !== 0) {
-      if(gameparams.backFire === 1){
-        for(var y = 0; y < garbage; y++){
+    if (garbage !== 0) {
+      if (gameparams.backFire === 1) {
+        for (var y = 0; y < garbage; y++) {
           this.rowRise(bottomRow, piece);
         }
-      }else if(gameparams.backFire === 2 || gameparams.backFire === 3){
+      } else if (gameparams.backFire === 2 || gameparams.backFire === 3) {
         var hole = ~~(rng.next() * 10);
-        var arrRow = [8,8,8,8,8,8,8,8,8,8];
+        var arrRow = [8, 8, 8, 8, 8, 8, 8, 8, 8, 8];
         arrRow[hole] = 0;
-        for(var y = 0; y < garbage; y++){
+        for (var y = 0; y < garbage; y++) {
           this.rowRise(arrRow, piece);
         }
       }
     }
   }
-  
+
   //if (scoreAdd.cmp(0) > 0)
-    //console.log(scoreAdd.toString());
+  //console.log(scoreAdd.toString());
 
   statsFinesse += piece.finesse - finesse[piece.index][piece.pos][column];
   piecesSet++;
@@ -299,18 +468,23 @@ Stack.prototype.addPiece = function(tetro) {
       leveltgm++
       leveltgmvisible++
     }
-    
-//    if (leveltgmvisible > 70 && scoreTime <= 52000) {
-//      console.log("Cool!")
-//      leveltgm += 100 //work on later
-//    } if (leveltgmvisible <= 100 && scoreTime >= 75000) {
-//          console.log("REGRET")     
-//      }
-    
-    
+    if (gametype === 9) {
+      if (Math.floor((levelCheck / 100) % 10) !== Math.floor((leveltgm / 100) % 10)) {
+        sound.playse("levelup")
+      }
+    }
+
+    //        if (leveltgmvisible > 70 && scoreTime <= 52000) {
+    //          console.log("Cool!")
+    //          leveltgm += 100 //work on later
+    //        } if (leveltgmvisible <= 100 && scoreTime >= 75000) {
+    //              console.log("REGRET")     
+    //          }
+    //
+
     //Section COOL
-//    if (leveltgmvisible)
-    
+    //    if (leveltgmvisible)
+
   }
   // NOTE Stats
   // TODO Might not need this (same for in init)
@@ -321,40 +495,61 @@ Stack.prototype.addPiece = function(tetro) {
 /**
  * Raise a garbage line. farter
  */
-Stack.prototype.rowRise = function(arrRow, objPiece) {
-  var isEmpty = true;
-  for(var x = 0; x < this.width; x++) {
-    for(var y = 0; y < this.height - 1; y++) {
-      this.grid[x][y] = this.grid[x][y+1];
+Stack.prototype.clearLines = function () {
+  //  console.log("clearrow")
+
+  clearRows.forEach(function (element) {
+    for (var y = element; y >= 1; y--) {
+      for (var x = 0; x < stack.width; x++) {
+        stack.grid[x][y] = stack.grid[x][y - 1];
+      }
     }
-    if(arrRow[x])
+  });
+  if (clearRows.length !== 0) {
+    if (lineARE != 0) {
+      sound.playse("linefall")
+    }
+    clearRows = []
+  }
+
+  stack.draw()
+}
+Stack.prototype.rowRise = function (arrRow, objPiece) {
+  var isEmpty = true;
+  for (var x = 0; x < this.width; x++) {
+    for (var y = 0; y < this.height - 1; y++) {
+      this.grid[x][y] = this.grid[x][y + 1];
+    }
+    if (arrRow[x])
       isEmpty = false;
-    this.grid[x][this.height-1]=arrRow[x];
+    this.grid[x][this.height - 1] = arrRow[x];
   }
   var topout = false;
-  for(var y = 0; y < digLines.length; y++) {
+  for (var y = 0; y < digLines.length; y++) {
     digLines[y]--;
-    if(digLines[y] < 0) { // top out, but only detecting added lines
+    if (digLines[y] < 0) { // top out, but only detecting added lines
       topout = true;
     }
   }
-  if(topout) {
+  if (topout) {
     gameState = 9;
-    $setText(msg,'TOP OUT!');
+    $setText(msg, 'TOP OUT!');
     menu(3);
     sound.playse("gameover");
+    sound.playvox("lose");
   }
-  if(!isEmpty) {
+  if (!isEmpty) {
     digLines.push(this.height - 1);
   }
   if (!piece.dead) {
     if (!piece.moveValid(0, 0, piece.tetro)) {
-      piece.y-=1;
+      piece.y -= 1;
       if (piece.y + pieces[piece.index].rect[3] <= this.hiddenHeight - 2) { // the bottom is >=2 cell away from visible part
         gameState = 9;
-        $setText(msg,'OOPS!');
+        $setText(msg, 'OOPS!');
         menu(3);
         sound.playse("gameover");
+        sound.playvox("lose");
       }
     }
     piece.dirty = true;
@@ -364,10 +559,10 @@ Stack.prototype.rowRise = function(arrRow, objPiece) {
 /**
  * Draws the stack.
  */
-Stack.prototype.draw = function() {
-  
+Stack.prototype.draw = function () {
+
   clear(stackCtx);
-  if(settings.Outline === 0 || settings.Outline === 1 ||
+  if (settings.Outline === 0 || settings.Outline === 1 ||
     (settings.Outline === 2 && (gameState === 9 || gameState === 1))
   ) {
     draw(this.grid, 0, -this.hiddenHeight, stackCtx, void 0, 0.3);
@@ -389,7 +584,7 @@ Stack.prototype.draw = function() {
     var lineCanvas = document.createElement('canvas');
     lineCanvas.width = stackCanvas.width;
     lineCanvas.height = stackCanvas.height;
-    
+
     var lineCtx = lineCanvas.getContext('2d');
     lineCtx.fillStyle = 'rgba(255,255,255,.5)';
     lineCtx.beginPath();
@@ -460,9 +655,9 @@ Stack.prototype.draw = function() {
     stackCtx.globalCompositeOperation = 'source-over';
     stackCtx.drawImage(lineCanvas, 0, 0);
   }
-  
+
   statisticsStack();
-  
+
   this.dirty = false;
 }
 var stack = new Stack();

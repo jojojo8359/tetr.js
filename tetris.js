@@ -533,8 +533,8 @@ var gravityArr = (function () {
 var lockDelayLimit = void 0;
 
 var mySettings = {
-  DAS: 9,
-  ARR: 1,
+  DAS: 10,
+  ARR: 2,
   Gravity: 0,
   'Soft Drop': 6,
   'Lock Delay': 30,
@@ -547,12 +547,15 @@ var mySettings = {
   Soundbank: 0,
   NextSound: 1,
   NextType: 0,
+  Voice: 0,
+  Voicebank: 2,
   Block: 2,
   Ghost: 1,
   Grid: 1,
   Outline: 1,
   DASCut: 0,
-  NextSide: 0
+  NextSide: 0,
+  Messages: 1
 };
 
 var settings = mySettings; // initialized by reference; replaced when game starts and replay
@@ -572,13 +575,18 @@ var settingName = {
   Soundbank: "Soundbank",
   NextSound: "Next Sound Indicator",
   NextType: "Next Soundbank",
+  Voice: "Enable Voice",
+  Voicebank: "Voice Set",
   Block: "Block Skin",
   Ghost: "Ghost Type",
   Grid: "Grid",
   Outline: "Outline",
   DASCut: "DAS Cut",
-  NextSide: "Next Queue Side"
+  NextSide: "Next Queue Side",
+  Messages: "Game Messages"
 };
+var gravityArray = [];
+var sdArray = [];
 var setting = {
   DAS: range(0, 31),
   ARR: range(0, 11),
@@ -590,6 +598,7 @@ var setting = {
       array.push('1/' + (64 / i) + 'G');
     for (var i = 1; i <= 20; i += 19)
       array.push(i + 'G');
+    gravityArray = array;
     return array;
   })(),
   'Soft Drop': (function () {
@@ -598,6 +607,7 @@ var setting = {
       array.push('1/' + (64 / i) + 'G');
     for (var i = 1; i <= 20; i += 19)
       array.push(i + 'G');
+    sdArray = array;
     return array;
   })(),
   'Lock Delay': range(0, 101),
@@ -610,12 +620,15 @@ var setting = {
   Soundbank: ['PPT', 'TGM3', 'NullPM', 'Yotipo', 'TOJ', 'Retro', 'Friends', 'T99'],
   NextSound: ['Off', 'On'],
   NextType: ['TGM3', 'NullPM'],
-  Block: ['Bevelled', 'Flat', 'Glossy', 'Arika', 'Aqua', 'Arcade', 'N-Blox', 'Bone', 'Retro', 'Friends'],
+  Voice: ['Off', 'On'],
+  Voicebank: ['Alexey', 'Friends', 'TOJ'],
+  Block: ['Bevelled', 'Flat', 'Glossy', 'Arika', 'Aqua', 'Arcade', 'N-Blox', 'Bone', 'Retro', 'Friends', 'T99'],
   Ghost: ['Normal', 'Colored', 'Off', 'Hidden'],
   Grid: ['Off', 'On'],
   Outline: ['Off', 'On', 'Hidden', 'Only'],
   DASCut: ['Off', 'On'],
-  NextSide: ['Right', 'Left']
+  NextSide: ['Right', 'Left'],
+  Messages: ['Right', 'Left']
 };
 var arrRowGen = {
   'simple': function (arr, offset, range, width) {
@@ -1615,6 +1628,7 @@ function tetRateNesRefresh() {
  */
 
 function init(gt, params) {
+
   document.getElementById("ivalue").style.color = "#ffffff";
   document.getElementById("linevector").classList.remove("drought-flash");
   document.getElementById("linevector").src = "linevector.svg";
@@ -1667,6 +1681,78 @@ function init(gt, params) {
     settings = ObjectClone(mySettings); // by value: prevent from being modified when paused
     gametype = gt;
     gameparams = params || {};
+//setup game parameters
+    if (gametype === 1) {
+      switch (gameSettings.marathon.limit.val) {
+        case 0:
+          gameparams.marathonLimit = 150;
+          break;
+        case 1:
+          gameparams.marathonLimit = 200;
+          break;
+        case 2:
+          gameparams.marathonLimit = undefined;
+          break;
+      }
+      gameparams.entryDelay = gameSettings.marathon.delay.val;
+      if (gameSettings.marathon.nograv.val == 1) {
+        gameparams.noGravity = true;
+      } else {
+        gameparams.noGravity = false;
+      }
+      if (gameSettings.marathon.invisible.val == 1) {
+        gameparams.invisibleMarathon = true;
+      }
+      if (gameSettings.marathon.cap.val == 1) {
+        gameparams.levelCap = 1;
+      }
+    } else if (gametype === 6) {
+      gameparams.delayStrictness = gameSettings.master.lock.val;
+    } else if (gametype === 8) {
+      if (gameSettings.retro.type.val == 1) {
+        gameparams.bType = true
+      }
+      if (gameSettings.retro.pro.val == 1) {
+        gameparams.proMode = true
+      }
+      if (gameSettings.retro.drop.val == 1) {
+        gameparams.allowHardDrop = true
+      }
+      if (gameSettings.retro.skin.val == 1) {
+        gameparams.retroSkin = true
+      }
+    } else if (gametype === 0) {
+      gameparams.pieceSet = gameSettings.sprint.piece.val;
+      gameparams.backFire = gameSettings.sprint.piece.val;
+      switch (gameSettings.sprint.limit.val) {
+        case 0:
+          lineLimit = 40;
+          break;
+        case 1:
+          lineLimit = 100;
+          break;
+        case 2:
+          lineLimit = 200;
+          break;
+      }
+    } else if (gametype === 4) {
+      if (gameSettings.dig.checker.val == 1) {
+        gameparams.digraceType = "checker"
+      } else {
+        gameparams.digraceType = "easy"
+      }
+    } else if (gametype === 3) {
+      if (gameSettings.survival.zen.val == 1) {
+        gametype = 7;
+      }
+      gameparams.digOffset = ( 500 * gameSettings.survival.slevel.val)
+    } else if (gametype === 9) {
+      if (gameSettings.grades.rule.val == 1) {
+        gameparams.classicRule = false;
+      } else {
+        gameparams.classicRule = true;
+      }
+    }
 
     var seed = ~~(Math.random() * 2147483645) + 1;
     rng.seed = seed;
@@ -1700,12 +1786,31 @@ function init(gt, params) {
       sound.loadbgm("retropro")
       sound.loadsidebgm("retroprodrought")
     }
+  } else if (gametype === 9) {
+    sound.loadbgm("grade1")
+    sound.loadbgm("grade2")
+    sound.loadbgm("grade3")
   }
-  if (gametype === void 0) //sometimes happens.....
+  if (gametype === void 0) {
     gametype = 0;
+    sound.loadbgm("sprint")
+  }//sometimes happens.....
+    
 
-  if (gametype === 0) // sprint
-    lineLimit = 40;
+  if (gametype === 0) {
+         switch (gameSettings.sprint.limit.val) {
+        case 0:
+          lineLimit = 40;
+          break;
+        case 1:
+          lineLimit = 100;
+          break;
+        case 2:
+          lineLimit = 200;
+          break;
+      } 
+  }// sprint
+//    lineLimit = 40;
   else if (gametype === 5) // score attack
     lineLimit = 200;
   else if (gametype === 8 && gameparams.bType == true)
@@ -1798,6 +1903,8 @@ function init(gt, params) {
   }
   if (gameparams.noGravity == true) {
     settings.Gravity = 1;
+  } else if (gametype === 1) {
+    settings.Gravity = 0;
   }
   if (gametype === 8) {
     settings.Next = 1;
@@ -1807,11 +1914,17 @@ function init(gt, params) {
     settings.ARR = 6;
     settings["Soft Drop"] = 5;
     settings.Ghost = 2;
-    settings.Block = 8;
+    if (gameparams.retroSkin == true) {
+      settings.Block = 8;
+    }
+
     settings.Outline = 0;
     settings.Grid = 0;
     settings.Gravity = 0;
   } else if (gametype === 9) {
+    piece.areLimit = 25;
+    lineARE = 40;
+    lineAREb = 0;
     settings.Next = 3;
     settings.DAS = 14;
     settings["Lock Delay"] = 30;
@@ -1960,10 +2073,15 @@ function statisticsStack() {
 
   if (gametype === 8) {
     document.getElementById("score").style.display = "none";
+    document.getElementById("score-label").style.display = "block";
     document.getElementById("nesscore").style.display = "block";
     document.getElementById("nesratetr").style.display = "block";
+  } else if (gametype === 9) {
+    document.getElementById("score").style.display = "none";
+    document.getElementById("score-label").style.display = "none";
   } else {
     document.getElementById("score").style.display = "block";
+    document.getElementById("score-label").style.display = "block";
     document.getElementById("nesscore").style.display = "none";
     document.getElementById("nesratetr").style.display = "none";
   }
@@ -1974,11 +2092,11 @@ function statisticsStack() {
   } else if (gametype === 1 || gametype === 7) {
     $setText(statsLines, lines);
     if (gameparams.noGravity != true) {
-      $setText(statsLevel, "Lv. " + (level + 1));
+      document.getElementById("level").innerHTML = "<b>LEVEL</b> " + (level + 1);
     }
   } else if (gametype === 8) {
     $setText(statsLines, lines);
-    $setText(statsLevel, "Lv. " + level);
+    document.getElementById("level").innerHTML = "<b>LEVEL</b> " + (level + 1);
     if (lineDrought < 13) {
       $setText(statsIpieces, lineAmount)
     }
@@ -1989,7 +2107,7 @@ function statisticsStack() {
 
   } else if (gametype === 6) {
     $setText(statsLines, lines);
-    $setText(statsLevel, "Lv. M" + (level + 1));
+    document.getElementById("level").innerHTML = "<b>LEVEL</b> M" + (level + 1);
 
   } else if (gametype === 3) {
     if (gameparams["digOffset"] || gameparams["digOffset"] !== 0) {
@@ -2001,7 +2119,7 @@ function statisticsStack() {
 
   } else if (gametype === 9) {
     $setText(statsLines, lines);
-    $setText(statsLevel, leveltgmvisible);
+    $setText(statsLevel, leveltgmvisible + "/" + (Math.floor((leveltgm / 100) % 10) + 1) * 100);
   }
   //else if (gametype === 4){
   //  $setText(statsLines, digLines.length);
@@ -2011,9 +2129,10 @@ function statisticsStack() {
     $setText(statsLevel, "");
   }
   if (gametype !== 8) {
-    $setText(holdtext, "HOLD");
+    
+    document.getElementById("holdtext").innerHTML = "<span class='white-border-span'>Hold</span>";
   } else {
-    $setText(holdtext, "");
+    document.getElementById("holdtext").innerHTML = "";
   }
   if (gameparams.proMode == true) {
     $setText(promode, "PRO");
@@ -2028,12 +2147,12 @@ function statisticsStack() {
   }
 
   if (gametype === 6) {
-    document.getElementById("rainbow").style.display = "block";
+//    document.getElementById("rainbow").style.display = "block";
   } else {
     document.getElementById("rainbow").style.display = "none";
   }
 
-  if (gametype === 8) {
+  if (gametype === 8 && gameparams.retroSkin == true) {
     makeSprite();
     switch (parseInt((level + '').charAt(level.toString().length - 1))) {
       case 0:
@@ -2204,6 +2323,18 @@ function makeSprite() {
     ['#fe9292', '#f72039', '#fe4e71', '#d70f37', '#c70e33', '#9e0c29'],
     ['#494949', '#353535', '#3c3c3c', '#303030', '#2a2a2a', '#171717'],
     ['#aeaeae', '#808080', '#909090', '#737373', '#666666', '#373737'],
+  ];
+  var t99 = [
+    ['#909090', '#d8d6d6', '#5d5d5d', '#9ea09f', '#797979'],
+    ['#00e5ff', '#82ffff', '#00aaba', '#1ce7f7', '#00c2d3'],
+    ['#1a00fa', '#4287ff', '#000092', '#202aee', '#0000c4'],
+    ['#ff6d08', '#ffa76b', '#d14200', '#fb7325', '#f74800'],
+    ['#ffdd0d', '#fff45c', '#d59b00', '#f5c81b', '#f2b200'],
+    ['#69ff0c', '#a8ff6f', '#13c500', '#62fc1e', '#2fe900'],
+    ['#b400fd', '#ea78fe', '#70009a', '#bf20f0', '#7f00c8'],
+    ['#ff093b', '#ff7094', '#ba0625', '#fb0b3f', '#ef0020'],
+    ['#5e5e5e', '#a6a4a4', '#3c3c3c', '#303030', '#2a2a2a'],
+    ['#909090', '#d8d6d6', '#2b2b2b', '#6d6f6f', '#474747'],
   ];
 
 
@@ -2411,6 +2542,43 @@ function makeSprite() {
 
       spriteCtx.fillStyle = friends[i][3];
       spriteCtx.fillRect(x + cellSize / 3.6, 0 + cellSize / 3.6, cellSize / 2.25, cellSize / 2.25);
+    } else if (settings.Block === 10) {
+      // T99
+      spriteCtx.fillStyle = t99[i][0];
+      spriteCtx.fillRect(x, 0, cellSize, cellSize);
+//
+      var grad = spriteCtx.createLinearGradient(x, 0, x + cellSize / 7, cellSize / 2);
+      grad.addColorStop(0, "#FFFFFFEE");
+      grad.addColorStop(1, "#FFFFFF66");
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize / 8, cellSize / 8);
+      spriteCtx.lineTo(x + cellSize / 8, cellSize / 2);
+      spriteCtx.quadraticCurveTo(x + cellSize / 1.5, cellSize / 4, x + cellSize / (8 / 7), cellSize / 4);
+      spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / 8);
+      spriteCtx.fillStyle = grad;
+      spriteCtx.fill();
+
+      spriteCtx.fillStyle = t99[i][1];
+      spriteCtx.fillRect(x, 0, cellSize, cellSize / 8);
+
+      spriteCtx.fillStyle = t99[i][2];
+      spriteCtx.fillRect(x, cellSize / (8 / 7), cellSize, cellSize / 8);
+//
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x, 0);
+      spriteCtx.lineTo(x, cellSize);
+      spriteCtx.lineTo(x + cellSize / 8, cellSize / (8 / 7));
+      spriteCtx.lineTo(x + cellSize / 8, cellSize / 8);
+      spriteCtx.fillStyle = t99[i][3];
+      spriteCtx.fill();
+
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize, 0);
+      spriteCtx.lineTo(x + cellSize, cellSize);
+      spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / (8 / 7));
+      spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / 8);
+      spriteCtx.fillStyle = t99[i][4];
+      spriteCtx.fill();
     }
   }
 }
@@ -2528,6 +2696,7 @@ function update() {
       piece.hold(); // may cause death
     }
     if (gameState === 9) {
+      
       break;
     }
 
@@ -2684,16 +2853,16 @@ function gameLoop() {
         }
         // DAS Preload
         if (keysDown & flags.moveLeft) {
-          //          if (gametype !== 8) {
+//                    if (gameparams.classicTuning !== true) {
           piece.shiftDelay = settings.DAS;
-          //          }
+//                    }
 
           piece.shiftReleased = false;
           piece.shiftDir = -1;
         } else if (keysDown & flags.moveRight) {
-          //          if (gametype !== 8) {
+//                    if (gameparams.classicTuning !== true) {
           piece.shiftDelay = settings.DAS;
-          //          }
+//                    }
           piece.shiftReleased = false;
           piece.shiftDir = 1;
         } else {
@@ -2746,12 +2915,13 @@ function gameLoop() {
             statisticsStack();
             makeSprite();
 
-            playedLevelingbgm = [false, false, false, false, false]
+            playedLevelingbgmGrades = [false, false]
             playedLevelingbgmMarathon = [false, false]
             killAllbgm = true
             $setText(msg, 'READY');
+            clearTetrisMessage();
             sound.playse("ready")
-
+            clearRows = [];
             sound.killbgm();
           } else if (frame === ~~(fps * 5 / 6)) {
             killAllbgm = false
@@ -2780,6 +2950,8 @@ function gameLoop() {
                 sound.playbgm("retropro")
                 sound.playsidebgm("retroprodrought")
               }
+            } else if (gametype === 9) {
+              sound.playbgm("grade1")
             }
           }
           scoreTime = 0;
@@ -2800,6 +2972,9 @@ function gameLoop() {
           }
           if (piece.ihs === true) {
             document.getElementById("ihs-indicator").style.display = "block";
+          }
+          if (piece.are >= lineARE) {
+            stack.clearLines()
           }
           piece.are++;
           updateScoreTime();
@@ -2826,6 +3001,8 @@ function gameLoop() {
         }
 
       } else if (gameState === 9 || gameState === 1) {
+        document.getElementById("stack").classList.remove("invisible-replay")
+      document.getElementById("stack").classList.remove("invisible")
         if (toGreyRow >= stack.hiddenHeight) {
           /**
            * Fade to grey animation played when player loses.
@@ -2905,6 +3082,7 @@ function checkWin() {
       piece.dead = true;
       menu(3);
       sound.playse("endingstart");
+      sound.playvox("win");
       //      console.log(scoreTime)
       if ((scoreTime < parseInt(Cookies.get('sprint40pb')) || Cookies.get('sprint40pb') == undefined) && (gameparams.recordPB == true) && (watchingReplay == false)) {
 
@@ -2921,7 +3099,7 @@ function checkWin() {
     var isend = false;
     if (gametype === 1) { // Marathon
       if (settings.Gravity !== 0 && lines >= 200 && gameparams.noGravity != true) { // not Auto, limit to 200 Lines
-        isend = true;
+//        isend = true;
       } else if ((gameparams.marathonLimit != undefined) && lines >= gameparams.marathonLimit) {
         isend = true;
       }
@@ -2948,6 +3126,7 @@ function checkWin() {
       piece.dead = true;
       menu(3);
       sound.playse("endingstart");
+      sound.playvox("win");
     }
   }
 }
@@ -3011,6 +3190,36 @@ function trysubmitscore() {
   } else {
     submitscore(obj);
   }
+}
+function showTetrisMessage(contents) {
+  if (settings.Messages == 1) {
+    document.getElementById("clear").innerHTML = contents
+    document.getElementById("clear").classList.remove("flyaway");
+    void document.getElementById("clear").offsetWidth;
+    document.getElementById("clear").classList.add("flyaway");
+
+    let comboname;
+    if (settings.Voice == 1 && settings.Voicebank == 2) {
+      comboname = "REN";
+    } else {
+      comboname = "COMBO"
+    }
+
+    if (combo < 2) {
+      document.getElementById("renmsg").innerHTML = ""
+    } else if (combo > 19) {
+      document.getElementById("renmsg").innerHTML = "<b>" + combo + "</b> " + comboname
+      document.getElementById("rendiv").style["animation-duration"] = "0.041s"
+    } else {
+      document.getElementById("renmsg").innerHTML = "<b>" + combo + "</b> " + comboname
+      document.getElementById("rendiv").style["animation-duration"] = 0.5 - (0.485 * ((combo - 2) / 18)) + "s"
+    }
+  }
+}
+
+function clearTetrisMessage() {
+  document.getElementById("clear").innerHTML = ""
+  document.getElementById("renmsg").innerHTML = ""
 }
 
 function tryreplaydata() {

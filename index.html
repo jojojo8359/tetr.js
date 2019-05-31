@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135926838-2"></script>
@@ -12,6 +13,7 @@
     gtag('js', new Date());
 
     gtag('config', 'UA-135926838-2');
+
   </script>
 
   <meta charset="utf-8">
@@ -42,7 +44,7 @@
 
     <!-- Canvases -->
     <div id="d">
-      <h3 id="holdtext" style="font-weight: 300;">Hold</h3>
+      <h3 id="holdtext" style="font-weight: 300;"><span class="white-border-span">Hold</span></h3>
 
       <div id="a">
         <canvas id="hold" class="glow-flash-animation"></canvas>
@@ -60,7 +62,7 @@
         <tr>
           <th style="font-family: 'Roboto Mono'; font-weight: 700" id="score">0</th>
           <th style="font-family: 'Roboto Mono'; font-weight: 700;display: none;" id="nesscore">0</th>
-          <th>Score</th>
+          <th id="score-label">Score</th>
         </tr>
         <tr>
           <td id="levelline" style="font-family: 'Roboto Mono'; font-weight: 300">
@@ -89,35 +91,38 @@
       <div id="msgdiv">
         <span id="msg"></span>
       </div>
+      
+      <div id="cleardiv">
+        <span id="clear"></span>
+      </div>
+      
+      <div id="rendiv">
+        <span id="renmsg"></span>
+      </div>
 
       <nav class="menu on">
-        <img style="margin: 10px" width="72%" src=tetrjslogoenhanced.svg>
+        <img style="margin: 0px" width="72%" src=tetrjslogoenhanced.svg>
         <!--      <h1 style="font-weight: 4;font-size: 2rem;margin: 0px">Tetr.js Enhanced</h1>-->
-        <p style=margin:0px>v0.5 <a class="link" href="changelog.html">(view changelog)</a></p>
+        <p style=margin:0px>v0.6 <a class="link" href="changelog.html">(view changelog)</a></p>
+<!--
         <p style=margin:3px>designed by simonlc<br>
           overhauled by farter<br>
           enhanced by Dr Ocelot</p>
         <p style=margin:5px;>forked from: <a class="link" href="https://github.com/farteryhr/tetr.js/tree/gh-pages">&gt;&gt;Dig v0.58 by farter</a><br />
+-->
 
           <div class="btn-container" style="margin: 0px">
             <a class="btn" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdA_gr2LDp0eerl72mrlm3sepaOHM55y6wOdySsk5vRqUA_Dw/viewform?usp=sf_link" style="margin-top: 9px;">Give Feedback</a>
-            <a class="btn" target="_blank" href="https://docs.google.com/spreadsheets/d/1BWnbxe60ceiEnWx-BIzVjK3u_J_UAaTIasLbB7xkpZA/edit?usp=sharing" style="margin-top: 9px;">Feedback Statuses</a>
-            <b>QUICK ACCESS</b>
-
-            <a class="btn" onclick="init(1)" style="margin-top: 9px"><i class="material-icons">&#xE153;</i> Endless Marathon</a>
-
-            <a class="btn" style="margin-bottom: 0px" onclick="init(0,{recordPB:true})"><i class="material-icons">&#xE3E7;</i> Sprint 40</a>
-            <p style="margin-bottom: 50px; margin-top: 2px">Personal Best: <span id="sprint-pb">????</span></p>
-
-            <!-- <a class="btn" onclick="init(2)">Play Ultra</a> -->
-
-            <a class="btn" onclick="menu(10,1)"><i class="material-icons">&#xE8E5;</i> Main Modes</a>
-            <a class="btn" onclick="menu(7,1)"><i class="material-icons">&#xE8E5;</i> Dig Modes</a>
-            <a class="btn" onclick="menu(9,1)"><i class="material-icons">&#xE8E5;</i> Sprint Modes</a>
-            <a class="btn" onclick="menu(8,1)"><i class="material-icons">&#xE8E5;</i> Retro Modes</a>
-
+            <a class="btn" target="_blank" href="https://docs.google.com/spreadsheets/d/1BWnbxe60ceiEnWx-BIzVjK3u_J_UAaTIasLbB7xkpZA/edit?usp=sharing" style="margin-bottom: 1.1em;">Feedback Statuses</a>
+            <a class="btn" onclick="menu(9,1)"><i class="material-icons">&#xE8E5;</i>Sprint</a>
+            <a class="btn" onclick="menu(10,1)"><i class="material-icons">&#xE8E5;</i>Marathon</a>
+            <a class="btn" onclick="menu(11,1)"><i class="material-icons">&#xE8E5;</i>Master</a>
+            <a class="btn" onclick="menu(8,1)"><i class="material-icons">&#xE8E5;</i>Retro</a>
+            <a class="btn" onclick="menu(7,1)"><i class="material-icons">&#xE8E5;</i>Dig</a>
+            <a class="btn" onclick="menu(16,1)"><i class="material-icons">&#xE8E5;</i>Survival</a>
+            <a class="btn" onclick="menu(17,1)" style="margin-bottom: 1.1em;"><i class="material-icons">&#xE8E5;</i>Grades (WIP)</a>
             <a class="btn" onclick="menu(2)" id="btnbinds"><i class="material-icons">&#xE021;</i> Controls</a>
-            <a class="btn" onclick="menu(1)"><i class="material-icons">&#xE869;</i> Settings</a>
+            <a class="btn" onclick="menu(12)"><i class="material-icons">&#xE869;</i> Settings</a>
             <a class="btn" onclick="menu(6,1)"><i class="material-icons">&#xE04A;</i> Replay</a>
 
           </div>
@@ -225,75 +230,442 @@
       </nav>
 
       <nav class="menu">
-        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tetr.js Enhanced</h1>
-        <p style="margin: 0px">Dig Modes</p>
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Dig</h1>
+        <p style="margin: 0px">Clear the bottom as line as soon as possible</p>
+        
+          <h4 class="option-header">Checkered</h4>
+          <p class="option-description">Dig through a checkered stack instead of a diagonal one
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="dig-checker-0" onclick="changeSetting('dig', 'checker', 0)">Off</button>
+            <button id="dig-checker-1" onclick="changeSetting('dig', 'checker', 1)">On</button>
+          </div>
+          <br>
+        <a class="btn btn-inline" onclick="init(4)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
+      </nav>
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Retro</h1>
+        <p style="margin: 0px">Classic game with a variety of options.</p>
         <div style="margin: 0px" class="btn-container">
-          <a class="btn" onclick="init(4,{digraceType:'easy'})"><i class="material-icons">&#xE91D;</i> Dig Race</a>
-          <a class="btn" onclick="init(4,{digraceType:'checker'})"><i class="material-icons">&#xE540;</i> Dig Race Pro</a>
-          <a class="btn" onclick="init(3,{digOffset:0})"><i class="material-icons">&#xE800;</i> Survival</a>
-          <a class="btn" onclick="init(7)"><i class="material-icons">&#xE034;</i> Zen Survival</a>
-          <a class="btn" onclick="init(3,{digOffset:500})"><i class="material-icons">&#xE3A8;</i> Survival Lv 2</a>
-          <a class="btn" onclick="init(3,{digOffset:1000})"><i class="material-icons">&#xE3A7;</i> Survival Lv 3</a>
-          <a class="btn" onclick="init(3,{digOffset:1500})"><i class="material-icons">&#xE3A6;</i> Survival Lv 4</a>
-          <a class="btn" onclick="init(3,{digOffset:2000})"><i class="material-icons">&#xE3E4;</i> Survival Lv 5</a>
+          <h4 class="option-header">Game Type</h4>
+          <p class="option-description">A-Type: Play Forever
+            <br>B-Type: Reach 25 Lines
+          </p>
+          <div class="btn-group" style="margin-left: 4.34em">
+            <button id="retro-type-0" onclick="changeSetting('retro', 'type', 0)">A-Type</button>
+            <button id="retro-type-1" onclick="changeSetting('retro', 'type', 1)">B-Type</button>
+          </div>
 
+          <h4 class="option-header">Pro Mode</h4>
+          <p class="option-description">Start at a very high level
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="retro-pro-0" onclick="changeSetting('retro', 'pro', 0)">Off</button>
+            <button id="retro-pro-1" onclick="changeSetting('retro', 'pro', 1)">On</button>
+          </div>
 
-          <a class="btn" onclick="menu(void 0,-1)">Back</a>
+          <h4 class="option-header">Retro Skin</h4>
+          <p class="option-description">Enable the colour-changing retro skin
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="retro-skin-0" onclick="changeSetting('retro', 'skin', 0)">Off</button>
+            <button id="retro-skin-1" onclick="changeSetting('retro', 'skin', 1)">On</button>
+          </div>
+
+          <h4 class="option-header">Hard Drop</h4>
+          <p class="option-description">Allow the use of hard drop
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="retro-drop-0" onclick="changeSetting('retro', 'drop', 0)">Off</button>
+            <button id="retro-drop-1" onclick="changeSetting('retro', 'drop', 1)">On</button>
+          </div>
+          <br>
+
+          <a class="btn btn-inline" onclick="init(8,{proMode:false})" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
         </div>
       </nav>
       <nav class="menu">
-        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tetr.js Enhanced</h1>
-        <p style="margin: 0px">Retro Modes</p>
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Sprint</h1>
+        <p style="margin: 0px">Clear the lines as fast as you can!</p>
         <div style="margin: 0px" class="btn-container">
-          <a class="btn" onclick="init(8,{proMode:false})"><i class="material-icons"></i> A-Type</a>
-          <a class="btn" onclick="init(8,{proMode:true})"><i class="material-icons"></i> A-Type Pro</a>
-          <a class="btn" onclick="init(8,{proMode:false,bType:true})"><i class="material-icons"></i> B-Type</a>
-          <a class="btn" onclick="init(8,{proMode:true,bType:true})"><i class="material-icons"></i> B-Type Pro</a>
+          <h4 class="option-header">Goal</h4>
+          <p class="option-description">Total lines to clear</p>
 
-          <a class="btn" onclick="menu(void 0,-1)">Back</a>
+          <div class="btn-group" style="margin-left: 4.8em">
+            <button id="sprint-limit-0" onclick="changeSetting('sprint', 'limit', 0)">40</button>
+            <button id="sprint-limit-1" onclick="changeSetting('sprint', 'limit', 1)">100</button>
+            <button id="sprint-limit-2" onclick="changeSetting('sprint', 'limit', 2)">200</button>
+          </div>
+          
+          <h4 class="option-header">Piece Set</h4>
+          <p class="option-description">The types of pieces used during the game</p>
+
+          <div class="btn-group" style="margin-left: 3em">
+            <button id="sprint-piece-0" onclick="changeSetting('sprint', 'piece', 0)">Standard</button>
+            <button id="sprint-piece-1" onclick="changeSetting('sprint', 'piece', 1)">No I</button>
+            <button id="sprint-piece-2" onclick="changeSetting('sprint', 'piece', 2)">I Only</button>
+          </div>
+          
+          <h4 class="option-header">Backfire</h4>
+          <p class="option-description">Have lines sent back to you</p>
+
+          <div class="btn-group" style="margin-left: 2.9em">
+            <button id="sprint-backfire-0" onclick="changeSetting('sprint', 'backfire', 0)">Off</button>
+            <button id="sprint-backfire-1" onclick="changeSetting('sprint', 'backfire', 1)">Low</button>
+            <button id="sprint-backfire-2" onclick="changeSetting('sprint', 'backfire', 2)">Med</button>
+            <button id="sprint-backfire-3" onclick="changeSetting('sprint', 'backfire', 3)">High</button>
+          </div>
+          
+          <br>
+          
+          <a class="btn btn-inline" onclick="init(0)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
         </div>
       </nav>
       <nav class="menu">
-        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tetr.js Enhanced</h1>
-        <p style="margin: 0px">Sprint Modes</p>
-        <div style="margin: 0px" class="btn-container">
-          <a class="btn" onclick="init(0,{recordPB:true})"><i class="material-icons">&#xE3E7;</i> Sprint 40</a>
-          <p style="margin-bottom: 50px; margin-top: 2px">Personal Best: <span id="sprint-pb-menu">????</span></p>
-          <a class="btn" onclick="init(5)"><i class="material-icons">&#xE2C3;</i> Sprint 200</a>
-          <a class="btn" onclick="init(0,{pieceSet:1})"><i class="material-icons"></i> Spr<span class="flickering">i</span>nt 40</a>
-          <a class="btn" onclick="init(0,{pieceSet:2})"><i class="material-icons"></i> I Sprint 40</a>
-          <a class="btn" onclick="init(0,{backFire:1})"><i class="material-icons"></i> Backfire</a>
-          <a class="btn" onclick="init(0,{backFire:2})"><i class="material-icons"></i> Backfire Pro</a>
-          <a class="btn" onclick="init(0,{backFire:3})"><i class="material-icons"></i> Backfire Master</a>
-
-          <a class="btn" onclick="menu(void 0,-1)">Back</a>
-
-          <a class="btn" onclick="removeSprintPB()" style="outline-color: red; color: red; margin-top: 200px;">Erase PB</a>
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Marathon</h1>
+        <p style="margin: 0px">Standard game. Aim for a high score.</p>
+        <h4 class="option-header">Goal</h4>
+        <p class="option-description">Lines to reach before winning</p>
+        <div class="btn-group" style="margin-left: 3.4em">
+          <button id="marathon-limit-0" onclick="changeSetting('marathon', 'limit', 0)">150</button>
+          <button id="marathon-limit-1" onclick="changeSetting('marathon', 'limit', 1)">200</button>
+          <button id="marathon-limit-2" onclick="changeSetting('marathon', 'limit', 2)">Endless</button>
         </div>
+        
+        <h4 class="option-header">Level Cap</h4>
+        <p class="option-description">When on, set the maximum level to 15. When off, level will continously rise with the lock delay shortening after 20G.</p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="marathon-cap-0" onclick="changeSetting('marathon', 'cap', 0)">Off</button>
+          <button id="marathon-cap-1" onclick="changeSetting('marathon', 'cap', 1)">On</button>
+        </div>
+        
+        <h4 class="option-header">Entry Delay</h4>
+        <p class="option-description">Determines how long the game pauses between pieces</p>
+        <div class="btn-group" style="margin-left: 3em">
+          <button id="marathon-delay-0" onclick="changeSetting('marathon', 'delay', 0)">None</button>
+          <button id="marathon-delay-1" onclick="changeSetting('marathon', 'delay', 1)">Short</button>
+          <button id="marathon-delay-2" onclick="changeSetting('marathon', 'delay', 2)">Long</button>
+        </div>
+
+        <h4 class="option-header">0G Mode</h4>
+        <p class="option-description">Disable gravity for a more relaxed game</p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="marathon-nograv-0" onclick="changeSetting('marathon', 'nograv', 0)">Off</button>
+          <button id="marathon-nograv-1" onclick="changeSetting('marathon', 'nograv', 1)">On</button>
+        </div>
+
+        <h4 class="option-header">Invisible Bonus</h4>
+        <p class="option-description">Make the stack become invisible at level 21</p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="marathon-invisible-0" onclick="changeSetting('marathon', 'invisible', 0)">Off</button>
+          <button id="marathon-invisible-1" onclick="changeSetting('marathon', 'invisible', 1)">On</button>
+        </div>
+
+        <br>
+        <a class="btn btn-inline" onclick="init(1)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
       </nav>
       <nav class="menu">
-        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tetr.js Enhanced</h1>
-        <p style="margin: 0px">Main Modes</p>
-        <div style="margin: 0px" class="btn-container">
-          <a class="btn" onclick="init(1,{marathonLimit:150})"><i class="material-icons">&#xE153;</i>Marathon 150</a>
-          <a class="btn" onclick="init(1,{marathonLimit:200})"><i class="material-icons">&#xE153;</i>Marathon 200</a>
-          <a class="btn" onclick="init(1)"><i class="material-icons">&#xE153;</i>Endless Marathon</a>
-          <a class="btn" onclick="init(1, {noGravity:true})"><i class="material-icons">&#xE153;</i>0G Marathon</a>
-          <a class="btn" onclick="init(6)"><i class="material-icons">&#xE01F;</i> Master</a>
-          <p style="margin-bottom: 0px;">Grade Modes are VERY unfinished and featureless. Feel free to play them, but don't expect much.</p>
-          <a class="btn" onclick="init(9, {classicRule:true})"><i class="material-icons">&#xE153;</i> Grades Classic</a>
-          <a class="btn" onclick="init(9, {classicRule:false})"><i class="material-icons">&#xE153;</i> Grades World</a>
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Master</h1>
+        <p style="margin: 0px">Super-fast game. Aim for 300 lines.</p>
+        <h4 class="option-header">Lockdown Mode</h4>
+        <p class="option-description">Determines how the lockdown will function.
+          <br>
 
-          <a class="btn" onclick="menu(void 0,-1)">Back</a>
+          <br>Forgiving: Lock delay will reset upon all manipulations
+          <br>
+          <br>Limited: Lock delay will reset for a limited amount of manipulations
+          <br>
+          <br>Strict: Lock delay will reset only when a piece has fallen
+        </p>
+        <div class="btn-group" style="margin-left: 1.9em">
+          <button id="master-lock-0" onclick="changeSetting('master', 'lock', 0)">Forgiving</button>
+          <button id="master-lock-1" onclick="changeSetting('master', 'lock', 1)">Limited</button>
+          <button id="master-lock-2" onclick="changeSetting('master', 'lock', 2)">Strict</button>
         </div>
+
+        <br>
+        <a class="btn btn-inline" onclick="init(6)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
       </nav>
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Settings</h1>
+        <a class="btn" onclick="menu(13)">Tuning</a>
+        <a class="btn" onclick="menu(15)">Graphics</a>
+        <a class="btn" onclick="menu(14)">Audio</a>
+        <!--
+        <a class="btn" onclick="menu(0)">Back</a>
+        <a class="btn" onclick="menu(0)">Back</a>
+-->
+        <a class="btn" onclick="menu(0)">Back</a>
+      </nav>
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Tuning</h1>
+        <h4 class="option-header">Autoshift Delay</h4>
+        <p class="option-description">How long it takes before the autoshift kicks in; default 10 frames</p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="30" value="10" class="slider" id="dasRange">
+          <p id="dasValue" class="slidervalue"></p>
+        </div>
 
+        <h4 class="option-header">Autoshift Rate</h4>
+        <p class="option-description">How fast the autoshift goes; default 2 frames</p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="10" value="2" class="slider" id="arrRange">
+          <p id="arrValue" class="slidervalue"></p>
+        </div>
 
+        <h4 class="option-header">Gravity</h4>
+        <p class="option-description">Override the speed at which pieces fall; default 'Auto'
+        </p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="9" value="0" class="slider" id="gravRange">
+          <p id="gravValue" class="slidervalue"></p>
+        </div>
+
+        <h4 class="option-header">Soft Drop Speed</h4>
+        <p class="option-description">Speed at which the piece soft drops; default 1G
+        </p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="7" value="6" class="slider" id="sdRange">
+          <p id="sdValue" class="slidervalue"></p>
+        </div>
+
+        <h4 class="option-header">Lock Delay</h4>
+        <p class="option-description">The amount of time a piece can stay landed before it locks to the stack; default 30 frames
+        </p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="100" value="30" class="slider" id="ldRange">
+          <p id="ldValue" class="slidervalue"></p>
+        </div>
+
+        <h4 class="option-header">Rotation System</h4>
+        <p class="option-description">The desired rotation system; default 'Super'
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="RotSys-0" onclick="saveSpecificSetting('RotSys', 0)" class="active">Super</button>
+          <button id="RotSys-1" onclick="saveSpecificSetting('RotSys', 1)">C2</button>
+          <button id="RotSys-2" onclick="saveSpecificSetting('RotSys', 2)">Arika</button>
+          <button id="RotSys-3" onclick="saveSpecificSetting('RotSys', 3)">DTET</button>
+          <button id="RotSys-4" onclick="saveSpecificSetting('RotSys', 4)">QQ</button>
+          <button id="RotSys-5" onclick="saveSpecificSetting('RotSys', 5)">Atari</button>
+          <button id="RotSys-6" onclick="saveSpecificSetting('RotSys', 6)">Tengen</button>
+          <button id="RotSys-7" onclick="saveSpecificSetting('RotSys', 7)">N-Blox</button>
+          <button id="RotSys-8" onclick="saveSpecificSetting('RotSys', 8)">Nintendo</button>
+          <button id="RotSys-9" onclick="saveSpecificSetting('RotSys', 9)">MS</button>
+          <button id="RotSys-10" onclick="saveSpecificSetting('RotSys', 10)">E-60</button>
+          <button id="RotSys-11" onclick="saveSpecificSetting('RotSys', 11)">IBM PC</button>
+          <button id="RotSys-12" onclick="saveSpecificSetting('RotSys', 12)">JJ</button>
+          <button id="RotSys-13" onclick="saveSpecificSetting('RotSys', 13)">5000</button>
+          <button id="RotSys-14" onclick="saveSpecificSetting('RotSys', 14)">Plus</button>
+          <button id="RotSys-15" onclick="saveSpecificSetting('RotSys', 15)">DX</button>
+        </div>
+
+        <br>
+        <a class="btn" onclick="menu(12)">Back</a>
+      </nav>
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Audio</h1>
+        <h4 class="option-header">Enable Sound</h4>
+        <p class="option-description">Completely enable or disable the sound system
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="Sound-0" onclick="saveSpecificSetting('Sound', 0)">Off</button>
+          <button id="Sound-1" onclick="saveSpecificSetting('Sound', 1)">On</button>
+        </div>
+
+        <h4 class="option-header">Sound Volume</h4>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="100" value="50" class="slider" id="volRange">
+          <p id="volValue" class="slidervalue"></p>
+        </div>
+
+        <h4 class="option-header">Music Volume</h4>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="100" value="50" class="slider" id="musRange">
+          <p id="musValue" class="slidervalue"></p>
+        </div>
+
+        <h4 class="option-header">Soundbank</h4>
+        <p class="option-description">Modifies the audio bank of the game
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="Soundbank-0" onclick="saveSpecificSetting('Soundbank', 0)" class="active">PPT</button>
+          <button id="Soundbank-1" onclick="saveSpecificSetting('Soundbank', 1)">TGM3</button>
+          <button id="Soundbank-2" onclick="saveSpecificSetting('Soundbank', 2)">NullPM</button>
+          <button id="Soundbank-3" onclick="saveSpecificSetting('Soundbank', 3)">Yotipo</button>
+          <button id="Soundbank-4" onclick="saveSpecificSetting('Soundbank', 4)">TOJ</button>
+          <button id="Soundbank-5" onclick="saveSpecificSetting('Soundbank', 5)">Retro</button>
+          <button id="Soundbank-6" onclick="saveSpecificSetting('Soundbank', 6)">Friends</button>
+          <button id="Soundbank-7" onclick="saveSpecificSetting('Soundbank', 7)">T99</button>
+        </div>
+
+        <h4 class="option-header">Next Queue Audio Indicator</h4>
+        <p class="option-description">Plays a sound for a specific piece when it arrives in the next queue
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="NextSound-0" onclick="saveSpecificSetting('NextSound', 0)">Off</button>
+          <button id="NextSound-1" onclick="saveSpecificSetting('NextSound', 1)">On</button>
+        </div>
+
+        <h4 class="option-header">Next Queue Soundbank</h4>
+        <p class="option-description">Modifies the audio bank of the next queue audio indicators
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="NextType-0" onclick="saveSpecificSetting('NextType', 0)" class="active">TGM3</button>
+          <button id="NextType-1" onclick="saveSpecificSetting('NextType', 1)">NullPM</button>
+        </div>
+        
+        <h4 class="option-header">Voice</h4>
+        <p class="option-description">Enable the announcer
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="Voice-0" onclick="saveSpecificSetting('Voice', 0)">Off</button>
+          <button id="Voice-1" onclick="saveSpecificSetting('Voice', 1)">On</button>
+        </div>
+
+        <h4 class="option-header">Voicebank</h4>
+        <p class="option-description">Modifies the soundbank of the announcer
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="Voicebank-2" onclick="saveSpecificSetting('Voicebank', 2)">TOJ</button>
+          <button id="Voicebank-1" onclick="saveSpecificSetting('Voicebank', 1)">Friends</button>
+          <button id="Voicebank-0" onclick="saveSpecificSetting('Voicebank', 0)">Alexey</button>
+        </div>
+       
+        <br>
+        <a class="btn" onclick="menu(12)">Back</a>
+      </nav>
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Graphics</h1>
+        
+        <h4 class="option-header">Game Size</h4>
+        <p class="option-description">The size the game takes in the browser window
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="Size-1" onclick="saveSpecificSetting('Size', 1)">Small</button>
+          <button id="Size-2" onclick="saveSpecificSetting('Size', 2)">Medium</button>
+          <button id="Size-3" onclick="saveSpecificSetting('Size', 3)">Large</button>
+          <button id="Size-4" onclick="saveSpecificSetting('Size', 4)">Extra Large</button>
+          <button id="Size-0" onclick="saveSpecificSetting('Size', 0)">Fullscreen</button>
+        </div>
+        
+        <h4 class="option-header">Next Queue Count</h4>
+        <p class="option-description">Changes the length in pieces of the next queue</p>
+        <div class="slidecontainer">
+          <input type="range" min="0" max="6" value="6" class="slider" id="nextRange">
+          <p id="nextValue" class="slidervalue"></p>
+        </div>
+        
+        <h4 class="option-header">Next Queue Side</h4>
+        <p class="option-description">Changes the side the next queue takes
+        </p>
+        <div class="btn-group" style="margin-left: 5em">
+          <button id="NextSide-1" onclick="saveSpecificSetting('NextSide', 1)">Left</button>
+          <button id="NextSide-0" onclick="saveSpecificSetting('NextSide', 0)">Right</button>
+        </div>
+        
+        <h4 class="option-header">Block Skin</h4>
+        <p class="option-description">The desired block skin
+        </p>
+        <div class="btn-group-list" style="">
+          <button id="Block-0" onclick="saveSpecificSetting('Block', 0)">Bevelled</button>
+          <button id="Block-1" onclick="saveSpecificSetting('Block', 1)">Flat</button>
+          <button id="Block-2" onclick="saveSpecificSetting('Block', 2)">Glossy</button>
+          <button id="Block-3" onclick="saveSpecificSetting('Block', 3)">Arika</button>
+          <button id="Block-4" onclick="saveSpecificSetting('Block', 4)">Aqua</button>
+          <button id="Block-5" onclick="saveSpecificSetting('Block', 5)">Arcade</button>
+          <button id="Block-6" onclick="saveSpecificSetting('Block', 6)">N-Blox</button>
+          <button id="Block-7" onclick="saveSpecificSetting('Block', 7)">Bone</button>
+          <button id="Block-8" onclick="saveSpecificSetting('Block', 8)">Retro</button>
+          <button id="Block-9" onclick="saveSpecificSetting('Block', 9)">Friends</button>
+          <button id="Block-10" onclick="saveSpecificSetting('Block', 10)">T99</button>
+        </div>
+        
+        <h4 class="option-header">Outline</h4>
+        <p class="option-description">Options for an outline around the pieces. 'Hidden' hides the stack.
+        </p>
+        <div class="btn-group" style="margin-left: 2em">
+          <button id="Outline-0" onclick="saveSpecificSetting('Outline', 0)">Off</button>
+          <button id="Outline-1" onclick="saveSpecificSetting('Outline', 1)">On</button>
+          <button id="Outline-2" onclick="saveSpecificSetting('Outline', 2)">Hidden</button>
+          <button id="Outline-3" onclick="saveSpecificSetting('Outline', 3)">Only</button>
+        </div>
+        
+        <h4 class="option-header">Ghost</h4>
+        <p class="option-description">Options for the ghost piece. 'Hidden' hides the active piece.
+        </p>
+        <div class="btn-group" style="margin-left: 1.2em">
+          <button id="Ghost-2" onclick="saveSpecificSetting('Ghost', 2)">Off</button>
+          <button id="Ghost-0" onclick="saveSpecificSetting('Ghost', 0)">Grey</button>
+          <button id="Ghost-1" onclick="saveSpecificSetting('Ghost', 1)">Colour</button>
+          <button id="Ghost-3" onclick="saveSpecificSetting('Ghost', 3)">Hidden</button>
+        </div>
+        <h4 class="option-header">Grid</h4>
+        <p class="option-description">Displays the background grid.
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="Grid-0" onclick="saveSpecificSetting('Grid', 0)">Off</button>
+          <button id="Grid-1" onclick="saveSpecificSetting('Grid', 1)">On</button>
+        </div>
+        <h4 class="option-header">Action Text</h4>
+        <p class="option-description">Displays flying text for things like "SINGLE", "DOUBLE', etc. Also shows the combo counter.
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="Messages-0" onclick="saveSpecificSetting('Messages', 0)">Off</button>
+          <button id="Messages-1" onclick="saveSpecificSetting('Messages', 1)">On</button>
+        </div>
+        
+        <br>
+        <a class="btn" onclick="menu(12)">Back</a>
+      </nav>
+      
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Survival</h1>
+        <p style="margin: 0px">Clear the bottom as line as soon as possible</p>
+        
+          <h4 class="option-header">Zen Mode</h4>
+          <p class="option-description">Garbage will appear by piece instead of by time
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="survival-zen-0" onclick="changeSetting('survival', 'zen', 0)">Off</button>
+            <button id="survival-zen-1" onclick="changeSetting('survival', 'zen', 1)">On</button>
+          </div>
+          
+          <h4 class="option-header">Starting Level</h4>
+          <p class="option-description">Determines how far ahead you'll start in the challenge (not compatible with zen, currently)
+          </p>
+          <div class="btn-group" style="margin-left: 1.9em">
+            <button id="survival-slevel-0" onclick="changeSetting('survival', 'slevel', 0)">0</button>
+            <button id="survival-slevel-1" onclick="changeSetting('survival', 'slevel', 1)">500</button>
+            <button id="survival-slevel-2" onclick="changeSetting('survival', 'slevel', 2)">1000</button>
+            <button id="survival-slevel-3" onclick="changeSetting('survival', 'slevel', 3)">1500</button>
+            <button id="survival-slevel-4" onclick="changeSetting('survival', 'slevel', 4)">2000</button>
+          </div>
+          <br>
+        <a class="btn btn-inline" onclick="init(3)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
+      </nav>
+      
+      <nav class="menu">
+        <h1 style="font-weight: 4;font-size: 1.5rem;margin: 0px">Grades</h1>
+        <p style="margin: 0px"><span style="color: red;">UNFINISHED</span><br>Play as fast as possible to earn the highest grade!</p>
+        
+          <h4 class="option-header">Game Rule</h4>
+          <p class="option-description">Determines the tuning of the game
+          </p>
+          <div class="btn-group" style="margin-left: 4.4em">
+            <button id="grades-rule-0" onclick="changeSetting('grades', 'rule', 0)">Classic</button>
+            <button id="grades-rule-1" onclick="changeSetting('grades', 'rule', 1)">World</button>
+          </div>
+          
+          
+          <br>
+        <a class="btn btn-inline" onclick="init(9)" style="width: 50%;">Start</a><a class="btn btn-inline" onclick="menu(void 0,-1)" style="width: calc(25% - .7rem); margin-left: .7rem">Back</a>
+      </nav>
+      
     </div>
 
     <div id="c">
       <h3 id="irs-indicator" class="flashing" style="position: absolute; top: -.7em; left: 1em; display: none;">INITIAL</h3>
-      <h3 style="font-weight: 300;">Next</h3>
+      <h3 style="font-weight: 300;"><span class="white-border-span">Next</span></h3>
 
       <canvas id="preview"></canvas>
 
@@ -326,6 +698,55 @@
   <script type="text/javascript" src="touch.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script>
+    var sliders = {
+      names: ["dasRange", "arrRange", "gravRange", "sdRange", "volRange", "musRange", "ldRange", "nextRange"],
+      outputs: ["dasValue", "arrValue", "gravValue", "sdValue", "volValue", "musValue", "ldValue", "nextValue"],
+      types: ["time", "speed", "array", "array", "percentage", "percentage", "time", "count"],
+      setting: ["DAS", "ARR", "Gravity", "Soft Drop", "Volume", "MusicVol", "Lock Delay", "Next"],
+      aname: ["", "", gravityArray, sdArray, "", "", "", ""],
+      namesE: [],
+      outputsE: [],
+    }
+
+    function updateSlider(output, slider, i) {
+      mySettings[sliders.setting[i]] = parseInt(slider.value)
+      saveSetting();
+      if (sliders.types[i] == "time") {
+        output.innerHTML = slider.value + " FRAMES; " + Math.round((((1000 / 60) * slider.value) + 0.00001) * 100) / 100 + " MS";
+      } else if (sliders.types[i] == "speed") {
+        if (slider.value != 0) {
+          output.innerHTML = slider.value + " FRAMES; " + Math.round(((60 / slider.value) + 0.00001) * 100) / 100 + " HZ";
+        } else {
+          output.innerHTML = "INSTANT";
+        }
+
+      } else if (sliders.types[i] == "array") {
+        output.innerHTML = sliders.aname[i][slider.value];
+
+      } else if (sliders.types[i] == "percentage") {
+        output.innerHTML = slider.value + "%"
+
+      } else if (sliders.types[i] == "count") {
+        if (slider.value != 0) {
+          output.innerHTML = slider.value + " PIECES";
+        } else {
+          output.innerHTML = "DISABLED";
+        }
+    }
+    }
+
+    for (let i = 0; i < sliders.names.length; i++) {
+      let slider = document.getElementById(sliders.names[i]);
+      let output = document.getElementById(sliders.outputs[i]);
+      //    updateSlider(output, slider, i);
+      slider.oninput = function() {
+        //      output.innerHTML = this.value;
+        updateSlider(output, slider, i);
+      }
+    }
+
+    displaySettings()
+
     function updateSprint40PB() {
       //    document.getElementById("sprint-pb").innerHTML = displayTime;
       if (Cookies.get("sprint40pbvisual") != undefined) {
@@ -345,5 +766,8 @@
       document.getElementById("sprint-pb-menu").innerHTML = "?????"
     }
     updateSprint40PB();
+
   </script>
-</body></html>
+</body>
+
+</html>

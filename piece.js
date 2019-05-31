@@ -26,6 +26,7 @@ function Piece() {
 }
 
 var lineARE = 0;
+var lineAREb = 0;
 var lineDrought = 0;
 /**
  * Removes last active piece, and gets the next active piece from the grab bag.
@@ -55,6 +56,8 @@ Piece.prototype.new = function(index) {
   this.finesse = 0;
   this.dirty = true;
   this.dead = false;
+  this.lockDelay = 0;
+  classicRuleDelayLast = 0;
   
   if (settings.NextSound == 1) {
     sound.playse("piece"+preview.grabBag[0])
@@ -131,14 +134,15 @@ Piece.prototype.new = function(index) {
   } else if (gametype === 1) { //Marathon
     if (level < 20) {
       this.gravity = [
-        1/60, 1/30, 1/25, 1/20, 1/15, 1/12, 1/10, 1/8,  1/6,  1/6,
-         1/4,  1/4,  1/3,  1/3,  1/3,  1/2,    1,   1,    2,    3
+        1/63, 1/50, 1/39, 1/30, 1/22, 1/16, 1/12, 1/8,  1/6,  1/4,
+         1/3,  1/2,  1,  465/256,  731/256,  1280/256,    1707/256,   14,    19,    20
         ]
         [level];
     } else {
        this.gravity = 20;
        this.lockDelayLimit = ~~(30 * Math.pow(0.93, (Math.pow(level-20, 0.8)))); // magic!
     }
+   
   } else if (gametype === 8) { //Classic
     if ( level <= 29 ) {
        this.gravity = [
@@ -154,126 +158,76 @@ Piece.prototype.new = function(index) {
              
   } else if (gametype === 9) { //tgm
     var base = 1/65536
-    if (leveltgm >= 0) { //speed ramp
-      this.gravity = (base * 1024)
-    } if (leveltgm >= 30) {
-      this.gravity = (base * 1536)
-    } if (leveltgm >= 35) {
-      this.gravity = (base * 2048)
-    } if (leveltgm >= 40) {
-      this.gravity = (base * 2560)
-    } if (leveltgm >= 50) {
-      this.gravity = (base * 3072)
-    } if (leveltgm >= 60) {
-      this.gravity = (base * 4096)
-    } if (leveltgm >= 70) {
-      this.gravity = (base * 8192)
-    } if (leveltgm >= 80) {
-      this.gravity = (base * 12288)
-    } if (leveltgm >= 90) {
-      this.gravity = (base * 16384)
-    } if (leveltgm >= 100) {
-      this.gravity = (base * 20480)
-    } if (leveltgm >= 120) {
-      this.gravity = (base * 24576)
-    } if (leveltgm >= 140) {
-      this.gravity = (base * 28672)
-    } if (leveltgm >= 160) {
-      this.gravity = (base * 32768)
-    } if (leveltgm >= 170) {
-      this.gravity = (base * 36865)
-    } if (leveltgm >= 200) {
-      this.gravity = (base * 1024)
-    } if (leveltgm >= 220) {
-      this.gravity = (base * 8192)
-    } if (leveltgm >= 230) {
-      this.gravity = (base * 16384)
-    } if (leveltgm >= 233) {
-      this.gravity = (base * 24576)
-    } if (leveltgm >= 236) {
-      this.gravity = (base * 32768)
-    } if (leveltgm >= 239) {
-      this.gravity = (base * 40960)
-    } if (leveltgm >= 243) {
-      this.gravity = (base * 49152)
-    } if (leveltgm >= 247) {
-      this.gravity = (base * 57344)
-    } if (leveltgm >= 251) {
-      this.gravity = 1;
-    } if (leveltgm >= 300) {
-      this.gravity = 2;
-    } if (leveltgm >= 330) {
-      this.gravity = 3;
-    } if (leveltgm >= 360) {
-      this.gravity = 4;
-    } if (leveltgm >= 400) {
-      this.gravity = 5;
-    } if (leveltgm >= 420) {
-      this.gravity = 4;
-    } if (leveltgm >= 450) {
-      this.gravity = 3;
-    } if (leveltgm >= 500) {
-      this.gravity = 20;
-    } 
-    
     const speedTableTGM = [
-      {level:0, speed:20}
-      ];
-      
-      
+      {level:0, speed:(base * 1024)},
+      {level:30, speed:(base * 1536)},
+      {level:35, speed:(base * 2048)},
+      {level:40, speed:(base * 2560)},
+      {level:50, speed:(base * 3072)},
+      {level:60, speed:(base * 4096)},
+      {level:70, speed:(base * 8192)},
+      {level:80, speed:(base * 12288)},
+      {level:90, speed:(base * 16384)},
+      {level:100, speed:(base * 20480)},
+      {level:120, speed:(base * 24576)},
+      {level:140, speed:(base * 28672)},
+      {level:160, speed:(base * 32768)},
+      {level:170, speed:(base * 36865)},
+      {level:200, speed:(base * 1024)},
+      {level:220, speed:(base * 8192)},
+      {level:230, speed:(base * 16384)},
+      {level:233, speed:(base * 24576)},
+      {level:236, speed:(base * 32768)},
+      {level:239, speed:(base * 40960)},
+      {level:243, speed:(base * 49152)},
+      {level:247, speed:(base * 57344)},
+      {level:251, speed:(1)},
+      {level:300, speed:(2)},
+      {level:330, speed:(3)},
+      {level:360, speed:(4)},
+      {level:400, speed:(5)},
+      {level:420, speed:(4)},
+      {level:450, speed:(3)},
+      {level:500, speed:(20)},
+      {level:9999999999999, speed:(20)}];
+    
+    var speedI = 0;
+    while (leveltgm > speedTableTGM[speedI].level) {
+      if (leveltgm < speedTableTGM[speedI + 1].level) {
+        piece.gravity = speedTableTGM[speedI].speed;
+      }
+      speedI++;
+    }
+
     if (leveltgm < 100) { //ghost visiblity
       settings.Ghost = 1;
     } else {
       settings.Ghost = 2;
     }
     
-    if (leveltgm <= 499) {
-      this.areLimit = 25;
-      lineARE = 40;
-      settings.DAS = 14;
-      settings["Lock Delay"] = 30;
-    } else if (leveltgm <= 599) {
-      this.areLimit = 25;
-      lineARE = 25;
-      settings.DAS = 8;
-      settings["Lock Delay"] = 30;
-    } else if (leveltgm <= 699) {
-      this.areLimit = 25;
-      lineARE = 7;
-      settings.DAS = 8;
-      settings["Lock Delay"] = 30;
-    } else if (leveltgm <= 799) {
-      this.areLimit = 16;
-      lineARE = 7;
-      settings.DAS = 8;
-      settings["Lock Delay"] = 30;
-    } else if (leveltgm <= 899) {
-      this.areLimit = 12;
-      lineARE = 0;
-      settings.DAS = 8;
-      settings["Lock Delay"] = 30;
-    } else if (leveltgm <= 999) {
-      this.areLimit = 12;
-      lineARE = 0;
-      settings.DAS = 6;
-      settings["Lock Delay"] = 17;
-    } else if (leveltgm <= 1099) {
-      this.areLimit = 6;
-      lineARE = 6;
-      settings.DAS = 6;
-      settings["Lock Delay"] = 17;
-    } else if (leveltgm <= 1199) {
-      this.areLimit = 5;
-      lineARE = 6;
-      settings.DAS = 6;
-      settings["Lock Delay"] = 15;
-    } else {
-      this.areLimit = 4;
-      lineARE = 6;
-      settings.DAS = 6;
-      settings["Lock Delay"] = 15;
-    } 
+    const miscTableTGM = [
+      {level:0, are:25, areline:40, arelineb:0, das:14, lockdelay:30},
+      {level:500, are:25, areline:25, arelineb:0, das:8, lockdelay:30},
+      {level:600, are:25, areline:16, arelineb:-9, das:8, lockdelay:30},
+      {level:700, are:16, areline:12, arelineb:-4, das:8, lockdelay:30},
+      {level:800, are:12, areline:6, arelineb:-6, das:8, lockdelay:30},
+      {level:900, are:12, areline:6, arelineb:-6, das:6, lockdelay:17},
+      {level:1000, are:6, areline:6, arelineb:0, das:6, lockdelay:17},
+      {level:1100, are:5, areline:6, arelineb:0, das:6, lockdelay:15},
+      {level:1200, are:4, areline:6, arelineb:0, das:6, lockdelay:15},
+      {level:99999999999999, are:4, areline:6, das:6, lockdelay:15}];
     
+    var miscI = 0;
+    while (leveltgm > miscTableTGM[miscI].level) {
+      if (leveltgm < miscTableTGM[miscI + 1].level) {
+        piece.areLimit = miscTableTGM[miscI].are;
+        lineARE = miscTableTGM[miscI].areline;
+        lineAREb = miscTableTGM[miscI].arelineb;
+        settings.DAS = miscTableTGM[miscI].das;
+        settings["Lock Delay"] = miscTableTGM[miscI].lockdelay;
+      }
+      miscI++;
+    }
   }
     else { 
     this.gravity = gravityUnit;
@@ -291,6 +245,7 @@ Piece.prototype.new = function(index) {
     $setText(msg,'BLOCK OUT!');
     menu(3);
     sound.playse("gameover");
+    sound.playvox("lose");
     return;
   }
   
@@ -427,7 +382,6 @@ Piece.prototype.checkShift = function() {
   if (this.shiftDir) {
     // 1. When key pressed instantly move over once.
     if (this.shiftReleased && settings.DAS !== 0) {
-      
       this.shift(this.shiftDir);
       this.shiftDelay++;
       this.shiftReleased = false;
@@ -523,7 +477,7 @@ Piece.prototype.shiftDown = function() {
   }
 }
 Piece.prototype.hardDrop = function() {
-  if (gametype !== 8) {
+  if (gametype !== 8 || gameparams.allowHardDrop == true) {
     
     if (gameparams.classicRule === true) {
       usedHardDrop = false
@@ -602,9 +556,10 @@ Piece.prototype.moveValid = function(cx, cy, tetro) {
       }
     }
   }
-  if (gametype === 9) {
-    if (gameparams.classicRule !== true) {
+  if (gametype === 9 || (gametype === 6 && (gameparams.delayStrictness == 1 || gameparams.delayStrictness == 2 ))) {
+    if ((gameparams.classicRule !== true && gametype === 9) || gameparams.delayStrictness == 1) {
       if (landed) {
+        
         this.delayCounting = true;
         if (this.moveLimit < 11 && this.rotateLimit < 8) {
           this.lockDelay = 0;
@@ -614,11 +569,14 @@ Piece.prototype.moveValid = function(cx, cy, tetro) {
       } else {
         this.lockDelay = 0;
       }
-    } else {
+    } else if (gameparams.classicRule == true || gameparams.delayStrictness == 2) {
       if (classicRuleDelayLast < Math.floor(this.y)) {
         this.lockDelay = 0;
       }
-      classicRuleDelayLast = Math.floor(this.y) 
+      if (classicRuleDelayLast < Math.floor(this.y)) {
+        classicRuleDelayLast = Math.floor(this.y) 
+      }
+      
       
       
       if (landed) {
@@ -669,6 +627,7 @@ Piece.prototype.checkLock = function() {
       usedHardDrop = false
       this.dirty = true;
       if(gameState === 9){ // lockout! don't spawn next piece
+
         return;
       }else{
         this.held = false;
@@ -687,6 +646,12 @@ Piece.prototype.checkLock = function() {
               this.lockDelayLimit = 11;
               this.areLimit = 6;
             }
+            if (lineClear !== 0) {
+              lineARE = this.areLimit
+              this.areLimit += lineARE;
+            } else {
+              lineARE = 0
+            }
           } else if (gametype === 8) {
             if (piece.y >= 21) {
               this.areLimit = 10
@@ -700,14 +665,33 @@ Piece.prototype.checkLock = function() {
               this.areLimit = 18
             }
             if (lineClear !== 0) {
-              this.areLimit += 17
-            } 
+              lineARE = 17
+              this.areLimit += lineARE;
+            } else {
+              lineARE = 0
+            }
           } else if (gametype === 9) {
               if (lineClear !== 0) {
                 this.areLimit += lineARE;
+                this.areLimit += lineAREb;
               }
-            }
-          
+              } else if (gametype === 1) {
+                
+                if (gameparams.entryDelay == 1) {
+                  lineARE = 12;
+                  this.areLimit = 6;
+                  if (lineClear !== 0) {
+                    this.areLimit = 24;
+                  }
+                }
+                if (gameparams.entryDelay == 2) {
+                  lineARE = 40;
+                  this.areLimit = 25;
+                  if (lineClear !== 0) {
+                    this.areLimit = 65;
+                  }
+                }
+              }
           else {
             this.areLimit = 0;
           }

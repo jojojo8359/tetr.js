@@ -1,4 +1,4 @@
-var playedLevelingbgm = [false, false, false, false, false]
+var playedLevelingbgmGrades = [false, false]
 var playedLevelingbgmMarathon = [false, false]
 var lastbgmTime = 0
 var killAllbgm = false
@@ -11,10 +11,12 @@ function Sound2() {
   var piecetypes = "tgm,npm".split(",")
   var gametypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
   var uitypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99".split(",")
-  var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go".split(",");
-  var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui".split(",");
+  var voxtypes = "alexey,friends,toj".split(",")
+  var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go,linefall,b2b_erase4,b2b_tspin1,b2b_tspin2,b2b_tspin3,erase1,erase2,erase3,erase4,lose,ren1,ren2,ren3,tspin0,tspin1,tspin2,tspin3,win,ren/ren1,ren/ren2,ren/ren3,ren/ren4,ren/ren5,ren/ren6,ren/ren7,ren/ren8,ren/ren9,ren/ren10,ren/ren11,ren/ren12,ren/ren13,ren/ren14,ren/ren15,ren/ren16,ren/ren17,ren/ren18,ren/ren19,ren/ren20,b2b_erase4,b2b_tspin1,b2b_tspin2,b2b_tspin3".split(",");
+  var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui,game,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game".split(",");
   var sounds = {}
   var music = {}
+  var voices = {}
   var currentMusicName
   var sideMusicName
   this.init = function (type) {
@@ -29,6 +31,13 @@ function Sound2() {
 
             sounds[iname] = new Howl({
               src: ["se/game/" + gametypes[settings.Soundbank] + "/" + iname + ".wav"],
+              volume: mySettings.Volume / 100
+            });
+            break;
+          case "vox":
+
+            voices[iname] = new Howl({
+              src: ["vox/" + voxtypes[settings.Voicebank] + "/" + iname + ".wav"],
               volume: mySettings.Volume / 100
             });
             break;
@@ -83,13 +92,29 @@ function Sound2() {
       }
     }
     this.playse = function (name, arg) {
-
+      let noStop;
+      if (name == "ren/ren") {
+        noStop = true
+        }
       if (mySettings["Sound"] == 1) {
         if (arg !== undefined) {
           name += arg
         }
-        sounds[name].stop()
+        
+        if (noStop !== true) {
+          sounds[name].stop()
+        }
         sounds[name].play()
+      }
+    }
+    this.playvox = function (name, arg) {
+
+      if (mySettings["Sound"] == 1 && settings.Voice == 1) {
+        if (arg !== undefined) {
+          name += arg
+        }
+        voices[name].stop()
+        voices[name].play()
       }
     }
     this.stopse = function (name, arg) {
