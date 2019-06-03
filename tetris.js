@@ -1723,7 +1723,7 @@ function init(gt, params) {
       }
     } else if (gametype === 0) {
       gameparams.pieceSet = gameSettings.sprint.piece.val;
-      gameparams.backFire = gameSettings.sprint.piece.val;
+      gameparams.backFire = gameSettings.sprint.backfire.val;
       switch (gameSettings.sprint.limit.val) {
         case 0:
           lineLimit = 40;
@@ -2096,7 +2096,7 @@ function statisticsStack() {
     }
   } else if (gametype === 8) {
     $setText(statsLines, lines);
-    document.getElementById("level").innerHTML = "<b>LEVEL</b> " + (level + 1);
+    document.getElementById("level").innerHTML = "<b>LEVEL</b> " + (level);
     if (lineDrought < 13) {
       $setText(statsIpieces, lineAmount)
     }
