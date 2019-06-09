@@ -1447,6 +1447,7 @@ var allclear;
 // Stats
 var lines;
 var score;
+var newScore;
 var statsFinesse;
 var piecesSet;
 var startTime;
@@ -1635,6 +1636,7 @@ function init(gt, params) {
   leveltgm = 0;
   leveltgmvisible = 0;
   scoreNes = 0;
+  newScore = 0;
   tetRateNes = 0;
   tetNes = 0;
   nontetNes = 0;
@@ -2222,9 +2224,10 @@ function statisticsStack() {
   }
   var light = ['#ffffff', '#EFB08C', '#EDDD82', '#8489C7', '#FFDB94', '#EFAFC5', '#98DF6E', '#6FC5C5', '#9A7FD1', '#78D4A3'];
 
-  statsScore.style.color = (b2b === 0 ? '' : light[b2b % 10]);
-  statsScore.style.textShadow = (combo === 0 ? '' : ('0 0 0.5em ' + light[(combo - 1) % 10]));
-  $setText(statsScore, scorestring(score.toString(), 2));
+//  statsScore.style.color = (b2b === 0 ? '' : light[b2b % 10]);
+//  statsScore.style.textShadow = (combo === 0 ? '' : ('0 0 0.5em ' + light[(combo - 1) % 10]));
+//  $setText(statsScore, scorestring(score.toString(), 2));
+  $setText(statsScore, Math.floor(newScore).toLocaleString());
 }
 // ========================== View ============================================
 
@@ -2719,6 +2722,7 @@ function update() {
     if (flags.moveDown & keysDown) {
       piece.shiftDown();
       //piece.finesse++;
+      
     }
     if (!(lastKeys & flags.hardDrop) && flags.hardDrop & keysDown) {
       frameLastHarddropDown = frame;

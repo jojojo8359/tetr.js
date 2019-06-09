@@ -489,6 +489,7 @@ Piece.prototype.hardDrop = function() {
     var distance = this.getDrop(2147483647);
     this.y += distance;
     score = score.add(bigInt(distance + this.lockDelayLimit - this.lockDelay));
+    newScore += (distance * 2)
     //statisticsStack();
     if (gameparams.classicRule !== true) {
       this.lockDelay = this.lockDelayLimit;
@@ -747,6 +748,15 @@ Piece.prototype.update = function () {
       piece.y += classicGravTest;
       classicStoredY = piece.y % 1;
       classicGravTest = 0;
+    }
+  } else {
+    if (flags.moveDown & keysDown) {
+      
+      if (lastYFrame !== 0 && (piece.y - lastYFrame) > 0) {
+        newScore += (piece.y - lastYFrame);
+        $setText(statsScore, Math.floor(newScore).toLocaleString())
+      }
+      lastYFrame = piece.y
     }
   }
 //  if (gametype === 9) {
