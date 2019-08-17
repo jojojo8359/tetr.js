@@ -1,4 +1,4 @@
-var version = '0.6';
+var version = '0.7';
 var setLoop;
 var arrowReleased = true;
 var arrowDelay = 0;
@@ -7,7 +7,7 @@ defaultGameSettings = {
   marathon: {
     limit: {
       val: 0,
-      max: 2,
+      max: 3,
     },
     delay: {
       val: 1,
@@ -127,7 +127,7 @@ function displaySettings() {
     }
   }
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     if (mySettings.Soundbank == i) {
       document.getElementById("Soundbank-" + i).classList.add("active")
     } else {
@@ -169,7 +169,7 @@ function displaySettings() {
       document.getElementById("NextSide-" + i).classList.remove("active")
     }
   }
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 12; i++) {
     if (mySettings.Block == i) {
       document.getElementById("Block-" + i).classList.add("active")
     } else {
@@ -211,6 +211,13 @@ function displaySettings() {
       document.getElementById("Messages-" + i).classList.remove("active")
     }
   }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.MatrixSway == i) {
+      document.getElementById("MatrixSway-" + i).classList.add("active")
+    } else {
+      document.getElementById("MatrixSway-" + i).classList.remove("active")
+    }
+  }
 }
 
 function resetGameSettings() {
@@ -219,10 +226,10 @@ function resetGameSettings() {
 }
 
 if (localStorage['gameSettings'] && (localStorage['version'] == version)) {
-  console.log("not reset")
+//  console.log("not reset")
   gameSettings = JSON.parse(localStorage.getItem('gameSettings'));
 } else {
-  console.log("reset")
+  console.log("Game Settings Reset")
   resetGameSettings();
 }
 

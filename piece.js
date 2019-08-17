@@ -1,4 +1,7 @@
-var usedHardDrop = false
+var usedHardDrop = false;
+var spinY = 0;
+var spinX = 0;
+var rotationFailed = false;
 function Piece() {
   this.x;
   this.y;
@@ -39,11 +42,11 @@ Piece.prototype.new = function(index) {
   
   this.pos = RotSys[settings.RotSys].initinfo[index][2];
   this.x = ~~((stack.width - 4) / 2) + RotSys[settings.RotSys].initinfo[index][0];
-  if (gametype === 8 || gametype === 9 || gameparams.noGravity == true) {
+  if (gametype === 8 || gametype === 9) {
     this.y = stack.hiddenHeight - 1 + RotSys[settings.RotSys].initinfo[index][1];
   } else {
     
-    this.y = stack.hiddenHeight - 2 + RotSys[settings.RotSys].initinfo[index][1];
+    this.y = stack.hiddenHeight + RotSys[settings.RotSys].initinfo[index][1];
 
   }
   this.rotateLimit = 0;
@@ -52,6 +55,7 @@ Piece.prototype.new = function(index) {
   this.index = index;
   this.tetro = [];
   this.held = false;
+  document.getElementById("a").classList.remove("greyed");
   this.ihs = false;
   this.finesse = 0;
   this.dirty = true;
@@ -68,7 +72,7 @@ Piece.prototype.new = function(index) {
     lineAmount++
     document.getElementById("ivalue").style.color = "#ffffff";
     document.getElementById("linevector").classList.remove("drought-flash");
-  document.getElementById("linevector").src="linevector.svg";
+    document.getElementById("linevector").src="linevector.svg";
     $setText(statsIpieces, lineAmount)
   } else {
     lineDrought++;
@@ -132,15 +136,24 @@ Piece.prototype.new = function(index) {
   } else if (settings.Gravity !== 0) {
     this.gravity = gravityArr[settings.Gravity - 1];
   } else if (gametype === 1) { //Marathon
-    if (level < 20) {
-      this.gravity = [
-        1/63, 1/50, 1/39, 1/30, 1/22, 1/16, 1/12, 1/8,  1/6,  1/4,
-         1/3,  1/2,  1,  465/256,  731/256,  1280/256,    1707/256,   14,    19,    20
-        ]
-        [level];
+//    if (level < 20) {
+//      this.gravity = [
+//        1/63, 1/50, 1/39, 1/30, 1/22, 1/16, 1/12, 1/8,  1/6,  1/4,
+//         1/3,  1/2,  1,  465/256,  731/256,  1280/256,    1707/256,   14,    19,    20
+//        ]
+//        [level];
+//    } else {
+//       this.gravity = 20;
+//       this.lockDelayLimit = ~~(30 * Math.pow(0.93, (Math.pow(level-20, 0.8)))); // magic!
+//    }
+    if (level < 18) {
+      let x = (level + 1);
+      this.gravity = (1 / ((( 0.8 - (( x - 1 ) * 0.007 )) ** ( x - 1 )) * 60))
+    } else if (level < 19) {
+        this.gravity = 19.99;
     } else {
        this.gravity = 20;
-       this.lockDelayLimit = ~~(30 * Math.pow(0.93, (Math.pow(level-20, 0.8)))); // magic!
+       this.lockDelayLimit = ~~(30 * Math.pow(0.93, (Math.pow(level-19, 0.8)))); // magic!
     }
    
   } else if (gametype === 8) { //Classic
@@ -239,16 +252,32 @@ Piece.prototype.new = function(index) {
   }
   
   // Check for blockout.
+  let blockOut = false;
   if (!this.moveValid(0, 0, this.tetro)) {
-    //this.dead = true; //show it?
+    if (gametype === (8 || 9)) {
+      blockOut = true;
+    }
+    if (!this.moveValid(0, -1, this.tetro)) {
+      if (!this.moveValid(0, -2, this.tetro)) {
+        blockOut = true;
+      } else {
+        piece.y -= 2;
+      }
+    } else {
+      piece.y -= 1;
+    }
+
+  }
+  if (blockOut == true) {
+    piece.y -= 2;
     gameState = 9;
-    $setText(msg,'BLOCK OUT!');
+    $setText(msg, 'BLOCK OUT!');
     menu(3);
     sound.playse("gameover");
     sound.playvox("lose");
     return;
   }
-  
+
   //real 20G
   if(this.gravity >= 20) {
     this.checkFall();
@@ -267,6 +296,9 @@ Piece.prototype.new = function(index) {
   this.delayCounting = false;
 }
 Piece.prototype.tryKickList = function(kickList, rotated, newPos, offsetX, offsetY) {
+  let failedRotations = 0;
+  rotationFailed = false;
+
   for (var k = 0, len = kickList.length; k < len; k++) {
     if (this.moveValid(
       offsetX + kickList[k][0],
@@ -279,7 +311,12 @@ Piece.prototype.tryKickList = function(kickList, rotated, newPos, offsetX, offse
       this.pos = newPos;
       this.finesse++;
       break;
+    } else {
+      failedRotations++;
     }
+  }
+  if (failedRotations >= (kickList.length)) {
+    rotationFailed = true;
   }
 }
 Piece.prototype.rotate = function(direction) {
@@ -287,6 +324,7 @@ Piece.prototype.rotate = function(direction) {
     this.rotateLimit++
   }
 sound.playse("rotate");
+  
   // Goes thorugh kick data until it finds a valid move.
   var curPos = this.pos.mod(4);
   var newPos = (this.pos + direction).mod(4);
@@ -327,6 +365,8 @@ sound.playse("rotate");
       kickList = WKTableDRS[kickIndex];
     this.tryKickList(kickList, rotated, newPos, offsetX, offsetY);
   }
+  spinX = Math.floor(piece.x);
+  spinY = Math.floor(piece.y);
 }
 
 Piece.prototype.checkShift = function() {
@@ -423,7 +463,11 @@ Piece.prototype.shift = function(direction) {
     
     while (true) {
       if (this.moveValid(direction, 0, this.tetro)) {
-        
+        if (direction == 1) {
+          shiftMatrix(RIGHT);
+        } else {
+          shiftMatrix(LEFT);
+        }
         this.x += direction;
         /* farter */ //instant das under 20G
         if(this.gravity >= 20) {
@@ -446,6 +490,12 @@ Piece.prototype.shift = function(direction) {
     }
     this.x += direction;
     sound.playse("move");
+  } else {
+    if (direction == 1) {
+      shiftMatrix(RIGHT);
+    } else {
+      shiftMatrix(LEFT);
+    }
   }
   if (!(this.moveValid(direction, 0, this.tetro)) && (gametype === 8)) {
     this.arrDelay = settings.ARR - 1;
@@ -483,6 +533,7 @@ Piece.prototype.hardDrop = function() {
       usedHardDrop = false
     } else {
       sound.playse("harddrop");
+      
       usedHardDrop = true
     }
     
@@ -490,6 +541,8 @@ Piece.prototype.hardDrop = function() {
     this.y += distance;
     score = score.add(bigInt(distance + this.lockDelayLimit - this.lockDelay));
     newScore += (distance * 2)
+    scoreNes += (distance * 2)
+    scoreNesRefresh();
     //statisticsStack();
     if (gameparams.classicRule !== true) {
       this.lockDelay = this.lockDelayLimit;
@@ -529,6 +582,7 @@ Piece.prototype.hold = function () {
         this.new(preview.next());
       }
       this.held = true;
+      document.getElementById("a").classList.add("greyed");
       hold.draw();
       
     }
@@ -783,7 +837,10 @@ Piece.prototype.update = function () {
         
     
   }
-    this.lockDelay++;
+    if (!gameparams.noGravity) {
+      this.lockDelay++;
+    }
+    
   this.checkLock();
   }
 }
@@ -798,8 +855,8 @@ Piece.prototype.draw = function() {
       if (landed) {
         
         if (stepSEPlayed !== true && gametype !== 8) {
-          sound.playse("step")
-          stepSEPlayed = true
+          sound.playse("step");
+          stepSEPlayed = true;
         }
         
         a = this.lockDelay / this.lockDelayLimit;

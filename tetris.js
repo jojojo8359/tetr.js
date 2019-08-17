@@ -12,12 +12,26 @@ the game so you know why some things are done a certain way.
 var focused = true;
 
 window.onfocus = function () {
-  focused = true;
-  sound.unmutebgm()
+  try {
+    focused = true;
+    if (alarm) {
+      sound.playse("alarm")
+    }
+    sound.unmutebgm()
+  } catch (error) {
+
+  }
+
 };
 window.onblur = function () {
-  focused = false;
-  sound.mutebgm()
+  try {
+    focused = false;
+    sound.stopse("alarm")
+    sound.mutebgm()
+  } catch (error) {
+
+  }
+
 };
 
 function ObjectClone(obj) {
@@ -162,6 +176,43 @@ var RectO = [[1, 0, 3, 2], [1, 0, 3, 2], [1, 0, 3, 2], [1, 0, 3, 2]];
 var RectS = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
 var RectT = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
 var RectZ = [[0, 0, 3, 2], [1, 0, 3, 3], [0, 1, 3, 3], [0, 0, 2, 3]];
+
+var SpinCheckI = {
+  highX: [[1,2,2,1],[1,3,1,3],[1,2,2,1],[0,2,0,2]],
+  highY: [[0,2,0,2],[1,2,2,1],[1,3,1,3],[1,2,2,1]],
+  lowX:  [[-1,4,-1,4],[2,2,2,2],[-1,4,-1,4],[1,1,1,1]],
+  lowY:  [[1,1,1,1],[-1,4,-1,4],[2,2,2,2],[-1,4,-1,4]]
+}
+var SpinCheckJ = {
+  highX: [[1,2],[2,2],[1,0],[0,0]],
+  highY: [[0,0],[1,2],[2,2],[1,0]],
+  lowX:  [[0,2],[0,0],[2,0],[2,2]],
+  lowY:  [[2,2],[0,2],[0,0],[2,0]]
+}
+var SpinCheckL = {
+  highX: [[1,0],[2,2],[1,2],[0,0]],
+  highY: [[0,0],[1,0],[2,2],[1,2]],
+  lowX:  [[2,0],[0,0],[0,2],[2,2]],
+  lowY:  [[2,2],[2,0],[0,0],[0,3]]
+}
+var SpinCheckS = {
+  highX: [[0,2],[1,2],[2,0],[1,0]],
+  highY: [[0,1],[2,0],[2,1],[0,2]],
+  lowX:  [[0,-1],[1,2],[-1,3],[1,0]],
+  lowY:  [[0,1],[-1,3],[2,1],[3,-1]]
+}
+var SpinCheckT = {
+  highX: [[0,2],[2,2],[0,2],[0,0]],
+  highY: [[0,0],[0,2],[2,2],[0,2]],
+  lowX:  [[0,2],[0,0],[0,2],[2,2]],
+  lowY:  [[2,2],[0,2],[0,0],[0,2]]
+}
+var SpinCheckZ = {
+  highX: [[2,0],[2,1],[0,2],[0,1]],
+  highY: [[0,1],[2,0],[2,1],[0,2]],
+  lowX:  [[-1,3],[2,1],[3,-1],[0,1]],
+  lowY:  [[0,1],[-1,3],[2,1],[3,-1]]
+}
 
 var WKTableSRSI_R = [
   [[0, 0], [-2, 0], [+1, 0], [-2, +1], [+1, -2]],
@@ -431,17 +482,20 @@ var RotSys = [
 var PieceI = {
   index: 0,
   tetro: TetroI,
-  rect: RectI
+  rect: RectI,
+  spin: SpinCheckI
 };
 var PieceJ = {
   index: 1,
   tetro: TetroJ,
-  rect: RectJ
+  rect: RectJ,
+  spin: SpinCheckJ
 };
 var PieceL = {
   index: 2,
   tetro: TetroL,
-  rect: RectL
+  rect: RectL,
+  spin: SpinCheckL
 };
 var PieceO = {
   index: 3,
@@ -451,17 +505,20 @@ var PieceO = {
 var PieceS = {
   index: 4,
   tetro: TetroS,
-  rect: RectS
+  rect: RectS,
+  spin: SpinCheckS
 };
 var PieceT = {
   index: 5,
   tetro: TetroT,
-  rect: RectT
+  rect: RectT,
+  spin: SpinCheckT
 };
 var PieceZ = {
   index: 6,
   tetro: TetroZ,
-  rect: RectZ
+  rect: RectZ,
+  spin: SpinCheckZ
 };
 
 var pieces = [PieceI, PieceJ, PieceL, PieceO, PieceS, PieceT, PieceZ];
@@ -555,7 +612,8 @@ var mySettings = {
   Outline: 1,
   DASCut: 0,
   NextSide: 0,
-  Messages: 1
+  Messages: 1,
+  MatrixSway: 1
 };
 
 var settings = mySettings; // initialized by reference; replaced when game starts and replay
@@ -583,7 +641,8 @@ var settingName = {
   Outline: "Outline",
   DASCut: "DAS Cut",
   NextSide: "Next Queue Side",
-  Messages: "Game Messages"
+  Messages: "Game Messages",
+  MatrixSway: "Matrix Sway"
 };
 var gravityArray = [];
 var sdArray = [];
@@ -622,13 +681,14 @@ var setting = {
   NextType: ['TGM3', 'NullPM'],
   Voice: ['Off', 'On'],
   Voicebank: ['Alexey', 'Friends', 'TOJ'],
-  Block: ['Bevelled', 'Flat', 'Glossy', 'Arika', 'Aqua', 'Arcade', 'N-Blox', 'Bone', 'Retro', 'Friends', 'T99'],
+  Block: ['Bevelled', 'Flat', 'Glossy', 'Arika', 'Aqua', 'Arcade', 'N-Blox', 'Bone', 'Retro', 'Friends', 'T99', '.com'],
   Ghost: ['Normal', 'Colored', 'Off', 'Hidden'],
   Grid: ['Off', 'On'],
   Outline: ['Off', 'On', 'Hidden', 'Only'],
   DASCut: ['Off', 'On'],
   NextSide: ['Right', 'Left'],
-  Messages: ['Right', 'Left']
+  Messages: ['Right', 'Left'],
+  MatrixSway: ['Off', 'On']
 };
 var arrRowGen = {
   'simple': function (arr, offset, range, width) {
@@ -1586,6 +1646,7 @@ function resize() {
   try {
     piece.draw();
     stack.draw();
+    
     preview.draw();
     if (hold.piece !== void 0) {
       hold.draw();
@@ -1633,6 +1694,7 @@ function init(gt, params) {
   document.getElementById("ivalue").style.color = "#ffffff";
   document.getElementById("linevector").classList.remove("drought-flash");
   document.getElementById("linevector").src = "linevector.svg";
+  document.getElementById("level").classList.remove("level-flash");
   leveltgm = 0;
   leveltgmvisible = 0;
   scoreNes = 0;
@@ -1694,6 +1756,9 @@ function init(gt, params) {
           break;
         case 2:
           gameparams.marathonLimit = undefined;
+          break;
+        case 3:
+          gameparams.marathonLimit = 300;
           break;
       }
       gameparams.entryDelay = gameSettings.marathon.delay.val;
@@ -2582,9 +2647,104 @@ function makeSprite() {
       spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / 8);
       spriteCtx.fillStyle = t99[i][4];
       spriteCtx.fill();
+    } else if (settings.Block === 11) {
+      // .com
+      spriteCtx.fillStyle = tetcom[i][0];
+      roundRect(spriteCtx, x, 0, cellSize, cellSize, cellSize / 12, true, false)
+      spriteCtx.fillStyle = tetcom[i][1];
+      roundRect(spriteCtx, x + cellSize / 18, 0 + cellSize / 18, cellSize / 1.125, cellSize / 1.125, cellSize / 12, true, false)
+      
+      
+      var grd = spriteCtx.createRadialGradient(x + cellSize / 2, 0 + cellSize, cellSize / 32, x + cellSize / 2, 0 + cellSize / 1.5, cellSize);
+      grd.addColorStop(0, tetcom[i][2]);
+      grd.addColorStop(1, tetcom[i][3]);
+      spriteCtx.fillStyle = grd;
+      spriteCtx.fillRect(x + cellSize / (16/2.5), 0 + cellSize / (16/2.5), cellSize / (16/11), cellSize / (16/11));
+      
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize / (16/2.5), 0 + cellSize / (16/2.5))
+      spriteCtx.bezierCurveTo(x + cellSize / (16/2.5), cellSize / 2, x + cellSize / (16/13.5), cellSize / 2, x + cellSize / (16/13.5), cellSize / (16/2.5));
+      var grad = spriteCtx.createLinearGradient(x, 0, x, cellSize / 2);
+      grad.addColorStop(0, "#FFFFFF44");
+      grad.addColorStop(1, "#FFFFFF88");
+      spriteCtx.fillStyle = grad;
+      spriteCtx.fill();
+      
+      var grad = spriteCtx.createLinearGradient(x + cellSize / 2, 0, x + cellSize / (16 / 5), cellSize / 2);
+      grad.addColorStop(.65, "#FFFFFF00");
+      grad.addColorStop(.8, "#FFFFFF");
+      spriteCtx.fillStyle = grad;
+      spriteCtx.fill();
     }
   }
 }
+
+  var tetcom = [
+    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
+    ['#32808c', '#006274', '#00dff7', '#012c33'],
+    ['#28568d', '#003374', '#008bf3', '#021c3c'],
+    ['#926a2f', '#744300', '#f9af00', '#331e00'],
+    ['#8d8128', '#746600', '#f6e300', '#332e01'],
+    ['#218939', '#007419', '#00f84b', '#00330b'],
+    ['#7b2f92', '#580074', '#d300f9', '#270033'],
+    ['#8c3232', '#740000', '#f70000', '#330000'],
+    ['#3e3e3e', '#2d2d2d', '#606060', '#000000'],
+    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
+  ];
+
+/**
+ * Draws a rounded rectangle using the current state of the canvas.
+ * If you omit the last three params, it will draw a rectangle
+ * outline with a 5 pixel border radius
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x The top left x coordinate
+ * @param {Number} y The top left y coordinate
+ * @param {Number} width The width of the rectangle
+ * @param {Number} height The height of the rectangle
+ * @param {Number} [radius = 5] The corner radius; It can also be an object 
+ *                 to specify different radii for corners
+ * @param {Number} [radius.tl = 0] Top left
+ * @param {Number} [radius.tr = 0] Top right
+ * @param {Number} [radius.br = 0] Bottom right
+ * @param {Number} [radius.bl = 0] Bottom left
+ * @param {Boolean} [fill = false] Whether to fill the rectangle.
+ * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+ */
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke == 'undefined') {
+    stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = {tl: radius, tr: radius, br: radius, bl: radius};
+  } else {
+    var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+
+}
+
 
 /**
  * Clear canvas.
@@ -2675,6 +2835,84 @@ function keyUpDown(e) {
 }
 addEventListener('keydown', keyUpDown, false);
 addEventListener('keyup', keyUpDown, false);
+var matrix = {};
+matrix.position = {
+  horizontal: 0,
+  vertical: 0
+};
+matrix.velocity = {
+  right: 0,
+  left: 0,
+  down: 0
+};
+const RIGHT = 'right';
+const LEFT = 'left';
+const DOWN = 'down';
+const HORIZONTAL = 'horizontal';
+const VERTICAL = 'vertical';
+
+function shiftMatrix(direction) {
+  if (settings.MatrixSway == 1) {
+    if (direction === RIGHT) {
+      matrix.velocity.left = 0;
+      matrix.velocity.right = 1;
+    } else if (direction === LEFT) {
+      matrix.velocity.right = 0;
+      matrix.velocity.left = 1;
+    } else if (direction === DOWN) {
+      matrix.velocity.down = 1;
+    }
+  }
+
+}
+const POSITIVE = 'positive'
+const NEGATIVE = 'negative'
+
+function updateMatrixPosition() {
+  function matrixReturn(direction, type, sign) {
+    if (matrix.velocity[direction] > 1) {
+      matrix.velocity[direction] = 1;
+    }
+    if (matrix.position[type] < 0.5 && matrix.position[type] > -0.5) {
+      if (sign === POSITIVE) {
+        matrix.position[type] += 0.2;
+      } else {
+        matrix.position[type] -= 0.2;
+      }
+
+
+    }
+    matrix.velocity[direction] -= 0.2;
+    if (matrix.velocity[direction] < 0) {
+      matrix.velocity[direction] = 0;
+    }
+  }
+
+  if (matrix.velocity.right === 0 && matrix.velocity.left === 0) {
+    matrix.position.horizontal /= 1.1;
+  } else if (matrix.velocity.right !== 0) {
+    matrixReturn(RIGHT, HORIZONTAL, POSITIVE);
+  } else if (matrix.velocity.left !== 0) {
+    matrixReturn(LEFT, HORIZONTAL, NEGATIVE);
+  }
+
+  if (matrix.velocity.down === 0) {
+    matrix.position.vertical /= 1.1;
+  } else {
+    matrixReturn(DOWN, VERTICAL, POSITIVE);
+  }
+  if (Math.abs(matrix.position.horizontal) < 0.01) {
+    matrix.position.horizontal = 0;
+  }
+  if (matrix.position.vertical < 0.01) {
+    matrix.position.vertical = 0;
+  }
+
+  document.getElementById("b").style.transform = "translate(" + matrix.position.horizontal / 3 + "em, " + matrix.position.vertical / 3 + "em)"
+//  elements.statsDiv.style.transform = "translate(" + matrix.position.horizontal + "em, " + matrix.position.vertical + "em)"
+}
+
+
 
 // ========================== Loop ============================================
 
@@ -2689,7 +2927,7 @@ function update() {
   } else if (frame in replay.keys) {
     keysDown = replay.keys[frame];
   }
-
+  
   //if (piece.dead) {
   //  piece.new(preview.next());
   //}
@@ -2774,6 +3012,22 @@ function update() {
         stack.rowRise(arrRow, piece);
         frameLastRise = frame;
         sound.playse("garbage");
+        let topOut = false;
+        for (var test in stack.grid) {
+          if (stack.grid[test][0] != undefined) {
+            topOut = true;
+          }
+
+        }
+        if (topOut) {
+          piece.dead = true;
+          gameState = 9;
+          $setText(msg, 'TOP OUT!');
+          menu(3);
+          sound.playse("gameover");
+          sound.playvox("lose");
+          return;
+        }
       }
     } else if (gametype === 7) { //dig zen
       for (; lastPiecesSet < piecesSet; lastPiecesSet++) {
@@ -2809,6 +3063,26 @@ function gameLoop() {
 
   //if (frame % 60 == 0) console.log("running");
   var fps = 60;
+  updateMatrixPosition();
+  if (lockflash > 0) {
+    if (piece.tetro != undefined) {
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (lockflashTetro[i][j] > 0) {
+            stackCtx.fillStyle = "#ffffff"
+            stackCtx.fillRect((lockflashX + i) * cellSize, (Math.floor(lockflashY + j) - 4) * cellSize, cellSize, cellSize);
+
+          }
+        }
+      }
+    }
+    lockflash--;
+  } else if (lockflashOn) {
+      stack.draw();
+    
+      lockflash = 0;
+      lockflashOn = false;
+    }
   if ((gameState !== 0 && gameState !== 4 && gameState !== 2) || (killAllbgm == true)) {
     sound.killbgm();
     alarm = false
@@ -3019,6 +3293,7 @@ function gameLoop() {
                 (gameState === 9 ? 8 : 0);
             }
             stack.draw();
+            
             toGreyRow--;
           }
         } else {
@@ -3051,6 +3326,7 @@ function gameLoop() {
 
     if (stack.dirty) {
       stack.draw();
+
     }
     if (preview.dirty) {
       preview.draw();
@@ -3212,18 +3488,46 @@ function showTetrisMessage(contents) {
     if (combo < 2) {
       document.getElementById("renmsg").innerHTML = ""
     } else if (combo > 19) {
-      document.getElementById("renmsg").innerHTML = "<b>" + combo + "</b> " + comboname
+      document.getElementById("renmsg").innerHTML = "<b>" + (combo - 1) + "</b> " + comboname
       document.getElementById("rendiv").style["animation-duration"] = "0.041s"
     } else {
-      document.getElementById("renmsg").innerHTML = "<b>" + combo + "</b> " + comboname
+      document.getElementById("renmsg").innerHTML = "<b>" + (combo - 1) + "</b> " + comboname
       document.getElementById("rendiv").style["animation-duration"] = 0.5 - (0.485 * ((combo - 2) / 18)) + "s"
     }
+    if (b2b <= 0) {
+      document.getElementById("b2bmsg").innerHTML = "";
+    } else {
+      document.getElementById("b2bmsg").innerHTML = "<b>" + b2b + "</b> STREAK"
+      document.getElementById("b2bdiv").classList.remove("b2b-fade");
+      void document.getElementById("b2bdiv").offsetWidth;
+      document.getElementById("b2bdiv").classList.add("b2b-fade");
+    }
   }
+}
+function sendClearTetrisMessage(spin, mini) {
+  let pieceName = ["I", "J", "L", "O", "S", "T", "Z"][piece.index];
+  let message = "";
+  if (b2b > 1 && (lineClear > 3 || spin)) {
+    message += "<b>BACK-TO</b>-BACK<br>"
+  }
+  if (spin) {
+    message += pieceName + "-<b>SPIN</b> ";
+  }
+  if (mini) {
+    message += "MINI "
+  }
+  message += ["SINGLE", "DOUBLE", "TRIPLE", "TETRIS"][lineClear - 1];
+  if (b2b > 1 && (lineClear > 3 || spin)) {
+    message += "<br>" + b2b + "<b> STREAK!</b></small>"
+  }
+  
+  showTetrisMessage(message);
 }
 
 function clearTetrisMessage() {
   document.getElementById("clear").innerHTML = ""
   document.getElementById("renmsg").innerHTML = ""
+  document.getElementById("b2bmsg").innerHTML = ""
 }
 
 function tryreplaydata() {

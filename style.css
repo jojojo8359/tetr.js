@@ -49,7 +49,9 @@
 .slidecontainer {
   width: 100%;
 }
-
+.greyed {
+  filter: grayscale(100%);
+}
 .slider {
   -webkit-appearance: none;
   width: 80%;
@@ -584,7 +586,15 @@ th.white-border-span {
   from {opacity: 1}
   to {opacity: 0.25}
 }
-#rendiv {
+@keyframes b2bfade {
+  from {opacity: 1}
+  to {opacity: 0.2}
+}
+@keyframes b2bpulse {
+  from {opacity: 1}
+  to {opacity: .7}
+}
+#rendiv, #b2bdiv {
   position: absolute;
   text-align: right;
   width: 100%;
@@ -592,11 +602,24 @@ th.white-border-span {
   z-index: 4;
   margin-top: 1em;
   margin-left: -1em;
+
+}
+#rendiv {
   animation-name: renflash;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-#renmsg {
+#b2bdiv {
+  margin-top: 3em;
+  opacity: 0.2;
+}
+.b2b-fade {
+  animation-name: b2bfade;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+}
+#renmsg, #b2bmsg {
   font-weight: 300;
   font-size: 1.6rem;
   color: #FFF;
@@ -608,6 +631,13 @@ th.white-border-span {
   z-index: 4;
   display: inline-block;
   vertical-align: middle;
+}
+#b2bmsg {
+  animation-name: b2bpulse;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-duration: .5s;
 }
 #d {
   float: left;
@@ -646,8 +676,16 @@ th.white-border-span {
   margin-right: 1em;
   
 }
+.level-flash {
+  animation-name: renflash;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 5;
+  animation-direction: alternate;
+  animation-duration: .1s;
+}
 #level {
   font-size: .7em;
+  
 /*
   border-left-color: white;
   border-left-style: solid;

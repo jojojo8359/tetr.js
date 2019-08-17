@@ -110,11 +110,14 @@
       <div id="rendiv">
         <span id="renmsg"></span>
       </div>
+      <div id="b2bdiv">
+        <span id="b2bmsg"></span>
+      </div>
 
       <nav class="menu on">
         <img style="margin: 0px" width="72%" src=tetrjslogoenhanced.svg>
         <!--      <h1 style="font-weight: 4;font-size: 2rem;margin: 0px">Tetr.js Enhanced</h1>-->
-        <p style=margin:0px>v0.6.1 <a class="link" href="changelog.html">(view changelog)</a></p>
+        <p style=margin:0px>v0.7 <a class="link" href="changelog.html">(view changelog)</a></p>
 <!--
         <p style=margin:3px>designed by simonlc<br>
           overhauled by farter<br>
@@ -337,9 +340,10 @@
         <p style="margin: 0px">Standard game. Aim for a high score.</p>
         <h4 class="option-header">Goal</h4>
         <p class="option-description">Lines to reach before winning</p>
-        <div class="btn-group" style="margin-left: 3.4em">
+        <div class="btn-group" style="margin-left: 2.4em">
           <button id="marathon-limit-0" onclick="changeSetting('marathon', 'limit', 0)">150</button>
           <button id="marathon-limit-1" onclick="changeSetting('marathon', 'limit', 1)">200</button>
+          <button id="marathon-limit-3" onclick="changeSetting('marathon', 'limit', 3)">300</button>
           <button id="marathon-limit-2" onclick="changeSetting('marathon', 'limit', 2)">Endless</button>
         </div>
         
@@ -507,6 +511,8 @@
           <button id="Soundbank-5" onclick="saveSpecificSetting('Soundbank', 5)">Retro</button>
           <button id="Soundbank-6" onclick="saveSpecificSetting('Soundbank', 6)">Friends</button>
           <button id="Soundbank-7" onclick="saveSpecificSetting('Soundbank', 7)">T99</button>
+          <button id="Soundbank-8" onclick="saveSpecificSetting('Soundbank', 8)">.com</button>
+          <button id="Soundbank-9" onclick="saveSpecificSetting('Soundbank', 9)">Party</button>
         </div>
 
         <h4 class="option-header">Next Queue Audio Indicator</h4>
@@ -589,6 +595,7 @@
           <button id="Block-8" onclick="saveSpecificSetting('Block', 8)">Retro</button>
           <button id="Block-9" onclick="saveSpecificSetting('Block', 9)">Friends</button>
           <button id="Block-10" onclick="saveSpecificSetting('Block', 10)">T99</button>
+          <button id="Block-11" onclick="saveSpecificSetting('Block', 11)">.com</button>
         </div>
         
         <h4 class="option-header">Outline</h4>
@@ -610,6 +617,7 @@
           <button id="Ghost-1" onclick="saveSpecificSetting('Ghost', 1)">Colour</button>
           <button id="Ghost-3" onclick="saveSpecificSetting('Ghost', 3)">Hidden</button>
         </div>
+        
         <h4 class="option-header">Grid</h4>
         <p class="option-description">Displays the background grid.
         </p>
@@ -617,12 +625,21 @@
           <button id="Grid-0" onclick="saveSpecificSetting('Grid', 0)">Off</button>
           <button id="Grid-1" onclick="saveSpecificSetting('Grid', 1)">On</button>
         </div>
+        
         <h4 class="option-header">Action Text</h4>
-        <p class="option-description">Displays flying text for things like "SINGLE", "DOUBLE', etc. Also shows the combo counter.
+        <p class="option-description">Displays flying text for things like "SINGLE", "DOUBLE', etc. Also shows the combo and back-to-back streak counter.
         </p>
         <div class="btn-group" style="margin-left: 5.5em">
           <button id="Messages-0" onclick="saveSpecificSetting('Messages', 0)">Off</button>
           <button id="Messages-1" onclick="saveSpecificSetting('Messages', 1)">On</button>
+        </div>
+        
+        <h4 class="option-header">Matrix Sway</h4>
+        <p class="option-description">When enabled, the playfield will react to the force of the pieces and move slightly.
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="MatrixSway-0" onclick="saveSpecificSetting('MatrixSway', 0)">Off</button>
+          <button id="MatrixSway-1" onclick="saveSpecificSetting('MatrixSway', 1)">On</button>
         </div>
         
         <br>
@@ -776,7 +793,7 @@
       document.getElementById("sprint-pb").innerHTML = "?????"
       document.getElementById("sprint-pb-menu").innerHTML = "?????"
     }
-    updateSprint40PB();
+//    updateSprint40PB();
 
   </script>
 </body>

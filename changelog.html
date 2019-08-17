@@ -22,21 +22,71 @@
   a:active {
     color: lightsteelblue;
   }
-
 </style>
 
 <body style="font-family: sans-serif;background-color: #111; color: #fff">
   <img style="margin: 10px" width="300px" src=tetrjslogoenhanced.svg>
   <h1>Tetr.js Enhanced Changelog</h1>
   <a href="index.html">Return to the game</a>
+  <h4>2019-08-17 v0.7</h4>
+  <ul>
+    <li>Reworked piece spawn mechanics
+      <ul>
+        <li>Pieces now spawn below the ceiling, and if the position is blocked, can offset upward up to two times before block out.</li>
+      </ul>
+    </li>
+    <li>Rewrote spin detection
+      <ul>
+        <li>Spin detection now uses the 3 corner method</li>
+        <li>Minis added (about time, right?!)</li>
+        <li>All spin kept</li>
+      </ul>
+    </li>
+    <li>Visual Enhancements
+      <ul>
+        <li>The hold piece now turns grey when hold isn't available</li>
+        <li>Pieces now flash briefly when locking</li>
+        <li>The Matrix can now sway; toggleable in settings</li>
+        <li>Level-ups now have a visual effect</li>
+        <li>Back-to-Back streak is now shown</li>
+      </ul>
+    </li>
+    <li>Gameplay Tweaks
+      <ul>
+        <li>Marathon speed curve finalised</li>
+        <li>0G Marathon now has infinite lock delay</li>
+
+        <li>As per guideline rules, the combo counter now starts at 1 instead of 2.</li>
+        <li>Added top out to Survival to prevent exploiting level 1000</li>
+        <li>Hard drop now awards points in Retro mode</li>
+      </ul>
+    </li>
+    <li>Quality of Life
+      <ul>
+        <li>The alarm no longer plays when in background (finally)</li>
+      </ul>
+    </li>
+    <li>New Sounds
+      <ul>
+        <li>.com</li>
+        <li>Party</li>
+      </ul>
+    </li>
+    <li>New Skins
+      <ul>
+        <li>.com</li>
+      </ul>
+    </li>
+  </ul>
+
   <h4>2019-06-09 v0.6.1</h4>
   <ul>
     <li>Updated visual design</li>
     <li>Added all spins to action text</li>
     <li>Reworked non-retro scoring system to use more guideline standards</li>
   </ul>
-  
-  
+
+
   <h4>2019-05-31 v0.6</h4>
   <ul>
     <li>Complete menu overhaul <br> (Thanks for the suggestion! It was a really positive impact on the future of the game!)
@@ -366,6 +416,4 @@
       </ul>
     </li>
   </ul>
-</body>
-
-</html>
+</body></html>

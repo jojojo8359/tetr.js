@@ -119,6 +119,7 @@ Preview.prototype.gen = function () {
       }
     } else {
       pieceList = [0, 1, 2, 3, 4, 5, 6];
+
     }
     //return pieceList.sort(function() {return 0.5 - rng.next()});
     /* farter */ // proven random shuffle algorithm
