@@ -256,20 +256,24 @@ Piece.prototype.new = function(index) {
   if (!this.moveValid(0, 0, this.tetro)) {
     if (gametype === (8 || 9)) {
       blockOut = true;
-    }
-    if (!this.moveValid(0, -1, this.tetro)) {
-      if (!this.moveValid(0, -2, this.tetro)) {
-        blockOut = true;
-      } else {
-        piece.y -= 2;
-      }
     } else {
-      piece.y -= 1;
+      if (!this.moveValid(0, -1, this.tetro)) {
+        if (!this.moveValid(0, -2, this.tetro)) {
+          blockOut = true;
+        } else {
+          piece.y -= 2;
+        }
+      } else {
+        piece.y -= 1;
+      }
     }
+
 
   }
   if (blockOut == true) {
-    piece.y -= 2;
+    if (gametype !== (8 || 9)) {
+      piece.y -= 2;
+    }
     gameState = 9;
     $setText(msg, 'BLOCK OUT!');
     menu(3);
@@ -499,6 +503,7 @@ Piece.prototype.shift = function(direction) {
   }
   if (!(this.moveValid(direction, 0, this.tetro)) && (gametype === 8)) {
     this.arrDelay = settings.ARR - 1;
+    this.shiftDelay = settings.DAS + 1;
   }
 }
 Piece.prototype.multiShift = function(direction, count) {

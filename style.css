@@ -46,6 +46,15 @@
   margin: 0px;
   text-transform: uppercase;
 }
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%; 
+  min-height: 100%;
+  z-index: -2000;
+  display: none;
+}
 .slidecontainer {
   width: 100%;
 }
@@ -468,7 +477,7 @@ nav li {
 #content {
   display: table;
   margin: auto;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0);
 }
 /* Canvases */
 #sprite {
@@ -512,7 +521,7 @@ nav li {
   float: left;
 }
 #bgStack {
-  background: #000;
+  background: #000a;
   position: absolute;
   z-index: 2;
 }
@@ -529,6 +538,7 @@ th.white-border-span {
 #stack {
   position: absolute;
   z-index: 2;
+  
 }
 #active {
   position: absolute;
@@ -603,6 +613,13 @@ th.white-border-span {
   margin-top: 1em;
   margin-left: -1em;
 
+
+}
+#strict-ind {
+  animation-name: renflash;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 0.38709677419s;
 }
 #rendiv {
   animation-name: renflash;

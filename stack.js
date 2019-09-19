@@ -210,15 +210,17 @@ Stack.prototype.addPiece = function (tetro) {
     alarm = true
     alarmtest = false
     sound.playse("alarm")
+    console.log("alarm")
     document.getElementById("bgStack").classList.add("alarm");
-    if (gametype === 3 || gametype === 7) {
+    if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
+      console.log("eee")
       sound.raisesidebgm()
     }
   } else if (alarmtest == false && alarm == true) {
     alarm = false
     sound.stopse("alarm")
     document.getElementById("bgStack").classList.remove("alarm");
-    if (gametype === 3 || gametype === 7) {
+    if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
       sound.lowersidebgm()
     }
   }

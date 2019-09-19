@@ -1834,7 +1834,13 @@ function init(gt, params) {
   }
   sound.init();
   if (gametype === 6) {
-    sound.loadbgm("master")
+    if (gameparams.delayStrictness === 2) {
+      sound.loadbgm("masterstrict")
+      sound.loadsidebgm("masterstrictdire")
+    } else {
+      sound.loadbgm("master")
+    }
+    
   } else if (gametype === 1) {
     sound.loadbgm("marathon")
     sound.loadbgm("marathon2")
@@ -2202,7 +2208,7 @@ function statisticsStack() {
     document.getElementById("holdtext").innerHTML = "";
   }
   if (gameparams.proMode == true) {
-    $setText(promode, "PRO");
+    $setText(promode, "");
   } else {
     $setText(promode, "");
   }
@@ -2405,6 +2411,18 @@ function makeSprite() {
     ['#909090', '#d8d6d6', '#2b2b2b', '#6d6f6f', '#474747'],
   ];
 
+  var tetcom = [
+    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
+    ['#32808c', '#006274', '#00dff7', '#012c33'],
+    ['#28568d', '#003374', '#008bf3', '#021c3c'],
+    ['#926a2f', '#744300', '#f9af00', '#331e00'],
+    ['#8d8128', '#746600', '#f6e300', '#332e01'],
+    ['#218939', '#007419', '#00f84b', '#00330b'],
+    ['#7b2f92', '#580074', '#d300f9', '#270033'],
+    ['#8c3232', '#740000', '#f70000', '#330000'],
+    ['#3e3e3e', '#2d2d2d', '#606060', '#000000'],
+    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
+  ];
 
   spriteCanvas.width = cellSize * 10;
   spriteCanvas.height = cellSize;
@@ -2679,18 +2697,7 @@ function makeSprite() {
   }
 }
 
-  var tetcom = [
-    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
-    ['#32808c', '#006274', '#00dff7', '#012c33'],
-    ['#28568d', '#003374', '#008bf3', '#021c3c'],
-    ['#926a2f', '#744300', '#f9af00', '#331e00'],
-    ['#8d8128', '#746600', '#f6e300', '#332e01'],
-    ['#218939', '#007419', '#00f84b', '#00330b'],
-    ['#7b2f92', '#580074', '#d300f9', '#270033'],
-    ['#8c3232', '#740000', '#f70000', '#330000'],
-    ['#3e3e3e', '#2d2d2d', '#606060', '#000000'],
-    ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
-  ];
+
 
 /**
  * Draws a rounded rectangle using the current state of the canvas.
@@ -3189,6 +3196,13 @@ function gameLoop() {
           if (piece.ihs === true) {
             document.getElementById("ihs-indicator").style.display = "block";
           }
+          if (gameparams.delayStrictness === 2) {
+            document.getElementById("myVideo").style.display = "block";            document.getElementById("strict-ind").style.display = "block";
+
+          } else {
+            document.getElementById("myVideo").style.display = "none";            document.getElementById("strict-ind").style.display = "none";
+
+          }
           if (frame === 0) {
             statisticsStack();
             makeSprite();
@@ -3211,7 +3225,12 @@ function gameLoop() {
             $setText(msg, '');
             scoreStartTime = Date.now();
             if (gametype === 6) {
-              sound.playbgm("master")
+              if (gameparams.delayStrictness === 2) {
+                sound.playbgm("masterstrict")
+                sound.playsidebgm("masterstrictdire")
+              } else {
+                sound.playbgm("master")
+              }
             } else if (gametype === 1) {
               sound.playbgm("marathon")
             } else if (gametype === 0 || gametype === 4 || gametype === 5) {
@@ -3231,6 +3250,7 @@ function gameLoop() {
             } else if (gametype === 9) {
               sound.playbgm("grade1")
             }
+            sound.lowersidebgm()
           }
           scoreTime = 0;
         } else {

@@ -193,6 +193,7 @@ function Sound2() {
       }
     }
     this.raisesidebgm = function (name, arg) {
+      sound.syncbgm()
       if (mySettings["Sound"] == 1) {
         if (sidebgmraised == false) {
           music[sideMusicName + "start"].fade(0, settings.MusicVol / 100, 500);
@@ -238,6 +239,34 @@ function Sound2() {
         for (var currentname in music) {
           music[currentname].mute(false)
         }
+      }
+    }
+    this.seekbgm = function (arg) {
+      if (mySettings["Sound"] == 1) {
+//        if (arg !== undefined) {
+//          name += arg
+//        }
+        for (var currentname in music) {
+          console.log(music[currentname].seek());
+          music[currentname].seek(arg)
+        }
+      }
+    }
+    this.seeksidebgm = function (arg) {
+      if (mySettings["Sound"] == 1) {
+//        if (arg !== undefined) {
+//          name += arg
+//        }
+        music[sideMusicName + "start"].seek(arg);
+        music[sideMusicName + "loop"].seek(arg);
+      }
+    }
+    this.syncbgm = function (arg) {
+      console.log("syncing")
+      if (mySettings["Sound"] == 1) {
+        music[sideMusicName + "start"].seek(music[currentMusicName + "start"].seek())
+        music[sideMusicName + "loop"].seek(music[currentMusicName + "loop"].seek())
+        
       }
     }
 
