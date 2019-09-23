@@ -2336,13 +2336,13 @@ function drawCell(x, y, color, ctx, darkness) {
  */
 var nes = [
     ['#c1c1c1', '#ffffff00'],
-    ['#3ebeff', '#ffffff00'],
+    ['#3ebeff', '#ffffff'],
     ['#0058f8', '#ffffff00'],
-    ['#e67e23', '#ffffff00'],
-    ['#efc30f', '#ffffff00'],
-    ['#9ccd38', '#ffffff00'],
-    ['#9c5ab8', '#ffffff00'],
     ['#f83800', '#ffffff00'],
+    ['#ffa347', '#ffffff'],
+    ['#80d010', '#ffffff00'],
+    ['#db00cd', '#ffffff'],
+    ['#ab0023', '#ffffff00'],
     ['#898989', '#ffffff00'],
     ['#0058f8', '#ffffff'],
   ];
@@ -2587,19 +2587,19 @@ function makeSprite() {
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
 
       spriteCtx.fillStyle = nes[i][0];
-      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 1.125, cellSize);
+      spriteCtx.fillRect(x, 0, cellSize / 1.125, cellSize / 1.125);
 
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 8, cellSize / 8);
+      spriteCtx.fillRect(x, 0, cellSize / 8, cellSize / 8);
 
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 8, cellSize / 4);
+      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 8, cellSize / 4);
 
       spriteCtx.fillStyle = "#fff";
-      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 4, cellSize / 8);
+      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 4, cellSize / 8);
 
       spriteCtx.fillStyle = nes[i][1];
-      spriteCtx.fillRect(x + cellSize / 4, 0 + cellSize / 4, cellSize / 1.6, cellSize / 1.6);
+      spriteCtx.fillRect(x + cellSize / 8, 0 + cellSize / 8, cellSize / 1.6, cellSize / 1.6);
     } else if (settings.Block === 9) {
       // Friends
       spriteCtx.fillStyle = friends[i][5];

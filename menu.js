@@ -93,6 +93,11 @@ function saveSpecificSetting(name, val) {
   mySettings[name] = val;
   saveSetting();
   displaySettings();
+
+  if (name === 'Block') {
+    settings["Block"] = mySettings["Block"]
+    makeSprite();
+  }
 }
 
 function displaySettings() {
@@ -127,7 +132,7 @@ function displaySettings() {
     }
   }
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 11; i++) {
     if (mySettings.Soundbank == i) {
       document.getElementById("Soundbank-" + i).classList.add("active")
     } else {

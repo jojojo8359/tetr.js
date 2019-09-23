@@ -481,7 +481,9 @@ nav li {
 }
 /* Canvases */
 #sprite {
-  display: none;
+/*  display: none;*/
+  margin-top: 1em;
+  transform: scale(0.9)
 }
 /*#bg {
   position: fixed;
