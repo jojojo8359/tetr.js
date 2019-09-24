@@ -1779,7 +1779,7 @@ function init(gt, params) {
       if (gameSettings.retro.type.val == 1) {
         gameparams.bType = true
       }
-      if (gameSettings.retro.pro.val == 1) {
+      if (gameSettings.retro.level.val >= 16) {
         gameparams.proMode = true
       }
       if (gameSettings.retro.drop.val == 1) {
@@ -1788,6 +1788,7 @@ function init(gt, params) {
       if (gameSettings.retro.skin.val == 1) {
         gameparams.retroSkin = true
       }
+      gameparams.startingLevel = gameSettings.retro.level.val;
     } else if (gametype === 0) {
       gameparams.pieceSet = gameSettings.sprint.piece.val;
       gameparams.backFire = gameSettings.sprint.backfire.val;
@@ -1916,13 +1917,8 @@ function init(gt, params) {
 
   b2b = 0;
   combo = 0;
-  if (gametype == 8 && gameparams.proMode == true) {
-    if (gameparams.bType == true) {
-      level = 19;
-    } else {
-      level = 18;
-    }
-
+  if (gametype == 8) {
+    level = gameparams.startingLevel
   } else {
     level = 0;
   }
@@ -3256,7 +3252,7 @@ function gameLoop() {
         } else {
           // are
           if (lineClear == 4) {
-            if (gametype === 8) {
+            if (gametype === 8 && gameSettings.retro.flash.val === 1) {
               if ((piece.are % 2) == 0) {
                 document.body.style.backgroundColor = "white";
               } else {

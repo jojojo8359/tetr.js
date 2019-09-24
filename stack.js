@@ -229,22 +229,22 @@ Stack.prototype.addPiece = function (tetro) {
       switch (lineClear) {
         case 1:
           scoreNes += (40 * (level + 1));
-          nontetNes++
+          nontetNes += lineClear
           showTetrisMessage("SINGLE");
           break;
         case 2:
           scoreNes += (100 * (level + 1));
-          nontetNes++
+          nontetNes += lineClear
           showTetrisMessage("DOUBLE");
           break;
         case 3:
           scoreNes += (300 * (level + 1));
-          nontetNes++
+          nontetNes += lineClear
           showTetrisMessage("TRIPLE");
           break;
         case 4:
           scoreNes += (1200 * (level + 1));
-          tetNes++
+          tetNes += lineClear
           showTetrisMessage("TETRIS");
           break;
 
@@ -476,19 +476,11 @@ Stack.prototype.addPiece = function (tetro) {
   } else if (gametype === 7) {
     level = ~~(lines / 30);
   } else if (gametype === 8) {
-    if (gameparams["proMode"] == false) {
-      level = ~~(lines / 10);
-      makeSprite();
-      stack.draw();
-
-    } else if (gameparams["proMode"] == true) {
-      if (gameparams["bType"] == true) {
-        level = ~~(Math.max(19, (lines / 10) + 6));
-      } else {
-        level = ~~(Math.max(18, (lines / 10) + 6));
-      }
-
-    }
+    var startLevel = gameparams.startingLevel;
+    var startingLines = Math.min((Math.max(100, startLevel * 10 - 50)), (startLevel * 10 + 10));
+    level = ~~Math.max(((lines + 10 - startingLines + (startLevel * 10)) / 10), startLevel);
+    makeSprite();
+    stack.draw();
   }
   if (gametype !== 9) {
     if (levelCheck !== level) {

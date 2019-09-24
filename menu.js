@@ -1,4 +1,4 @@
-var version = '0.7';
+var version = '0.7.2';
 var setLoop;
 var arrowReleased = true;
 var arrowDelay = 0;
@@ -67,16 +67,20 @@ defaultGameSettings = {
       val: 0,
       max: 1,
     },
-    pro: {
-      val: 0,
-      max: 1,
-    },
     skin: {
       val: 1,
       max: 1,
     },
     drop: {
       val: 0,
+      max: 1,
+    },
+    level: {
+      val: 0,
+      max: 19,
+    },
+    flash: {
+      val: 1,
       max: 1,
     }
   },

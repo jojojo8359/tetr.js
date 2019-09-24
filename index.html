@@ -66,8 +66,8 @@
       <h3 id="ihs-indicator" class="flashing" style="display: none; margin-top: -2.9em">INITIAL</h3>
       <table id="stats">
         <tr id="nesratetr" style="display: none;">
-          <th style="font-family: 'Roboto Mono'; font-weight: 700;" id="nesrate">0</th>
-          <th style="font-size: .5em">Tetris Rate</th>
+         <th class="white-border-span" style="font-size: .5em;"><b>Tetris</b> Rate</th>
+          <td id="nesrate" style="font-family: 'Roboto Mono'; font-weight: 500; font-size: 0.8em">0</td>
         </tr>
         <tr>
          <th id="score-label" class="white-border-span">Score</th>
@@ -128,7 +128,7 @@
       <nav class="menu on">
         <img style="margin: 0px" width="72%" src=tetrjslogoenhanced.svg>
         <!--      <h1 style="font-weight: 4;font-size: 2rem;margin: 0px">Tetr.js Enhanced</h1>-->
-        <p style=margin:0px>v0.7.2 <a class="link" href="changelog.html">(view changelog)</a></p>
+        <p style=margin:0px>v0.7.3 <a class="link" href="changelog.html">(view changelog)</a></p>
 <!--
         <p style=margin:3px>designed by simonlc<br>
           overhauled by farter<br>
@@ -283,15 +283,35 @@
             <button id="retro-type-0" onclick="changeSetting('retro', 'type', 0)">A-Type</button>
             <button id="retro-type-1" onclick="changeSetting('retro', 'type', 1)">B-Type</button>
           </div>
-
-          <h4 class="option-header">Pro Mode</h4>
-          <p class="option-description">Start at a very high level
+          
+          <h4 class="option-header">Starting Level</h4>
+          <p class="option-description">Choose a level to start
           </p>
-          <div class="btn-group" style="margin-left: 5.5em">
-            <button id="retro-pro-0" onclick="changeSetting('retro', 'pro', 0)">Off</button>
-            <button id="retro-pro-1" onclick="changeSetting('retro', 'pro', 1)">On</button>
+          <div class="btn-group btn-ensquishened" style="margin-left: 1em">
+            <button id="retro-level-0" onclick="changeSetting('retro', 'level', 0)">00</button>
+            <button id="retro-level-1" onclick="changeSetting('retro', 'level', 1)">01</button>
+            <button id="retro-level-2" onclick="changeSetting('retro', 'level', 2)">02</button>
+            <button id="retro-level-3" onclick="changeSetting('retro', 'level', 3)">03</button>
+            <button id="retro-level-4" onclick="changeSetting('retro', 'level', 4)">04</button>
+            <button id="retro-level-5" onclick="changeSetting('retro', 'level', 5)">05</button>
+            <button id="retro-level-6" onclick="changeSetting('retro', 'level', 6)">06</button>
+            <button id="retro-level-7" onclick="changeSetting('retro', 'level', 7)">07</button>
+            <button id="retro-level-8" onclick="changeSetting('retro', 'level', 8)">08</button>
+            <button id="retro-level-9" onclick="changeSetting('retro', 'level', 9)">09</button>
           </div>
-
+          <div class="btn-group btn-ensquishened" style="margin-left: 1em">
+            <button id="retro-level-10" onclick="changeSetting('retro', 'level', 10)">10</button>
+            <button id="retro-level-11" onclick="changeSetting('retro', 'level', 11)">11</button>
+            <button id="retro-level-12" onclick="changeSetting('retro', 'level', 12)">12</button>
+            <button id="retro-level-13" onclick="changeSetting('retro', 'level', 13)">13</button>
+            <button id="retro-level-14" onclick="changeSetting('retro', 'level', 14)">14</button>
+            <button id="retro-level-15" onclick="changeSetting('retro', 'level', 15)">15</button>
+            <button id="retro-level-16" onclick="changeSetting('retro', 'level', 16)">16</button>
+            <button id="retro-level-17" onclick="changeSetting('retro', 'level', 17)">17</button>
+            <button id="retro-level-18" onclick="changeSetting('retro', 'level', 18)">18</button>
+            <button id="retro-level-19" onclick="changeSetting('retro', 'level', 19)">19</button>
+          </div>
+          
           <h4 class="option-header">Retro Skin</h4>
           <p class="option-description">Enable the colour-changing retro skin
           </p>
@@ -306,6 +326,14 @@
           <div class="btn-group" style="margin-left: 5.5em">
             <button id="retro-drop-0" onclick="changeSetting('retro', 'drop', 0)">Off</button>
             <button id="retro-drop-1" onclick="changeSetting('retro', 'drop', 1)">On</button>
+          </div>
+          
+          <h4 class="option-header">Flashing Effect</h4>
+          <p class="option-description">Show a screen flash upon clearing a Tetris
+          </p>
+          <div class="btn-group" style="margin-left: 5.5em">
+            <button id="retro-flash-0" onclick="changeSetting('retro', 'flash', 0)">Off</button>
+            <button id="retro-flash-1" onclick="changeSetting('retro', 'flash', 1)">On</button>
           </div>
           <br>
 

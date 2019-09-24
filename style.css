@@ -155,6 +155,10 @@ margin-top: 0em;
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
+.btn-group.btn-ensquishened button {
+  padding: .5em;
+  width: 2.4em;
+}
 .btn-group button.active {
   background-color: white;
   color: black;
