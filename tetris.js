@@ -1695,6 +1695,7 @@ function init(gt, params) {
   document.getElementById("linevector").classList.remove("drought-flash");
   document.getElementById("linevector").src = "linevector.svg";
   document.getElementById("level").classList.remove("level-flash");
+  
   leveltgm = 0;
   leveltgmvisible = 0;
   scoreNes = 0;
@@ -1891,6 +1892,13 @@ function init(gt, params) {
     lineLimit = 25;
   else
     lineLimit = 0;
+  
+  
+  if (gameparams.tournament === true) {
+      document.getElementById("b").classList.add("tournament");
+  } else {
+      document.getElementById("b").classList.remove("tournament");
+  }
 
   //html5 mobile device sound
 
@@ -3199,6 +3207,15 @@ function gameLoop() {
             document.getElementById("myVideo").style.display = "none";            document.getElementById("strict-ind").style.display = "none";
 
           }
+          var time1;
+          var time2;
+          if (gameparams.tournament === true) {
+            time1 = 10;
+            time2 = 20;
+          } else {
+            time1 = 5;
+            time2 = 10;
+          }
           if (frame === 0) {
             statisticsStack();
             makeSprite();
@@ -3208,16 +3225,29 @@ function gameLoop() {
             killAllbgm = true
             $setText(msg, 'READY');
             clearTetrisMessage();
-            sound.playse("ready")
+            document.getElementById("msgdiv").classList.remove("startanim")
+            if (gameparams.tournament === true) {
+              sound.playse("tourneyready")
+            } else {
+              sound.playse("ready")
+            }
             clearRows = [];
             sound.killbgm();
-          } else if (frame === ~~(fps * 5 / 6)) {
+          } else if (frame === ~~(fps * time1 / 6)) {
             killAllbgm = false
-            $setText(msg, 'GO!');
-            sound.playse("go")
+            if (gameparams.tournament === true) {
+              $setText(msg, 'START!');
+              sound.playse("tourneystart")
+              
+              document.getElementById("msgdiv").classList.add("startanim")
+            } else {
+              $setText(msg, 'GO!');
+              sound.playse("go")
+            }
             preview.draw;
             sound.killbgm();
-          } else if (frame === ~~(fps * 10 / 6)) {
+          } else if (frame === ~~(fps * time2 / 6)) {
+            document.getElementById("msgdiv").classList.remove("startanim")
             $setText(msg, '');
             scoreStartTime = Date.now();
             if (gametype === 6) {
@@ -3274,7 +3304,7 @@ function gameLoop() {
           updateScoreTime();
         }
         if (
-          (gameState === 2 && frame >= fps * 10 / 6) ||
+          (gameState === 2 && frame >= fps * time2 / 6) ||
           (gameState === 4 && piece.are >= piece.areLimit)
         ) {
           document.body.style.backgroundColor = "black";

@@ -687,7 +687,9 @@ Piece.prototype.checkLock = function() {
       usedHardDrop = false
       this.dirty = true;
       if(gameState === 9){ // lockout! don't spawn next piece
-
+        if (gameparams.tournament === true) {
+          $setText(msg, 'GAME SET');
+        }
         return;
       }else{
         this.held = false;

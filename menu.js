@@ -265,6 +265,13 @@ function changeSetting(game, key, val) {
   refreshMenuSettings();
   localStorage['version'] = version;
 }
+function tourneySettings() {
+  changeSetting('marathon', 'limit', 2);
+  changeSetting('marathon', 'cap', 0);
+  changeSetting('marathon', 'delay', 1);
+  changeSetting('marathon', 'nograv', 0);
+  changeSetting('marathon', 'invisible', 1);
+}
 var key = {
   8: 'Backspace',
   9: 'Tab',

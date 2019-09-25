@@ -115,6 +115,19 @@ margin-top: 0em;
   margin-bottom: .4em;
   font-size: 0.6em
 }
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+
 .btn-group-list {
   padding: 0em 1.2em
 }
@@ -210,6 +223,16 @@ body {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: reverse;
+}
+@keyframes startanim {
+  from {transform: scale(4);filter: blur(.5em)}
+  to {transform: scale(1);filter: blur(0)}
+}
+.startanim {
+  animation-name: startanim;
+  animation-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.075, 0.820, 0.165, 1.000);
+  animation-iteration-count: 1;
 }
 /*filter: brightness(150%)*/
 .glow-flash-animation {
@@ -437,6 +460,33 @@ textarea:focus {
   margin: 0m 0;
 }
 
+a.tournament {
+  --borderWidth: 3px;
+/*  background: #1D1F20;*/
+  position: relative;
+  border-radius: var(--borderWidth);
+  box-shadow: none;
+}
+a.tournament:hover {
+  box-shadow: none;
+}
+
+a.tournament:after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  height: calc(100% + var(--borderWidth) * 2);
+  width: calc(100% + var(--borderWidth) * 2);
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+  border-radius: calc(2 * var(--borderWidth));
+  z-index: -1;
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 300% 300%;
+}
+#b.tournament {
+  border-color: deepskyblue;
+}
 a {
   color: #FFF;
   text-decoration: none;
