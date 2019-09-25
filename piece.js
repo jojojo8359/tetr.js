@@ -276,6 +276,9 @@ Piece.prototype.new = function(index) {
     }
     gameState = 9;
     $setText(msg, 'BLOCK OUT!');
+    if (gameparams.tournament == true) {
+      $setText(msg, 'GAME SET');
+    }
     menu(3);
     sound.playse("gameover");
     sound.playvox("lose");
