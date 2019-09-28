@@ -98,7 +98,7 @@ function saveSpecificSetting(name, val) {
   saveSetting();
   displaySettings();
 
-  if (name === 'Block') {
+  if (name === 'Block' || name === 'Monochrome') {
     settings["Block"] = mySettings["Block"]
     makeSprite();
   }
@@ -246,6 +246,13 @@ function displaySettings() {
       document.getElementById("InitialVis-" + i).classList.add("active")
     } else {
       document.getElementById("InitialVis-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.Monochrome == i) {
+      document.getElementById("Monochrome-" + i).classList.add("active")
+    } else {
+      document.getElementById("Monochrome-" + i).classList.remove("active")
     }
   }
 }

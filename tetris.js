@@ -617,6 +617,7 @@ var mySettings = {
   IRSMode: 1,
   IHSMode: 1,
   InitialVis: 1,
+  Monochrome: 0,
 };
 
 var settings = mySettings; // initialized by reference; replaced when game starts and replay
@@ -648,7 +649,8 @@ var settingName = {
   MatrixSway: "Matrix Sway",
   IRSMode: "IRS Mode",
   IHSMode: "IHS Mode",
-  InitialVis: "Initial Visuals"
+  InitialVis: "Initial Visuals",
+  Monochrome: "Monochrome"
 };
 var gravityArray = [];
 var sdArray = [];
@@ -697,7 +699,8 @@ var setting = {
   MatrixSway: ['Off', 'On'],
   IRSMode: ['Off', 'On'],
   IHSMode: ['Off', 'On'],
-  InitialVis: ['Off', 'On']
+  InitialVis: ['Off', 'On'],
+  Monochrome: ['Off', 'On']
 };
 var arrRowGen = {
   'simple': function (arr, offset, range, width) {
@@ -2453,7 +2456,12 @@ function makeSprite() {
   spriteCanvas.width = cellSize * 10;
   spriteCanvas.height = cellSize;
   for (var i = 0; i < 10; i++) {
+    let iCurrent = i;
     var x = i * cellSize;
+    if (settings.Monochrome == 1) {
+      i = 0;
+    }
+    
     if (settings.Block === 0) {
       // Shaded
       spriteCtx.fillStyle = shaded[i][1];
@@ -2763,6 +2771,7 @@ function makeSprite() {
       spriteCtx.fillStyle = ppt[i][2];
       spriteCtx.fill();
     }
+    i = iCurrent;
   }
 }
 
