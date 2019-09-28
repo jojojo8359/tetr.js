@@ -613,7 +613,10 @@ var mySettings = {
   DASCut: 0,
   NextSide: 0,
   Messages: 1,
-  MatrixSway: 1
+  MatrixSway: 1,
+  IRSMode: 1,
+  IHSMode: 1,
+  InitialVis: 1,
 };
 
 var settings = mySettings; // initialized by reference; replaced when game starts and replay
@@ -642,7 +645,10 @@ var settingName = {
   DASCut: "DAS Cut",
   NextSide: "Next Queue Side",
   Messages: "Game Messages",
-  MatrixSway: "Matrix Sway"
+  MatrixSway: "Matrix Sway",
+  IRSMode: "IRS Mode",
+  IHSMode: "IHS Mode",
+  InitialVis: "Initial Visuals"
 };
 var gravityArray = [];
 var sdArray = [];
@@ -688,7 +694,10 @@ var setting = {
   DASCut: ['Off', 'On'],
   NextSide: ['Right', 'Left'],
   Messages: ['Right', 'Left'],
-  MatrixSway: ['Off', 'On']
+  MatrixSway: ['Off', 'On'],
+  IRSMode: ['Off', 'On'],
+  IHSMode: ['Off', 'On'],
+  InitialVis: ['Off', 'On']
 };
 var arrRowGen = {
   'simple': function (arr, offset, range, width) {
@@ -1553,7 +1562,7 @@ function resize() {
   var c = $$('c');
   var d = $$('d');
   var content = $$('content');
-
+  /*
   if (settings.NextSide === 1) {
     content.innerHTML = "";
     content.appendChild(c);
@@ -1565,7 +1574,7 @@ function resize() {
     content.appendChild(b);
     content.appendChild(c);
   }
-
+  */
   // TODO Finalize this.
   // Aspect ratio: 1.024
   var padH = 12;
@@ -2427,6 +2436,19 @@ function makeSprite() {
     ['#3e3e3e', '#2d2d2d', '#606060', '#000000'],
     ['#bdbdbd', '#7f7f7f', '#e2e2e2', '#333333'],
   ];
+  var ppt = [
+    // border    top side  lr side     down side  cntr fill  lit fill  drk fill
+    ['#687070', '#e8e8e8', '#c8ccc8', '#b8b8b8', '#d5d5d5', '#f0f0f0', '#c0c4c0'],
+    ['#086c70', '#d0fcf8', '#008cd8', '#05709d', '#00a4d8', '#00b4d0', '#0094d0'],
+    ['#001060', '#80d4f8', '#004cb8', '#0038a0', '#005cb8', '#0098d0', '#0044a8'],
+    ['#703000', '#f8dcb0', '#f05800', '#c85110', '#f87400', '#f8a400', '#f85c00'],
+    ['#b86000', '#f8f4d8', '#f8b818', '#f8a810', '#f8c800', '#f8e458', '#f8b000'],
+    ['#104c28', '#c0fc78', '#78c428', '#509828', '#68bc28', '#78d828', '#50a820'],
+    ['#680088', '#f8a8f8', '#982c98', '#802c98', '#902c90', '#a82c98', '#802480'],
+    ['#600800', '#e89c68', '#a01418', '#850b00', '#d82430', '#e86868', '#c51923'],
+    ['#131616', '#6d6d6d', '#474747', '#3f433f', '#4c4c4c', '#868686', '#393c39'],
+    ['#687070', '#e8e8e8', '#c8ccc8', '#b8b8b8', '#d5d5d5', '#f0f0f0', '#c0c4c0'],
+  ];
 
   spriteCanvas.width = cellSize * 10;
   spriteCanvas.height = cellSize;
@@ -2576,7 +2598,7 @@ function makeSprite() {
       spriteCtx.fillStyle = "#000";
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
 
-      spriteCtx.fillStyle = "#fff";
+      spriteCtx.fillStyle = shaded[i][1];
       spriteCtx.fillRect(x + cellSize / 7.5, 0 + cellSize / 7.5, cellSize / 1.4, cellSize / 1.4)
 
       spriteCtx.fillStyle = "#000";
@@ -2697,10 +2719,52 @@ function makeSprite() {
       grad.addColorStop(.8, "#FFFFFF");
       spriteCtx.fillStyle = grad;
       spriteCtx.fill();
+    } else if (settings.Block === 12) {
+      // PPT
+      spriteCtx.fillStyle = ppt[i][0];
+      spriteCtx.fillRect(x, 0, cellSize, cellSize);
+      
+      spriteCtx.fillStyle = ppt[i][4];
+      spriteCtx.fillRect(x + cellSize / 16, cellSize / 16, cellSize / (16 / 14), cellSize / (16 / 14));
+      
+      var grd = spriteCtx.createRadialGradient(x + cellSize / 2, 0 + cellSize, cellSize / 64, x + cellSize / 2, 0 + cellSize, cellSize / 2);
+      grd.addColorStop(0, ppt[i][5]);
+      grd.addColorStop(1, ppt[i][6]);
+      spriteCtx.fillStyle = grd;
+      spriteCtx.fillRect(x + cellSize / 16, cellSize / 2, cellSize / (16 / 14), cellSize / (16 / 7));
+      
+      var grd = spriteCtx.createLinearGradient(x, 0, x, cellSize / 2)
+      grd.addColorStop(0.2, ppt[i][6]);
+      grd.addColorStop(1, ppt[i][4]);
+      spriteCtx.fillStyle = grd;
+      spriteCtx.fillRect(x + cellSize / 16, cellSize / 16, cellSize / (16 / 14), cellSize / (16 / 7));
+      
+      spriteCtx.fillStyle = ppt[i][1];
+      spriteCtx.fillRect(x + cellSize / 32, cellSize / 32, cellSize / (32 / 30), cellSize / (32 / 3));
+
+      spriteCtx.fillStyle = ppt[i][3];
+      spriteCtx.fillRect(x + cellSize / 32, cellSize / (32 / 28), cellSize / (32 / 30), cellSize / (32 / 3));
+//
+      
+      
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize / 34, cellSize / 32);
+      spriteCtx.lineTo(x + cellSize / 34, cellSize / (32 / 31));
+      spriteCtx.lineTo(x + cellSize / 8, cellSize / (8 / 7));
+      spriteCtx.lineTo(x + cellSize / 8, cellSize / 8);
+      spriteCtx.fillStyle = ppt[i][2];
+      spriteCtx.fill();
+
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize / (34 / 33), cellSize / 32);
+      spriteCtx.lineTo(x + cellSize / (34 / 33), cellSize / (32 / 31));
+      spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / (8 / 7));
+      spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / 8);
+      spriteCtx.fillStyle = ppt[i][2];
+      spriteCtx.fill();
     }
   }
 }
-
 
 
 /**
@@ -3159,34 +3223,69 @@ function gameLoop() {
           piece.shiftReleased = true;
           piece.shiftDir = 0;
         }
-        if (flags.rotLeft & keysDown && !(lastKeys & flags.rotLeft)) {
+        if (settings.IRSMode != 0) {
+          if (flags.rotLeft & keysDown && !(lastKeys & flags.rotLeft)) {
 
-          piece.irsDir = -1;
-          piece.finesse++;
-          //          console.log("IRS");
-          sound.playse("rotate")
-          preview.draw()
-        } else if (flags.rotRight & keysDown && !(lastKeys & flags.rotRight)) {
-          piece.irsDir = 1;
-          piece.finesse++;
-          //          console.log("IRS");
-          sound.playse("rotate")
-          preview.draw()
-        } else if (flags.rot180 & keysDown && !(lastKeys & flags.rot180)) {
-          piece.irsDir = 2;
-          piece.finesse++;
-          //          console.log("IRS");
-          sound.playse("rotate")
-          preview.draw()
+            let amt = 3;
+            if (settings.IRSMode == 3) {
+              piece.irsDir = (((piece.irsDir + 1) + amt) % 4) - 1;
+            } else {
+              piece.irsDir = -1;
+            }
+            if (settings.InitialVis == 1) {
+              sound.playse("rotate")
+              preview.draw()
+            }
+          } else if (flags.rotRight & keysDown && !(lastKeys & flags.rotRight)) {
+            let amt = 1;
+            if (settings.IRSMode == 3) {
+              piece.irsDir = (((piece.irsDir + 1) + amt) % 4) - 1;
+            } else {
+              piece.irsDir = amt;
+            }
+            if (settings.InitialVis == 1) {
+              sound.playse("rotate")
+              preview.draw()
+            }
+          } else if (flags.rot180 & keysDown && !(lastKeys & flags.rot180)) {
+            let amt = 2;
+            if (settings.IRSMode == 3) {
+              piece.irsDir = (((piece.irsDir + 1) + amt) % 4) - 1;
+            } else {
+              piece.irsDir = amt;
+            }
+
+            if (settings.InitialVis == 1) {
+              sound.playse("rotate")
+              preview.draw()
+            }
+          } else if (piece.irsDir != 0 && (flags.rotLeft & keysDown) == 0 && (flags.rotRight & keysDown) == 0 && (flags.rot180 & keysDown) == 0 && settings.IRSMode == 2) {
+            piece.irsDir = 0;
+            if (settings.InitialVis == 1) {
+              sound.playse("rotate")
+              preview.draw()
+            }
+          }
         }
-        if (!(lastKeys & flags.holdPiece) && flags.holdPiece & keysDown) {
+        if (!(lastKeys & flags.holdPiece) && flags.holdPiece & keysDown && piece.ihs == false && settings.IHSMode != 0) {
           if (gametype !== 8) {
             piece.ihs = true;
-            hold.draw();
-            preview.draw();
+            document.getElementById("irs-indicator").style.display = "none";
+            if (settings.InitialVis == 1) {
+              hold.draw();
+              preview.draw();
+            }
           }
 
-          //          console.log("IHS");
+        } else if (piece.ihs == true && (flags.holdPiece & keysDown) !== 16 && settings.IHSMode == 2) {
+          if (gametype !== 8) {
+            piece.ihs = false;
+            document.getElementById("ihs-indicator").style.display = "none";
+            if (settings.InitialVis == 1) {
+              hold.draw();
+              preview.draw();
+            }
+          }
         }
         if (lastKeys !== keysDown) {
           lastKeys = keysDown;

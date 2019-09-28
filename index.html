@@ -495,7 +495,26 @@
           <input type="range" min="0" max="100" value="30" class="slider" id="ldRange">
           <p id="ldValue" class="slidervalue"></p>
         </div>
-
+        
+        <h4 class="option-header">Initial Rotation</h4>
+        <p class="option-description">Allow the rotation of a piece before it appears
+        </p>
+        <div class="btn-group" style="margin-left: 1.9em">
+          <button id="IRSMode-0" onclick="saveSpecificSetting('IRSMode', 0)">Off</button>
+          <button id="IRSMode-1" onclick="saveSpecificSetting('IRSMode', 1)">Tap</button>
+          <button id="IRSMode-2" onclick="saveSpecificSetting('IRSMode', 2)">Hold</button>
+          <button id="IRSMode-3" onclick="saveSpecificSetting('IRSMode', 3)">Additive</button>
+        </div>
+        
+        <h4 class="option-header">Initial Hold</h4>
+        <p class="option-description">Allow the holding of a piece before it appears
+        </p>
+        <div class="btn-group" style="margin-left: 4em">
+          <button id="IHSMode-0" onclick="saveSpecificSetting('IHSMode', 0)">Off</button>
+          <button id="IHSMode-1" onclick="saveSpecificSetting('IHSMode', 1)">Tap</button>
+          <button id="IHSMode-2" onclick="saveSpecificSetting('IHSMode', 2)">Hold</button>
+        </div>
+        
         <h4 class="option-header">Rotation System</h4>
         <p class="option-description">The desired rotation system; default 'Super'
         </p>
@@ -616,7 +635,7 @@
           <input type="range" min="0" max="6" value="6" class="slider" id="nextRange">
           <p id="nextValue" class="slidervalue"></p>
         </div>
-        
+        <div style="display:none">
         <h4 class="option-header">Next Queue Side</h4>
         <p class="option-description">Changes the side the next queue takes
         </p>
@@ -624,7 +643,7 @@
           <button id="NextSide-1" onclick="saveSpecificSetting('NextSide', 1)">Left</button>
           <button id="NextSide-0" onclick="saveSpecificSetting('NextSide', 0)">Right</button>
         </div>
-        
+        </div>
         <h4 class="option-header">Block Skin</h4>
         <p class="option-description">The desired block skin
         </p>
@@ -641,6 +660,7 @@
           <button id="Block-9" onclick="saveSpecificSetting('Block', 9)">Friends</button>
           <button id="Block-10" onclick="saveSpecificSetting('Block', 10)">T99</button>
           <button id="Block-11" onclick="saveSpecificSetting('Block', 11)">.com</button>
+          <button id="Block-12" onclick="saveSpecificSetting('Block', 12)">PPT</button>
         </div>
         <canvas id="sprite"></canvas>
         <h4 class="option-header">Outline</h4>
@@ -685,6 +705,14 @@
         <div class="btn-group" style="margin-left: 5.5em">
           <button id="MatrixSway-0" onclick="saveSpecificSetting('MatrixSway', 0)">Off</button>
           <button id="MatrixSway-1" onclick="saveSpecificSetting('MatrixSway', 1)">On</button>
+        </div>
+        
+        <h4 class="option-header">Visual Initial Systems</h4>
+        <p class="option-description">When enabled, the initials systems will show during gameplay
+        </p>
+        <div class="btn-group" style="margin-left: 5.5em">
+          <button id="InitialVis-0" onclick="saveSpecificSetting('InitialVis', 0)">Off</button>
+          <button id="InitialVis-1" onclick="saveSpecificSetting('InitialVis', 1)">On</button>
         </div>
         
         <br>
@@ -819,7 +847,7 @@
     }
 
     displaySettings()
-
+//    menu(15)
     function updateSprint40PB() {
       //    document.getElementById("sprint-pb").innerHTML = displayTime;
       if (Cookies.get("sprint40pbvisual") != undefined) {

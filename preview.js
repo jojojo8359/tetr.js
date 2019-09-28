@@ -176,6 +176,7 @@ Preview.prototype.draw = function () {
             previewCtx,
             RotSys[settings.RotSys].color[p]
           );
+          document.getElementById("irs-indicator").style.display = "none";
           break;
         case 1: //right
           draw(

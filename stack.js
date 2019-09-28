@@ -49,35 +49,13 @@ function testSpace(x, y) {
 
   }
 }
-Stack.prototype.addPiece = function (tetro) {
-  shiftMatrix(DOWN)
-  document.getElementById("a").classList.remove("greyed");
-  lineClear = 0;
-  var isSpin = false;
-  var isMini = false;
-  var once = false;
-  lockflashX = piece.x;
-  lockflashY = piece.y;
-  lockflashTetro = tetro;
-  lockflash = 2;
-  lockflashOn = true;
-  var bottomRow = []; // for backfire
-  for (var x = 0; x < this.width; x++) {
-    bottomRow.push(this.grid[x][this.height - 1]);
-  }
-
-  // spin check
-  /*
-  if (
-    !piece.moveValid(-1, 0, piece.tetro) &&
-    !piece.moveValid(1, 0, piece.tetro) &&
-    !piece.moveValid(0, -1, piece.tetro)
-  ) {
-    isSpin = true;
-  }
-  */
-
+var isSpin = false;
+var isMini = false;
+function spinCheck() {
+  isSpin = false;
+  isMini = false;
   if (piece.index !== 0 && piece.index !== 3) {
+    
     let spinCheckCount = 0;
     for (var i = 0; i < pieces[piece.index].spin.highX[0].length; i++) {
       if ((testSpace(piece.x + pieces[piece.index].spin.highX[piece.pos][i], piece.y + pieces[piece.index].spin.highY[piece.pos][i])) == true) {
@@ -114,6 +92,35 @@ Stack.prototype.addPiece = function (tetro) {
       isSpin = true;
     }
   }
+}
+Stack.prototype.addPiece = function (tetro) {
+  shiftMatrix(DOWN)
+  document.getElementById("a").classList.remove("greyed");
+  lineClear = 0;
+  
+  var once = false;
+  lockflashX = piece.x;
+  lockflashY = piece.y;
+  lockflashTetro = tetro;
+  lockflash = 2;
+  lockflashOn = true;
+  var bottomRow = []; // for backfire
+  for (var x = 0; x < this.width; x++) {
+    bottomRow.push(this.grid[x][this.height - 1]);
+  }
+
+  // spin check
+  /*
+  if (
+    !piece.moveValid(-1, 0, piece.tetro) &&
+    !piece.moveValid(1, 0, piece.tetro) &&
+    !piece.moveValid(0, -1, piece.tetro)
+  ) {
+    isSpin = true;
+  }
+  */
+
+  spinCheck();
 
   // Add the piece to the stack.
   var range = [];
@@ -198,31 +205,7 @@ Stack.prototype.addPiece = function (tetro) {
   }
   var scoreAdd = bigInt(level + 1);
   var garbage = 0;
-
-  alarmtest = false
-  for (var test in stack.grid) {
-    if (((stack.grid[test][8] != undefined) && alarm == false) || ((stack.grid[test][11] != undefined) && alarm == true)) {
-      alarmtest = true;
-    }
-  }
-
-  if (alarmtest == true && alarm == false) {
-    alarm = true
-    alarmtest = false
-    sound.playse("alarm")
-    document.getElementById("bgStack").classList.add("alarm");
-    if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
-      console.log("eee")
-      sound.raisesidebgm()
-    }
-  } else if (alarmtest == false && alarm == true) {
-    alarm = false
-    sound.stopse("alarm")
-    document.getElementById("bgStack").classList.remove("alarm");
-    if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
-      sound.lowersidebgm()
-    }
-  }
+  
   var pieceName = ["I", "J", "L", "O", "S", "T", "Z"][piece.index]
   if (gametype === 8) {
     if (lineClear !== 0) {
@@ -279,8 +262,9 @@ Stack.prototype.addPiece = function (tetro) {
         }
         if (b2b > 0) {
           sound.playse("b2b_tspin", lineClear);
-
+          
         } else {
+          
           sound.playse("tspin", lineClear);
 
         }
@@ -427,7 +411,10 @@ Stack.prototype.addPiece = function (tetro) {
           bigInt(2).pow(bigInt(b2b))
           .mul(bigInt(400))
         );
-        sound.playse("tspin", lineClear);
+        if (settings.Sound != 1 && lineClear != 0) {
+          sound.playse("tspin", lineClear);
+        }
+        
         if (isMini) {
           miniText = " MINI";
         }
@@ -466,7 +453,8 @@ Stack.prototype.addPiece = function (tetro) {
   if (gametype !== 9) {
     levelCheck = level
   }
-
+  
+  
   if (gametype === 1 || gametype === 6) {
     if (gameparams.levelCap == 1) {
       level = Math.min(~~(lines / 10), 14);
@@ -602,7 +590,52 @@ Stack.prototype.addPiece = function (tetro) {
   // NOTE Stats
   // TODO Might not need this (same for in init)
   column = 0;
+  function checkAlarm(grid) {
+    var clearPath = false;
+    for (var i = 0; i < stack.width; i++) {
+      var clearPathHeight;
+      for (var j = 0; j <= stack.height; j++) {
+        if (j == stack.height) {
+          clearPath = true;
+        }
+        if (grid[i][j] !== undefined && grid[i][j] !== 0) {
+          break;
+        }
 
+      }
+      if (clearPath) {
+        break;
+      }
+    }
+    alarmtest = false
+    for (var test in grid) {
+      if (((grid[test][8] != undefined) && alarm == false && clearPath == false) || ((grid[test][11] != undefined) && alarm == true)) {
+
+        alarmtest = true;
+      }
+    }
+    if (clearPath && alarm == true) {
+      alarmtest = false;
+    }
+    if (alarmtest == true && alarm == false) {
+      alarm = true
+      alarmtest = false
+      sound.playse("alarm")
+      document.getElementById("bgStack").classList.add("alarm");
+      if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
+        console.log("eee")
+        sound.raisesidebgm()
+      }
+    } else if (alarmtest == false && alarm == true) {
+      alarm = false
+      sound.stopse("alarm")
+      document.getElementById("bgStack").classList.remove("alarm");
+      if (gametype === 3 || gametype === 7 || (gametype === 6 && gameparams.delayStrictness === 2)) {
+        sound.lowersidebgm()
+      }
+    }
+  }
+  checkAlarm(stack.grid);
   this.dirty = true;
 }
 /**

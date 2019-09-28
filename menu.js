@@ -1,4 +1,4 @@
-var version = '0.7.2';
+var version = '0.7.4';
 var setLoop;
 var arrowReleased = true;
 var arrowDelay = 0;
@@ -178,7 +178,7 @@ function displaySettings() {
       document.getElementById("NextSide-" + i).classList.remove("active")
     }
   }
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 13; i++) {
     if (mySettings.Block == i) {
       document.getElementById("Block-" + i).classList.add("active")
     } else {
@@ -225,6 +225,27 @@ function displaySettings() {
       document.getElementById("MatrixSway-" + i).classList.add("active")
     } else {
       document.getElementById("MatrixSway-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 4; i++) {
+    if (mySettings.IRSMode == i) {
+      document.getElementById("IRSMode-" + i).classList.add("active")
+    } else {
+      document.getElementById("IRSMode-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    if (mySettings.IHSMode == i) {
+      document.getElementById("IHSMode-" + i).classList.add("active")
+    } else {
+      document.getElementById("IHSMode-" + i).classList.remove("active")
+    }
+  }
+  for (let i = 0; i < 2; i++) {
+    if (mySettings.InitialVis == i) {
+      document.getElementById("InitialVis-" + i).classList.add("active")
+    } else {
+      document.getElementById("InitialVis-" + i).classList.remove("active")
     }
   }
 }

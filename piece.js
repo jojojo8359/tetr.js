@@ -374,6 +374,12 @@ sound.playse("rotate");
   }
   spinX = Math.floor(piece.x);
   spinY = Math.floor(piece.y);
+  spinCheck();
+  if (settings.Sound == 1 && isSpin) {
+    sound.playse("tspin0");
+  }
+  isSpin = false; 
+  isMini = false;
 }
 
 Piece.prototype.checkShift = function() {
