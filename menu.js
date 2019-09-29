@@ -150,7 +150,7 @@ function displaySettings() {
       document.getElementById("NextSound-" + i).classList.remove("active")
     }
   }
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 3; i++) {
     if (mySettings.NextType == i) {
       document.getElementById("NextType-" + i).classList.add("active")
     } else {
@@ -409,6 +409,7 @@ var menus = document.getElementsByClassName('menu');
 var menuStack = [];
 
 function menu(menuIndex, stackOper) {
+  sound.init();
   var current = void 0;
   for (var i = 0, len = menus.length; i < len; i++) {
     if (menus[i].classList.contains('on')) {

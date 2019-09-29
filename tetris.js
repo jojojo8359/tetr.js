@@ -1702,7 +1702,13 @@ function tetRateNesRefresh() {
  */
 
 function init(gt, params) {
-
+  try {
+    sound.killbgm()
+  } catch (e) {
+    
+  }
+  
+  
   document.getElementById("ivalue").style.color = "#ffffff";
   document.getElementById("linevector").classList.remove("drought-flash");
   document.getElementById("linevector").src = "linevector.svg";

@@ -581,6 +581,40 @@ nav li {
   position: absolute;
   z-index: 2;
 }
+#sound-name {
+  font-size: 0.4em;
+}
+#sounds-loading {
+  position: absolute;
+  margin-top: 30em;
+  display: none;
+  z-index: 200;
+  background-color: #000a
+}
+#sounds-loading progress {
+  width: 6.8em;
+  background-color: #aaa;
+  border: 0;
+  height: 18px;
+}
+#sounds-loading progress::-moz-progress-bar {
+  width: 6.8em;
+  background-color: #f3f3f3;
+  border: 0;
+  height: 18px;
+}
+#sounds-loading progress::-webkit-progress-bar {
+  width: 6.8em;
+  background-color: #aaa;
+  border: 0;
+  height: 18px;
+}
+#sounds-loading progress::-webkit-progress-value {
+  width: 6.8em;
+  background-color: #f3f3f3;
+  border: 0;
+  height: 18px;
+}
 .white-border-span {
   border-left-color: white;
   border-left-style: solid;

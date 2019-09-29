@@ -37,7 +37,7 @@
  
   <!--<canvas id="bg"></canvas>-->
   <video autoplay muted loop id="myVideo">
-  <source src="vid/space.mp4" type="video/mp4">
+  <source src="" type="video/mp4">
 </video>
 
   <div class="touchbutton" id="touchLeft" style="display:none"><i class="material-icons">&#xE5C4;</i></div>
@@ -128,7 +128,7 @@
       <nav class="menu on">
         <img style="margin: 0px" width="72%" src=tetrjslogoenhanced.svg>
         <!--      <h1 style="font-weight: 4;font-size: 2rem;margin: 0px">Tetr.js Enhanced</h1>-->
-        <p style=margin:0px>v0.7.4 <a class="link" href="changelog.html">(view changelog)</a></p>
+        <p style=margin:0px>v0.7.5 <a class="link" href="changelog.html">(view changelog)</a></p>
 <!--
         <p style=margin:3px>designed by simonlc<br>
           overhauled by farter<br>
@@ -140,6 +140,8 @@
             <a class="btn" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdA_gr2LDp0eerl72mrlm3sepaOHM55y6wOdySsk5vRqUA_Dw/viewform?usp=sf_link" style="margin-top: 9px;">Give Feedback</a>
             <a class="btn" target="_blank" href="https://docs.google.com/spreadsheets/d/1BWnbxe60ceiEnWx-BIzVjK3u_J_UAaTIasLbB7xkpZA/edit?usp=sharing" style="">Feedback Statuses</a>
             <a class="btn btn-inline" target="_blank" href="https://discord.gg/7hMx5r2" style="width: 35%; margin-bottom: 1.1em;">Discord</a><a class="btn btn-inline" target="_blank" href="https://trello.com/b/yrCzLRDV/tetrjs-enhanced" style="width: calc(40% - .7rem); margin-left: .7rem">Trello</a>
+            
+            
             <div style="display:none">
             <a class="btn tournament" onclick="tourneySettings();init(1, {tournament: true})"><i class="material-icons">&#xE8E5;</i>Tournament</a>
             <p><a class="link" style="margin:0" target="_blank" href="https://www.youtube.com/watch?v=qL9-eKF9oso">More Information</a></p>
@@ -592,7 +594,9 @@
         </p>
         <div class="btn-group-list" style="">
           <button id="NextType-0" onclick="saveSpecificSetting('NextType', 0)" class="active">TGM3</button>
+          <button id="NextType-2" onclick="saveSpecificSetting('NextType', 2)">TGM1</button>
           <button id="NextType-1" onclick="saveSpecificSetting('NextType', 1)">NullPM</button>
+          
         </div>
         
         <h4 class="option-header">Voice</h4>
@@ -774,6 +778,11 @@
     </div>
 
     <div id="c">
+     <div id="sounds-loading">
+             <label id="sound-name" for="sound-loading-bar" style="display:block;"></label>
+            <progress id="sound-loading-bar" value="0" max="100"></progress>
+              
+      </div>
       <h3 id="irs-indicator" class="flashing" style="position: absolute; top: -.7em; left: 1em; display: none;">INITIAL</h3>
       <h3 style="font-weight: 300;"><span class="white-border-span">Next</span></h3>
 
@@ -808,6 +817,7 @@
   <script type="text/javascript" src="touch.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script>
+    
     var sliders = {
       names: ["dasRange", "arrRange", "gravRange", "sdRange", "volRange", "musRange", "ldRange", "nextRange"],
       outputs: ["dasValue", "arrValue", "gravValue", "sdValue", "volValue", "musValue", "ldValue", "nextValue"],
@@ -835,6 +845,12 @@
 
       } else if (sliders.types[i] == "percentage") {
         output.innerHTML = slider.value + "%"
+        try {
+          sound.updateVolume();
+        } catch (e) {
+          
+        }
+        
 
       } else if (sliders.types[i] == "count") {
         if (slider.value != 0) {
