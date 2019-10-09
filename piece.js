@@ -375,7 +375,7 @@ sound.playse("rotate");
   spinX = Math.floor(piece.x);
   spinY = Math.floor(piece.y);
   spinCheck();
-  if (settings.Sound == 1 && isSpin) {
+  if (settings.Soundbank == 0 && isSpin) {
     sound.playse("tspin0");
   }
   isSpin = false; 
