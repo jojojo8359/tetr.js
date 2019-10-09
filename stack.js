@@ -411,7 +411,7 @@ Stack.prototype.addPiece = function (tetro) {
           bigInt(2).pow(bigInt(b2b))
           .mul(bigInt(400))
         );
-        if (settings.Soundbank != 0 && lineClear != 0) {
+        if (settings.Soundbank != 0 && lineClear == 0) {
           sound.playse("tspin", lineClear);
         }
         
