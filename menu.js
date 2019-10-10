@@ -136,7 +136,7 @@ function displaySettings() {
     }
   }
 
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 13; i++) {
     if (mySettings.Soundbank == i) {
       document.getElementById("Soundbank-" + i).classList.add("active")
     } else {
@@ -150,7 +150,7 @@ function displaySettings() {
       document.getElementById("NextSound-" + i).classList.remove("active")
     }
   }
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     if (mySettings.NextType == i) {
       document.getElementById("NextType-" + i).classList.add("active")
     } else {

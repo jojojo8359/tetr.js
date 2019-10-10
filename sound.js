@@ -18,9 +18,9 @@ function addToLoad(name) {
   }
 }
 function Sound2() {
-  var piecetypes = "tgm,npm,tgm1".split(",")
-  var gametypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99,com,party,ultimate".split(",")
-  var uitypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99,com,party,ultimate".split(",")
+  var piecetypes = "tgm,npm,tgm1,tetrjs".split(",")
+  var gametypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99,com,party,ultimate,ace,tetrjs".split(",")
+  var uitypes = "ppt,tgm,npm,yotipo,toj,nes,tf,99,com,party,ultimate,ace,tetrjs".split(",")
   var voxtypes = "alexey,friends,toj".split(",")
   var wavenames = "alarm,bravo,levelup,step,endingstart,erase1,erase2,erase3,erase4,gameover,garbage,lock,tspin0,tspin1,tspin2,tspin3,piece0,piece1,piece2,piece3,piece4,piece5,piece6,harddrop,move,rotate,initialrotate,hold,initialhold,ready,go,linefall,b2b_erase4,b2b_tspin1,b2b_tspin2,b2b_tspin3,erase1,erase2,erase3,erase4,lose,ren1,ren2,ren3,tspin0,tspin1,tspin2,tspin3,win,ren/ren1,ren/ren2,ren/ren3,ren/ren4,ren/ren5,ren/ren6,ren/ren7,ren/ren8,ren/ren9,ren/ren10,ren/ren11,ren/ren12,ren/ren13,ren/ren14,ren/ren15,ren/ren16,ren/ren17,ren/ren18,ren/ren19,ren/ren20,b2b_erase4,b2b_tspin1,b2b_tspin2,b2b_tspin3".split(",");
   var soundtypes = "fixed,game,game,game,ui,game,game,game,game,ui,game,game,game,game,game,game,piece,piece,piece,piece,piece,piece,piece,game,game,game,game,game,game,ui,ui,game,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,vox,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game,game".split(",");
@@ -76,10 +76,26 @@ function Sound2() {
             break;
           case "piece":
             if (settings.NextSound == 1) {
-            sounds[iname] = new Howl({
-              src: ["se/piece/" + piecetypes[settings.NextType] + "/" + iname + ".wav"],
-              volume: mySettings.Volume / 100,
-            });
+              let language = "";
+              if (settings.NextType == 3) {
+                
+                if (navigator.language == "ja" && ['piece1', 'piece2', 'piece4', 'piece6'].indexOf(iname) >= 0) {
+                  language = "_jp"
+                } else if ((navigator.language == "en-US" || navigator.language == "en") && iname == "piece6") {
+                  language = "_us"
+                } else if (navigator.language.substring(0, 2) == "zh" && iname == "piece6") {
+                  language = "_zh"
+                } else if (navigator.language.substring(0, 2) == "es" && iname != "piece3" ) {
+                  language = "_es"
+                  if (navigator.language == "es-ES" && iname == "piece6") {
+                    language += "_spain"
+                  }
+                }
+              }
+              sounds[iname] = new Howl({
+                    src: ["se/piece/" + piecetypes[settings.NextType] + "/" + iname + language + ".wav"],
+                    volume: mySettings.Volume / 100,
+                });
             }
             break;
           case "bgm":
