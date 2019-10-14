@@ -178,7 +178,7 @@ function displaySettings() {
       document.getElementById("NextSide-" + i).classList.remove("active")
     }
   }
-  for (let i = 0; i < 13; i++) {
+  for (let i = 0; i < 14; i++) {
     if (mySettings.Block == i) {
       document.getElementById("Block-" + i).classList.add("active")
     } else {

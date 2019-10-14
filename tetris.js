@@ -606,7 +606,7 @@ var mySettings = {
   NextType: 3,
   Voice: 0,
   Voicebank: 2,
-  Block: 2,
+  Block: 13,
   Ghost: 1,
   Grid: 1,
   Outline: 1,
@@ -2370,6 +2370,18 @@ var nes = [
   ];
 
 function makeSprite() {
+  var tetrjs = [
+    ['#EEEEEE', '#E0E0E0', '#BDBDBD'],
+    ['#26C6DA', '#00BCD4', '#00ACC1'],
+    ['#42A5F5', '#2196F3', '#1E88E5'],
+    ['#FFA726', '#FF9800', '#FB8C00'],
+    ['#FFEE58', '#FFEB3B', '#FDD835'],
+    ['#66BB6A', '#4CAF50', '#43A047'],
+    ['#AB47BC', '#9C27B0', '#8E24AA'],
+    ['#EF5350', '#F44336', '#E53935'],
+    ['#616161', '#424242', '#212121'],
+    ['#EEEEEE', '#E0E0E0', '#BDBDBD'],
+  ]
   var shaded = [
     // 0         +10        -10        -20
     ['#c1c1c1', '#dddddd', '#a6a6a6', '#8b8b8b'],
@@ -2491,7 +2503,7 @@ function makeSprite() {
       spriteCtx.fill();
     } else if (settings.Block === 1) {
       // Flat
-      spriteCtx.fillStyle = shaded[i][0];
+      spriteCtx.fillStyle = tetrjs[i][1];
       spriteCtx.fillRect(x, 0, cellSize, cellSize);
     } else if (settings.Block === 2) {
       // Glossy
@@ -2776,6 +2788,18 @@ function makeSprite() {
       spriteCtx.lineTo(x + cellSize / (8 / 7), cellSize / 8);
       spriteCtx.fillStyle = ppt[i][2];
       spriteCtx.fill();
+    } else if (settings.Block === 13) {
+      // Tetr.js
+      spriteCtx.fillStyle = tetrjs[i][2];
+      spriteCtx.fillRect(x, 0, cellSize, cellSize);
+      spriteCtx.beginPath();
+      spriteCtx.moveTo(x + cellSize / 16, cellSize / 16);
+      spriteCtx.lineTo(x + cellSize / 16, cellSize / (16 / 10));
+      spriteCtx.quadraticCurveTo(x + cellSize / (16 / 8), cellSize / (16 / 5), x + cellSize / (16 / 15), cellSize / (16 / 4));
+      spriteCtx.lineTo(x + cellSize / (16 / 15), cellSize / (16 / 1));
+      spriteCtx.fillStyle = tetrjs[i][0];
+      spriteCtx.fill();
+      
     }
     i = iCurrent;
   }

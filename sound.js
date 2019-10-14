@@ -84,7 +84,7 @@ function Sound2() {
                 } else if ((navigator.language == "en-US" || navigator.language == "en") && iname == "piece6") {
                   language = "_us"
                 } else if (navigator.language.substring(0, 2) == "zh" && iname == "piece6") {
-                  language = "_zh"
+                  language = "_us"
                 } else if (navigator.language.substring(0, 2) == "es" && iname != "piece3" ) {
                   language = "_es"
                   if (navigator.language == "es-ES" && iname == "piece6") {
