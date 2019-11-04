@@ -370,6 +370,8 @@ sound.playse("rotate");
       kickList = WKTableDX[kickIndex][curPos]
     else
       kickList = WKTableDRS[kickIndex];
+        console.log(kickList)
+
     this.tryKickList(kickList, rotated, newPos, offsetX, offsetY);
   }
   spinX = Math.floor(piece.x);
