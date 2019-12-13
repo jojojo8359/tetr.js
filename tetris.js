@@ -3362,6 +3362,9 @@ function gameLoop() {
             playedLevelingbgmMarathon = [false, false]
             killAllbgm = true
             $setText(msg, 'READY');
+            if (navigator.language.substring(0, 2) == "es") {
+              $setText(msg, 'LISTOS');
+            }
             clearTetrisMessage();
             document.getElementById("msgdiv").classList.remove("startanim")
             if (gameparams.tournament === true) {
@@ -3380,6 +3383,9 @@ function gameLoop() {
               document.getElementById("msgdiv").classList.add("startanim")
             } else {
               $setText(msg, 'GO!');
+              if (navigator.language.substring(0, 2) == "es") {
+                $setText(msg, '¡YA!');
+              }
               sound.playse("go")
             }
             preview.draw;

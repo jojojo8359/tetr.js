@@ -69,8 +69,14 @@ function Sound2() {
             }
             break;
           case "ui":
+            let language = "";
+            if (settings.Soundbank == 12) {
+              if (navigator.language.substring(0, 2) == "es") {
+                  language = "_es"
+              }
+            }
             sounds[iname] = new Howl({
-              src: ["se/ui/" + gametypes[settings.Soundbank] + "/" + iname + ".wav"],
+              src: ["se/ui/" + gametypes[settings.Soundbank] + "/" + iname + language + ".wav"],
               volume: mySettings.Volume / 100,
             });
             break;
@@ -85,7 +91,7 @@ function Sound2() {
                   language = "_us"
                 } else if (navigator.language.substring(0, 2) == "zh" && iname == "piece6") {
                   language = "_us"
-                } else if (navigator.language.substring(0, 2) == "es" && iname != "piece3" ) {
+                } else if (navigator.language.substring(0, 2) == "es") {
                   language = "_es"
                   if (navigator.language == "es-ES" && iname == "piece6") {
                     language += "_spain"
