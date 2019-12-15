@@ -72,7 +72,9 @@ function Sound2() {
             let language = "";
             if (settings.Soundbank == 12) {
               if (navigator.language.substring(0, 2) == "es") {
-                  language = "_es"
+                language = "_es"
+              } else if (navigator.language.substring(0, 2) == "fr") {
+                language = "_fr"
               }
             }
             sounds[iname] = new Howl({
@@ -96,6 +98,8 @@ function Sound2() {
                   if (navigator.language == "es-ES" && iname == "piece6") {
                     language += "_spain"
                   }
+                } else if (navigator.language.substring(0, 2) == "fr") {
+                  language = "_fr"
                 }
               }
               sounds[iname] = new Howl({

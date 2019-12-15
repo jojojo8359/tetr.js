@@ -3364,6 +3364,8 @@ function gameLoop() {
             $setText(msg, 'READY');
             if (navigator.language.substring(0, 2) == "es") {
               $setText(msg, 'LISTOS');
+            } else if (navigator.language.substring(0, 2) == "fr") {
+                $setText(msg, `PRÊT?`);
             }
             clearTetrisMessage();
             document.getElementById("msgdiv").classList.remove("startanim")
@@ -3385,6 +3387,8 @@ function gameLoop() {
               $setText(msg, 'GO!');
               if (navigator.language.substring(0, 2) == "es") {
                 $setText(msg, '¡YA!');
+              } else if (navigator.language.substring(0, 2) == "fr") {
+                $setText(msg, `C'EST PARTI!`);
               }
               sound.playse("go")
             }
